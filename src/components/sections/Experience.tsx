@@ -93,7 +93,7 @@ export default function Experience() {
           <div className="flex justify-between mt-4 px-1">
             {experiences.map((exp) => (
               <span key={exp.id} className="text-xs text-[#D4A574] font-display">
-                {exp.period.split(" - ")[0]}
+                {exp.period.split(" - ")[1]}
               </span>
             ))}
           </div>

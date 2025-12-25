@@ -68,7 +68,7 @@ export default function About() {
                 a.k.a. &quot;THE CODE SLINGER&quot;
               </p>
               <div className="space-y-1 text-typewriter text-[#5C2E0A]">
-                <p><span className="text-[#8B4513]">STATUS:</span> Recent M.S. Graduate | Seeking Opportunities</p>
+                <p><span className="text-[#8B4513]">STATUS:</span> M.S. Graduate @Dec 2025 | Seeking Opportunities</p>
                 <p><span className="text-[#8B4513]">LOCATION:</span> United States (Open to Relocation)</p>
                 <p><span className="text-[#8B4513]">ORIGIN:</span> Hyderabad, India</p>
               </div>
@@ -90,8 +90,8 @@ export default function About() {
               cloud infrastructure that just works.
             </p>
             <p>
-              Recently graduated with a <strong>Master&apos;s in Computer Science</strong> from Lawrence
-              Technological University (Dec 2024). Worked as a <strong>Graduate Research Assistant</strong>
+              Graduated with a <strong>Master&apos;s in Computer Science</strong> from Lawrence
+              Technological University (Dec 2025). Worked as a <strong>Graduate Research Assistant</strong>
               focused on Agentic AI and multi-agent systems.
             </p>
             <p>
