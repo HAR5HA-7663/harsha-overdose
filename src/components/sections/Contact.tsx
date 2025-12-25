@@ -119,9 +119,9 @@ export default function Contact() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="flex items-center justify-center gap-4 group"
+                className="flex items-center justify-center gap-2 sm:gap-4 group"
               >
-                <span className="text-3xl">{contact.icon}</span>
+                <span className="text-2xl sm:text-3xl">{contact.icon}</span>
                 <div className="text-left">
                   <p className="text-xs text-[#8B4513] font-display tracking-wider">
                     {contact.label}
@@ -131,12 +131,12 @@ export default function Contact() {
                       href={contact.href}
                       target={contact.type !== "email" ? "_blank" : undefined}
                       rel="noopener noreferrer"
-                      className="text-[#704214] font-display text-lg hover:text-[#8B0000] transition-colors"
+                      className="text-[#704214] font-display text-sm sm:text-lg hover:text-[#8B0000] transition-colors break-all"
                     >
                       {contact.value}
                     </a>
                   ) : (
-                    <p className="text-[#704214] font-display text-lg">{contact.value}</p>
+                    <p className="text-[#704214] font-display text-sm sm:text-lg">{contact.value}</p>
                   )}
                 </div>
                 {contact.type === "email" && (

@@ -32,13 +32,13 @@ export default function Skills() {
         initial={{ opacity: 0, x: -50 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
-        className="flex flex-wrap justify-center gap-3 mb-12"
+        className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-12"
       >
         {["All", ...categories].map((cat) => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-2 font-display text-sm tracking-wider border-2 transition-all duration-300 ${
+            className={`px-2 sm:px-4 py-1 sm:py-2 font-display text-xs sm:text-sm tracking-wider border-2 transition-all duration-300 ${
               activeCategory === cat
                 ? "bg-[#8B0000] border-[#FFD700] text-[#FFD700] shadow-[0_0_15px_rgba(255,215,0,0.3)]"
                 : "bg-[#2A1A0A] border-[#8B4513] text-[#D4A574] hover:border-[#FFD700] hover:text-[#FFD700]"

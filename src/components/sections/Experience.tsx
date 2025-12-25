@@ -90,20 +90,20 @@ export default function Experience() {
         </div>
 
         {/* Rewind Controls */}
-        <div className="flex justify-center gap-4 mt-4">
+        <div className="flex justify-center gap-2 sm:gap-4 mt-4">
           <button
             onClick={() => currentIndex > 0 && handleRewind(currentIndex - 1)}
             disabled={currentIndex <= 0}
-            className="px-4 py-2 bg-[#8B4513] text-[#FFD700] font-display disabled:opacity-30 hover:bg-[#FF4500] transition-colors"
+            className="px-3 sm:px-4 py-2 bg-[#8B4513] text-[#FFD700] font-display text-sm sm:text-base disabled:opacity-30 hover:bg-[#FF4500] transition-colors"
           >
-            ⏪ FORWARD
+            ⏪ <span className="hidden sm:inline">FORWARD</span><span className="sm:hidden">FWD</span>
           </button>
           <button
             onClick={() => currentIndex < experiences.length - 1 && handleRewind(currentIndex + 1)}
             disabled={currentIndex >= experiences.length - 1}
-            className="px-4 py-2 bg-[#8B4513] text-[#FFD700] font-display disabled:opacity-30 hover:bg-[#FF4500] transition-colors"
+            className="px-3 sm:px-4 py-2 bg-[#8B4513] text-[#FFD700] font-display text-sm sm:text-base disabled:opacity-30 hover:bg-[#FF4500] transition-colors"
           >
-            REWIND ⏩
+            <span className="hidden sm:inline">REWIND</span><span className="sm:hidden">RWD</span> ⏩
           </button>
         </div>
       </motion.div>
@@ -117,7 +117,7 @@ export default function Experience() {
         className="max-w-3xl mx-auto"
       >
         <div
-          className="wanted-poster p-8 relative"
+          className="wanted-poster p-4 sm:p-8 relative"
           style={{
             transform: `rotate(${currentIndex % 2 === 0 ? -1 : 1}deg)`,
           }}
@@ -128,12 +128,12 @@ export default function Experience() {
           </div>
 
           {/* Header */}
-          <div className="flex items-start gap-4 mb-6">
-            <span className="text-5xl">{currentExp.icon}</span>
+          <div className="flex items-start gap-3 sm:gap-4 mb-6">
+            <span className="text-3xl sm:text-5xl">{currentExp.icon}</span>
             <div className="flex-1">
-              <h3 className="text-wanted text-2xl md:text-3xl">{currentExp.title}</h3>
-              <p className="text-[#704214] font-display text-lg">{currentExp.company}</p>
-              <div className="flex flex-wrap gap-4 mt-2 text-sm text-[#8B4513]">
+              <h3 className="text-wanted text-xl sm:text-2xl md:text-3xl">{currentExp.title}</h3>
+              <p className="text-[#704214] font-display text-base sm:text-lg">{currentExp.company}</p>
+              <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 text-xs sm:text-sm text-[#8B4513]">
                 <span>📍 {currentExp.location}</span>
                 <span>📅 {currentExp.period}</span>
               </div>

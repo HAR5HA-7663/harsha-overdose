@@ -200,7 +200,7 @@ export default function Home() {
             className="fixed top-0 left-0 right-0 p-4 flex justify-center items-center z-[9998]"
           >
             <div
-              className="flex items-center gap-8 px-6 py-3 rounded-full"
+              className="flex items-center gap-2 sm:gap-4 md:gap-8 px-3 sm:px-6 py-2 sm:py-3 rounded-full"
               style={{
                 background: "rgba(26, 26, 26, 0.95)",
                 border: "1px solid rgba(139, 69, 19, 0.5)",
@@ -211,7 +211,7 @@ export default function Home() {
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="text-sm font-display text-[#FFD700] hover:text-white transition-colors tracking-wider"
+                  className="text-xs sm:text-sm font-display text-[#FFD700] hover:text-white transition-colors tracking-wider"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {item}

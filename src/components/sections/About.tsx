@@ -37,7 +37,7 @@ export default function About() {
           initial={{ opacity: 0, rotateZ: -2 }}
           whileInView={{ opacity: 1, rotateZ: 0 }}
           viewport={{ once: true }}
-          className="wanted-poster p-8 md:p-12"
+          className="wanted-poster p-4 sm:p-8 md:p-12"
         >
           {/* Confidential Stamp */}
           <div className="absolute top-4 right-4 rotate-12 opacity-60">
@@ -130,7 +130,7 @@ export default function About() {
           {/* Specializations */}
           <div className="mt-8">
             <p className="text-sm text-[#8B4513] font-display tracking-wider mb-3">KNOWN FOR:</p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1 sm:gap-2">
               {[
                 "Backend Engineering",
                 "Cloud Architecture",
@@ -143,7 +143,7 @@ export default function About() {
               ].map((spec) => (
                 <span
                   key={spec}
-                  className="px-3 py-1 bg-[#8B4513] text-[#F4E4BC] text-sm font-display"
+                  className="px-2 sm:px-3 py-1 bg-[#8B4513] text-[#F4E4BC] text-xs sm:text-sm font-display"
                 >
                   {spec}
                 </span>
