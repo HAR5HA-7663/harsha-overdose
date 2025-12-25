@@ -327,9 +327,8 @@ export default function Home() {
                 className="text-center"
               >
                 <p className="text-sm uppercase tracking-wide text-[#8B4513] mb-1">Reward</p>
-                <p className="font-display text-3xl md:text-4xl text-[#8B0000] flex items-center justify-center gap-1">
-                  <Image src="/images/beli.webp" alt="Beli" width={32} height={32} className="inline-block" />
-                  3,000,000,000
+                <p className="font-display text-3xl md:text-4xl text-[#8B0000]">
+                  ฿3,000,000,000
                 </p>
               </motion.div>
 
