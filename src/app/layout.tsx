@@ -24,11 +24,11 @@ const permanentMarker = Permanent_Marker({
 });
 
 export const metadata: Metadata = {
-  title: "Harsha Vardhan | The Code Slinger",
+  title: "Harsha Yellela | The Code Slinger",
   description:
-    "Portfolio of Harsha Vardhan Yellela - Backend Engineer, Cloud Architect, AI/ML Engineer. An interactive portfolio experience.",
+    "Portfolio of Harsha Yellela - Backend Engineer, Cloud Architect, AI/ML Engineer. An interactive portfolio experience.",
   keywords: [
-    "Harsha Vardhan Yellela",
+    "Harsha Yellela",
     "Software Engineer",
     "Backend Developer",
     "Cloud Engineer",
@@ -36,19 +36,19 @@ export const metadata: Metadata = {
     "Machine Learning",
     "Portfolio",
   ],
-  authors: [{ name: "Harsha Vardhan Yellela" }],
-  creator: "Harsha Vardhan Yellela",
+  authors: [{ name: "Harsha Yellela" }],
+  creator: "Harsha Yellela",
   openGraph: {
-    title: "Harsha Vardhan | The Code Slinger",
+    title: "Harsha Yellela | The Code Slinger",
     description: "Enter the world of a Code Slinger. Interactive portfolio experience.",
     url: "https://harsha-overdose.vercel.app",
-    siteName: "Harsha Vardhan Portfolio",
+    siteName: "Harsha Yellela Portfolio",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Harsha Vardhan | The Code Slinger",
+    title: "Harsha Yellela | The Code Slinger",
     description: "Enter the world of a Code Slinger. Interactive portfolio experience.",
   },
   robots: {

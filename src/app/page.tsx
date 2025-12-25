@@ -277,7 +277,7 @@ export default function Home() {
                 <div className="w-full h-full bg-[#2A2A2A] relative overflow-hidden">
                   <Image
                     src="/images/cowboy_headshot.jpg"
-                    alt="Harsha Vardhan Yellela - The Code Slinger"
+                    alt="Harsha Yellela - The Code Slinger"
                     fill
                     className="object-cover"
                     style={{ filter: "sepia(30%) contrast(1.1)" }}
@@ -294,7 +294,7 @@ export default function Home() {
                 transition={{ delay: 0.7 }}
                 className="text-wanted text-2xl md:text-4xl text-center mb-2"
               >
-                HARSHA VARDHAN
+                HARSHA YELLELA
               </motion.h2>
 
               {/* Alias */}

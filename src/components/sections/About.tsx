@@ -53,7 +53,7 @@ export default function About() {
               <div className="w-full h-full relative">
                 <Image
                   src="/images/cowboy_headshot.jpg"
-                  alt="Harsha Vardhan Yellela"
+                  alt="Harsha Yellela"
                   fill
                   className="object-cover"
                   style={{ filter: "sepia(20%)" }}
@@ -63,7 +63,7 @@ export default function About() {
 
             {/* Basic Info */}
             <div className="flex-1 text-center md:text-left">
-              <h3 className="text-wanted text-3xl mb-2">HARSHA VARDHAN YELLELA</h3>
+              <h3 className="text-wanted text-3xl mb-2">HARSHA YELLELA</h3>
               <p className="text-[#704214] font-display text-xl mb-4">
                 a.k.a. &quot;THE CODE SLINGER&quot;
               </p>

@@ -218,7 +218,7 @@ export default function Contact() {
           CRAFTED WITH 💀 BY THE CODE SLINGER
         </p>
         <p className="text-[#5C2E0A] font-display text-xs mt-2">
-          © 2025 HARSHA VARDHAN YELLELA. ALL RIGHTS RESERVED.
+          © 2025 HARSHA YELLELA. ALL RIGHTS RESERVED.
         </p>
         <p className="text-[#704214] text-xs mt-4 opacity-50">
           Inspired by Total Overdose (2005)
