@@ -55,7 +55,7 @@ export default function About() {
                   src="/images/cowboy_headshot.jpg"
                   alt="Harsha Yellela"
                   fill
-                  className="object-cover"
+                  className="object-cover scale-125"
                   style={{ filter: "sepia(20%)" }}
                 />
               </div>

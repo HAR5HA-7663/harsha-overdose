@@ -279,7 +279,7 @@ export default function Home() {
                     src="/images/cowboy_headshot.jpg"
                     alt="Harsha Yellela - The Code Slinger"
                     fill
-                    className="object-cover"
+                    className="object-cover scale-125"
                     style={{ filter: "sepia(30%) contrast(1.1)" }}
                     priority
                   />
