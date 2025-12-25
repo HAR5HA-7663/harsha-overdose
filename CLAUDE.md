@@ -174,10 +174,10 @@ npm run lint
 
 | Date | Task | Details |
 |------|------|---------|
-| 2025-12-25 | All sections complete | Added About, Skills (24 skills), Projects (8 Loco Moves), Experience (4 entries), Contact sections |
 | 2025-12-25 | Sound effects added | Web Audio API gunshots and combo sounds with mute toggle |
 | 2025-12-25 | Browser tested | All features working - bullet holes, combos, filters, expand cards, rewind, contact |
 | 2025-12-25 | Ready for deployment | Full site complete at https://github.com/HAR5HA-7663/harsha-overdose |
+| 2025-12-25 | Cowboy photo & fixes | Added cowboy_headshot.jpg, fixed timeline date order, updated status to "Recent M.S. Graduate" |
 
 ---
 
