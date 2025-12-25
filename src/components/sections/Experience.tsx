@@ -60,12 +60,12 @@ export default function Experience() {
         viewport={{ once: true }}
         className="max-w-4xl mx-auto mb-12"
       >
-        <div className="relative">
+        <div className="relative pb-10">
           {/* Timeline Track */}
           <div className="h-1 bg-[#8B4513] rounded-full" />
 
           {/* Timeline Markers */}
-          <div className="absolute inset-0 flex justify-between items-center">
+          <div className="absolute inset-x-0 top-0 flex justify-between items-center" style={{ transform: "translateY(-40%)" }}>
             {experiences.map((exp, index) => (
               <button
                 key={exp.id}
@@ -80,7 +80,7 @@ export default function Experience() {
           </div>
 
           {/* Year Labels */}
-          <div className="flex justify-between mt-6">
+          <div className="flex justify-between mt-8">
             {experiences.map((exp) => (
               <span key={exp.id} className="text-xs text-[#D4A574] font-display">
                 {exp.period.split(" - ")[1]}
@@ -90,20 +90,20 @@ export default function Experience() {
         </div>
 
         {/* Rewind Controls */}
-        <div className="flex justify-center gap-4 mt-6">
-          <button
-            onClick={() => currentIndex < experiences.length - 1 && handleRewind(currentIndex + 1)}
-            disabled={currentIndex >= experiences.length - 1}
-            className="px-4 py-2 bg-[#8B4513] text-[#FFD700] font-display disabled:opacity-30 hover:bg-[#FF4500] transition-colors"
-          >
-            ⏪ REWIND
-          </button>
+        <div className="flex justify-center gap-4 mt-4">
           <button
             onClick={() => currentIndex > 0 && handleRewind(currentIndex - 1)}
             disabled={currentIndex <= 0}
             className="px-4 py-2 bg-[#8B4513] text-[#FFD700] font-display disabled:opacity-30 hover:bg-[#FF4500] transition-colors"
           >
-            FORWARD ⏩
+            ⏪ FORWARD
+          </button>
+          <button
+            onClick={() => currentIndex < experiences.length - 1 && handleRewind(currentIndex + 1)}
+            disabled={currentIndex >= experiences.length - 1}
+            className="px-4 py-2 bg-[#8B4513] text-[#FFD700] font-display disabled:opacity-30 hover:bg-[#FF4500] transition-colors"
+          >
+            REWIND ⏩
           </button>
         </div>
       </motion.div>
