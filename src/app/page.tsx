@@ -171,52 +171,41 @@ export default function Home() {
       </AnimatePresence>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 p-4 flex justify-between items-center z-[9999] bg-gradient-to-b from-[#1A1A1A] to-transparent">
-        <motion.a
-          href="#"
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
+      <nav className="fixed top-0 left-0 right-0 p-4 flex justify-center items-center z-[9999]">
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="font-display text-xl text-[#FFD700]"
-          style={{ textShadow: "2px 2px 0 #8B0000" }}
-          onClick={(e) => e.stopPropagation()}
+          className="flex items-center gap-8 px-6 py-3 rounded-full"
+          style={{
+            background: "rgba(26, 26, 26, 0.95)",
+            border: "1px solid rgba(139, 69, 19, 0.5)",
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
+          }}
         >
-          HARSHA<span className="text-[#8B0000]">OVERDOSE</span>
-        </motion.a>
-
-        <div className="flex items-center gap-6">
-          <motion.div
-            initial={{ x: 20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="hidden md:flex gap-6"
-          >
-            {["ABOUT", "SKILLS", "PROJECTS", "EXPERIENCE", "CONTACT"].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-sm font-display text-[#D4A574] hover:text-[#FFD700] transition-colors tracking-wider"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {item}
-              </a>
-            ))}
-          </motion.div>
+          {["ABOUT", "SKILLS", "PROJECTS", "EXPERIENCE", "CONTACT"].map((item) => (
+            <a
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              className="text-sm font-display text-[#FFD700] hover:text-white transition-colors tracking-wider"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {item}
+            </a>
+          ))}
 
           {/* Sound Toggle */}
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+          <button
             onClick={(e) => {
               e.stopPropagation();
               toggleMute();
             }}
-            className="p-2 text-2xl hover:scale-110 transition-transform"
+            className="text-xl hover:scale-110 transition-transform ml-2"
             title={isMuted ? "Unmute" : "Mute"}
           >
             {isMuted ? "🔇" : "🔊"}
-          </motion.button>
-        </div>
+          </button>
+        </motion.div>
       </nav>
 
       {/* Hero Section */}

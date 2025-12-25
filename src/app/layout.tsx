@@ -24,9 +24,9 @@ const permanentMarker = Permanent_Marker({
 });
 
 export const metadata: Metadata = {
-  title: "HARSHA OVERDOSE | The Code Slinger",
+  title: "Harsha Vardhan | The Code Slinger",
   description:
-    "Portfolio of Harsha Vardhan Yellela - Backend Engineer, Cloud Architect, AI/ML Engineer. A Total Overdose inspired interactive experience.",
+    "Portfolio of Harsha Vardhan Yellela - Backend Engineer, Cloud Architect, AI/ML Engineer. An interactive portfolio experience.",
   keywords: [
     "Harsha Vardhan Yellela",
     "Software Engineer",
@@ -39,16 +39,16 @@ export const metadata: Metadata = {
   authors: [{ name: "Harsha Vardhan Yellela" }],
   creator: "Harsha Vardhan Yellela",
   openGraph: {
-    title: "HARSHA OVERDOSE | The Code Slinger",
+    title: "Harsha Vardhan | The Code Slinger",
     description: "Enter the world of a Code Slinger. Interactive portfolio experience.",
     url: "https://harsha-overdose.vercel.app",
-    siteName: "Harsha Overdose",
+    siteName: "Harsha Vardhan Portfolio",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "HARSHA OVERDOSE | The Code Slinger",
+    title: "Harsha Vardhan | The Code Slinger",
     description: "Enter the world of a Code Slinger. Interactive portfolio experience.",
   },
   robots: {
