@@ -2,6 +2,12 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import About from "@/components/sections/About";
+import Skills from "@/components/sections/Skills";
+import Projects from "@/components/sections/Projects";
+import Experience from "@/components/sections/Experience";
+import Contact from "@/components/sections/Contact";
+import { useGunshot, useComboSound, useSoundToggle } from "@/hooks/useSound";
 
 interface BulletHole {
   id: number;
@@ -21,6 +27,17 @@ export default function Home() {
   const [showContent, setShowContent] = useState(false);
   const [comboCount, setComboCount] = useState(0);
   const [lastClickTime, setLastClickTime] = useState(0);
+  const [showHero, setShowHero] = useState(true);
+
+  const { isMuted, toggle: toggleMute } = useSoundToggle();
+  const gunshot = useGunshot();
+  const comboSound = useComboSound();
+
+  // Sync mute state with sound hooks
+  useEffect(() => {
+    gunshot.setIsMuted(isMuted);
+    comboSound.setIsMuted(isMuted);
+  }, [isMuted, gunshot, comboSound]);
 
   // Reset combo after 2 seconds of inactivity
   useEffect(() => {
@@ -37,6 +54,9 @@ export default function Home() {
   }, []);
 
   const handleClick = useCallback((e: React.MouseEvent) => {
+    // Only add bullet holes in hero section
+    if (!showHero) return;
+
     const newHole: BulletHole = {
       id: Date.now(),
       x: e.clientX,
@@ -51,8 +71,16 @@ export default function Home() {
 
     setBulletHoles((prev) => [...prev, newHole]);
     setMuzzleFlashes((prev) => [...prev, newFlash]);
-    setComboCount((prev) => prev + 1);
+
+    const newCombo = comboCount + 1;
+    setComboCount(newCombo);
     setLastClickTime(Date.now());
+
+    // Play sounds
+    gunshot.play();
+    if (newCombo > 1) {
+      comboSound.play(newCombo);
+    }
 
     // Remove muzzle flash after animation
     setTimeout(() => {
@@ -63,14 +91,20 @@ export default function Home() {
     if (bulletHoles.length > 20) {
       setBulletHoles((prev) => prev.slice(-15));
     }
-  }, [bulletHoles.length]);
+  }, [bulletHoles.length, comboCount, showHero, gunshot, comboSound]);
+
+  // Track scroll position for hero section
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowHero(window.scrollY < window.innerHeight * 0.5);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden"
-      onClick={handleClick}
-    >
-      {/* Background Desert Gradient */}
+    <div className="relative">
+      {/* Fixed Background */}
       <div
         className="fixed inset-0 z-0"
         style={{
@@ -83,18 +117,19 @@ export default function Home() {
         }}
       />
 
-      {/* Bullet Holes */}
+      {/* Bullet Holes (only in hero) */}
       <AnimatePresence>
         {bulletHoles.map((hole) => (
           <motion.div
             key={hole.id}
-            className="bullet-hole"
+            className="bullet-hole fixed"
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ opacity: 0 }}
             style={{
               left: hole.x - 10,
               top: hole.y - 10,
+              zIndex: 9997,
             }}
           />
         ))}
@@ -123,7 +158,7 @@ export default function Home() {
             initial={{ scale: 0, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0, opacity: 0 }}
-            className="fixed top-8 right-8 z-50"
+            className="fixed top-20 right-8 z-[9999]"
           >
             <div className="combo-bar px-6 py-3 rounded-lg">
               <span className="font-display text-2xl text-[#1A1A1A] font-bold">
@@ -134,188 +169,234 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Main Wanted Poster */}
-      <AnimatePresence>
-        {showContent && (
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0, rotateZ: -5 }}
-            animate={{ scale: 1, opacity: 1, rotateZ: 0 }}
-            transition={{ type: "spring", duration: 0.8 }}
-            className="wanted-poster w-full max-w-2xl p-8 md:p-12 relative z-10"
-          >
-            {/* Torn Edge Top */}
-            <div
-              className="absolute -top-2 left-0 right-0 h-4"
-              style={{
-                background: `url("data:image/svg+xml,%3Csvg viewBox='0 0 100 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q5 0 10 10 Q15 0 20 10 Q25 0 30 10 Q35 0 40 10 Q45 0 50 10 Q55 0 60 10 Q65 0 70 10 Q75 0 80 10 Q85 0 90 10 Q95 0 100 10' fill='%23F4E4BC'/%3E%3C/svg%3E") repeat-x`,
-              }}
-            />
-
-            {/* Wanted Header */}
-            <motion.h1
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-wanted text-4xl md:text-6xl text-center mb-4"
-            >
-              WANTED
-            </motion.h1>
-
-            {/* Dead or Alive */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="text-center text-[#704214] font-display text-lg tracking-widest mb-6"
-            >
-              DEAD OR ALIVE
-            </motion.p>
-
-            {/* Photo Frame */}
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="relative mx-auto w-48 h-48 md:w-64 md:h-64 mb-6 bg-[#8B4513] p-2 shadow-lg"
-              style={{
-                boxShadow: "inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3)",
-              }}
-            >
-              <div className="w-full h-full bg-[#2A2A2A] flex items-center justify-center relative overflow-hidden">
-                {/* Silhouette Placeholder */}
-                <div className="text-8xl md:text-9xl" style={{ filter: "drop-shadow(0 0 10px rgba(255,215,0,0.3))" }}>
-                  🤠
-                </div>
-                {/* Sepia Overlay */}
-                <div className="absolute inset-0 bg-[#704214] mix-blend-overlay opacity-30" />
-              </div>
-            </motion.div>
-
-            {/* Name */}
-            <motion.h2
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.7 }}
-              className="text-wanted text-2xl md:text-4xl text-center mb-2"
-            >
-              HARSHA VARDHAN
-            </motion.h2>
-
-            {/* Alias */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="text-center text-[#704214] font-display text-xl mb-6"
-            >
-              a.k.a. &quot;THE CODE SLINGER&quot;
-            </motion.p>
-
-            {/* Crimes */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.9 }}
-              className="text-typewriter text-center mb-6 space-y-1"
-            >
-              <p className="text-sm uppercase tracking-wide text-[#8B4513]">Wanted For:</p>
-              <p className="text-[#704214]">Backend Engineering • Cloud Architecture</p>
-              <p className="text-[#704214]">AI/ML Sorcery • DevOps Mayhem</p>
-            </motion.div>
-
-            {/* Reward */}
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 1 }}
-              className="text-center"
-            >
-              <p className="text-sm uppercase tracking-wide text-[#8B4513] mb-1">Reward</p>
-              <p className="font-display text-3xl md:text-4xl text-[#8B0000]">
-                $∞ <span className="text-lg">in VALUE</span>
-              </p>
-            </motion.div>
-
-            {/* Decorative Corner Stamps */}
-            <div className="absolute top-4 left-4 w-16 h-16 opacity-30 rotate-[-15deg]">
-              <div className="text-[#8B0000] font-display text-xs text-center border-2 border-[#8B0000] rounded-full w-full h-full flex items-center justify-center">
-                CERTIFIED<br />DANGEROUS
-              </div>
-            </div>
-
-            {/* Torn Edge Bottom */}
-            <div
-              className="absolute -bottom-2 left-0 right-0 h-4 rotate-180"
-              style={{
-                background: `url("data:image/svg+xml,%3Csvg viewBox='0 0 100 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q5 0 10 10 Q15 0 20 10 Q25 0 30 10 Q35 0 40 10 Q45 0 50 10 Q55 0 60 10 Q65 0 70 10 Q75 0 80 10 Q85 0 90 10 Q95 0 100 10' fill='%23F4E4BC'/%3E%3C/svg%3E") repeat-x`,
-              }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Enter Button */}
-      <AnimatePresence>
-        {showContent && (
-          <motion.a
-            href="#about"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 1.2 }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="mt-8 px-8 py-4 bg-gradient-to-b from-[#8B4513] to-[#5C2E0A] text-[#FFD700] font-display text-xl tracking-widest border-2 border-[#FFD700] rounded shadow-lg relative z-10"
-            style={{
-              textShadow: "0 0 10px rgba(255,215,0,0.5)",
-              boxShadow: "0 0 20px rgba(139,69,19,0.5), inset 0 0 10px rgba(0,0,0,0.3)",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            ENTER LOS TOROS
-          </motion.a>
-        )}
-      </AnimatePresence>
-
-      {/* Click Instruction */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.5 }}
-        transition={{ delay: 1.5 }}
-        className="fixed bottom-8 text-sm text-[#D4A574] font-display tracking-wider z-10"
-      >
-        CLICK ANYWHERE TO SHOOT
-      </motion.p>
-
-      {/* Navigation (Placeholder for now) */}
-      <nav className="fixed top-0 left-0 right-0 p-4 flex justify-between items-center z-50">
-        <motion.div
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 p-4 flex justify-between items-center z-[9999] bg-gradient-to-b from-[#1A1A1A] to-transparent">
+        <motion.a
+          href="#"
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
           className="font-display text-xl text-[#FFD700]"
           style={{ textShadow: "2px 2px 0 #8B0000" }}
+          onClick={(e) => e.stopPropagation()}
         >
           HARSHA<span className="text-[#8B0000]">OVERDOSE</span>
-        </motion.div>
+        </motion.a>
 
-        <motion.div
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="flex gap-6"
-        >
-          {["ABOUT", "SKILLS", "PROJECTS", "CONTACT"].map((item, i) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="text-sm font-display text-[#D4A574] hover:text-[#FFD700] transition-colors tracking-wider"
+        <div className="flex items-center gap-6">
+          <motion.div
+            initial={{ x: 20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="hidden md:flex gap-6"
+          >
+            {["ABOUT", "SKILLS", "PROJECTS", "EXPERIENCE", "CONTACT"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="text-sm font-display text-[#D4A574] hover:text-[#FFD700] transition-colors tracking-wider"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {item}
+              </a>
+            ))}
+          </motion.div>
+
+          {/* Sound Toggle */}
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleMute();
+            }}
+            className="p-2 text-2xl hover:scale-110 transition-transform"
+            title={isMuted ? "Unmute" : "Mute"}
+          >
+            {isMuted ? "🔇" : "🔊"}
+          </motion.button>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section
+        className="min-h-screen flex flex-col items-center justify-center p-4 relative"
+        onClick={handleClick}
+      >
+        {/* Main Wanted Poster */}
+        <AnimatePresence>
+          {showContent && (
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0, rotateZ: -5 }}
+              animate={{ scale: 1, opacity: 1, rotateZ: 0 }}
+              transition={{ type: "spring", duration: 0.8 }}
+              className="wanted-poster w-full max-w-2xl p-8 md:p-12 relative z-10"
+            >
+              {/* Torn Edge Top */}
+              <div
+                className="absolute -top-2 left-0 right-0 h-4"
+                style={{
+                  background: `url("data:image/svg+xml,%3Csvg viewBox='0 0 100 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q5 0 10 10 Q15 0 20 10 Q25 0 30 10 Q35 0 40 10 Q45 0 50 10 Q55 0 60 10 Q65 0 70 10 Q75 0 80 10 Q85 0 90 10 Q95 0 100 10' fill='%23F4E4BC'/%3E%3C/svg%3E") repeat-x`,
+                }}
+              />
+
+              {/* Wanted Header */}
+              <motion.h1
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="text-wanted text-4xl md:text-6xl text-center mb-4"
+              >
+                WANTED
+              </motion.h1>
+
+              {/* Dead or Alive */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-center text-[#704214] font-display text-lg tracking-widest mb-6"
+              >
+                DEAD OR ALIVE
+              </motion.p>
+
+              {/* Photo Frame */}
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="relative mx-auto w-48 h-48 md:w-64 md:h-64 mb-6 bg-[#8B4513] p-2 shadow-lg"
+                style={{
+                  boxShadow: "inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3)",
+                }}
+              >
+                <div className="w-full h-full bg-[#2A2A2A] flex items-center justify-center relative overflow-hidden">
+                  <div className="text-8xl md:text-9xl" style={{ filter: "drop-shadow(0 0 10px rgba(255,215,0,0.3))" }}>
+                    🤠
+                  </div>
+                  <div className="absolute inset-0 bg-[#704214] mix-blend-overlay opacity-30" />
+                </div>
+              </motion.div>
+
+              {/* Name */}
+              <motion.h2
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.7 }}
+                className="text-wanted text-2xl md:text-4xl text-center mb-2"
+              >
+                HARSHA VARDHAN
+              </motion.h2>
+
+              {/* Alias */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="text-center text-[#704214] font-display text-xl mb-6"
+              >
+                a.k.a. &quot;THE CODE SLINGER&quot;
+              </motion.p>
+
+              {/* Crimes */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.9 }}
+                className="text-typewriter text-center mb-6 space-y-1"
+              >
+                <p className="text-sm uppercase tracking-wide text-[#8B4513]">Wanted For:</p>
+                <p className="text-[#704214]">Backend Engineering • Cloud Architecture</p>
+                <p className="text-[#704214]">AI/ML Sorcery • DevOps Mayhem</p>
+              </motion.div>
+
+              {/* Reward */}
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 1 }}
+                className="text-center"
+              >
+                <p className="text-sm uppercase tracking-wide text-[#8B4513] mb-1">Reward</p>
+                <p className="font-display text-3xl md:text-4xl text-[#8B0000]">
+                  $∞ <span className="text-lg">in VALUE</span>
+                </p>
+              </motion.div>
+
+              {/* Decorative Corner Stamps */}
+              <div className="absolute top-4 left-4 w-16 h-16 opacity-30 rotate-[-15deg]">
+                <div className="text-[#8B0000] font-display text-xs text-center border-2 border-[#8B0000] rounded-full w-full h-full flex items-center justify-center">
+                  CERTIFIED<br />DANGEROUS
+                </div>
+              </div>
+
+              {/* Torn Edge Bottom */}
+              <div
+                className="absolute -bottom-2 left-0 right-0 h-4 rotate-180"
+                style={{
+                  background: `url("data:image/svg+xml,%3Csvg viewBox='0 0 100 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q5 0 10 10 Q15 0 20 10 Q25 0 30 10 Q35 0 40 10 Q45 0 50 10 Q55 0 60 10 Q65 0 70 10 Q75 0 80 10 Q85 0 90 10 Q95 0 100 10' fill='%23F4E4BC'/%3E%3C/svg%3E") repeat-x`,
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Enter Button */}
+        <AnimatePresence>
+          {showContent && (
+            <motion.a
+              href="#about"
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 1.2 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="mt-8 px-8 py-4 bg-gradient-to-b from-[#8B4513] to-[#5C2E0A] text-[#FFD700] font-display text-xl tracking-widest border-2 border-[#FFD700] rounded shadow-lg relative z-10"
+              style={{
+                textShadow: "0 0 10px rgba(255,215,0,0.5)",
+                boxShadow: "0 0 20px rgba(139,69,19,0.5), inset 0 0 10px rgba(0,0,0,0.3)",
+              }}
               onClick={(e) => e.stopPropagation()}
             >
-              {item}
-            </a>
-          ))}
+              ENTER LOS TOROS
+            </motion.a>
+          )}
+        </AnimatePresence>
+
+        {/* Click Instruction */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.5 }}
+          transition={{ delay: 1.5 }}
+          className="absolute bottom-8 text-sm text-[#D4A574] font-display tracking-wider z-10"
+        >
+          🔫 CLICK ANYWHERE TO SHOOT • {isMuted ? "🔇 SOUND OFF" : "🔊 SOUND ON"}
+        </motion.p>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-20 text-[#FFD700] text-2xl"
+        >
+          ▼
         </motion.div>
-      </nav>
+      </section>
+
+      {/* About Section */}
+      <About />
+
+      {/* Skills Section */}
+      <Skills />
+
+      {/* Projects Section */}
+      <Projects />
+
+      {/* Experience Section */}
+      <Experience />
+
+      {/* Contact Section */}
+      <Contact />
     </div>
   );
 }
