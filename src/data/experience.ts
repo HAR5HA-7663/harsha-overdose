@@ -9,13 +9,14 @@ export interface Experience {
   icon: string;
 }
 
+// Ordered from most recent to oldest for REWIND timeline
 export const experiences: Experience[] = [
   {
     id: 1,
     title: "Graduate Research Assistant",
     company: "Lawrence Technological University",
     location: "Southfield, MI",
-    period: "Jan 2025 - Present",
+    period: "Jan 2024 - Dec 2024",
     type: "work",
     bullets: [
       "Built multi-agent systems with CrewAI + LangChain MCP for workflow automation",
@@ -23,10 +24,25 @@ export const experiences: Experience[] = [
       "Integrated OpenSearch Serverless for semantic search and RAG",
       "Achieved 70% reduction in manual process time with hybrid AI pipelines",
     ],
-    icon: "🎓",
+    icon: "🔬",
   },
   {
     id: 2,
+    title: "M.S. Computer Science",
+    company: "Lawrence Technological University",
+    location: "Southfield, MI",
+    period: "Jan 2024 - Dec 2024",
+    type: "education",
+    bullets: [
+      "GPA: 3.6/4.0",
+      "Focus: AI/ML, Cloud Computing, Distributed Systems",
+      "Research: Agentic AI and Multi-Agent Systems",
+      "Graduated December 2024",
+    ],
+    icon: "🎓",
+  },
+  {
+    id: 3,
     title: "LN Technical Consultant",
     company: "Infor India Pvt. Ltd.",
     location: "Hyderabad, India",
@@ -39,20 +55,6 @@ export const experiences: Experience[] = [
       "Reduced batch processing delays by ~40%",
     ],
     icon: "💼",
-  },
-  {
-    id: 3,
-    title: "M.S. Computer Science",
-    company: "Lawrence Technological University",
-    location: "Southfield, MI",
-    period: "Jan 2024 - Dec 2025",
-    type: "education",
-    bullets: [
-      "GPA: 3.6/4.0",
-      "Focus: AI/ML, Cloud Computing, Distributed Systems",
-      "Research: Agentic AI and Multi-Agent Systems",
-    ],
-    icon: "🎓",
   },
   {
     id: 4,

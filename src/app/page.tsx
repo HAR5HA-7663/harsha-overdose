@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import About from "@/components/sections/About";
 import Skills from "@/components/sections/Skills";
 import Projects from "@/components/sections/Projects";
@@ -270,11 +271,16 @@ export default function Home() {
                   boxShadow: "inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3)",
                 }}
               >
-                <div className="w-full h-full bg-[#2A2A2A] flex items-center justify-center relative overflow-hidden">
-                  <div className="text-8xl md:text-9xl" style={{ filter: "drop-shadow(0 0 10px rgba(255,215,0,0.3))" }}>
-                    🤠
-                  </div>
-                  <div className="absolute inset-0 bg-[#704214] mix-blend-overlay opacity-30" />
+                <div className="w-full h-full bg-[#2A2A2A] relative overflow-hidden">
+                  <Image
+                    src="/images/cowboy_headshot.jpg"
+                    alt="Harsha Vardhan Yellela - The Code Slinger"
+                    fill
+                    className="object-cover"
+                    style={{ filter: "sepia(30%) contrast(1.1)" }}
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-[#704214] mix-blend-overlay opacity-20" />
                 </div>
               </motion.div>
 

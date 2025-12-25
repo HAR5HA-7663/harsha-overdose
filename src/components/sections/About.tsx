@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function About() {
   return (
@@ -48,9 +49,15 @@ export default function About() {
           {/* Profile Header */}
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
             {/* Photo */}
-            <div className="w-40 h-40 bg-[#8B4513] p-2 shadow-lg flex-shrink-0" style={{ boxShadow: "inset 0 0 20px rgba(0,0,0,0.5)" }}>
-              <div className="w-full h-full bg-[#2A2A2A] flex items-center justify-center">
-                <span className="text-7xl">🤠</span>
+            <div className="w-40 h-40 bg-[#8B4513] p-2 shadow-lg flex-shrink-0 overflow-hidden" style={{ boxShadow: "inset 0 0 20px rgba(0,0,0,0.5)" }}>
+              <div className="w-full h-full relative">
+                <Image
+                  src="/images/cowboy_headshot.jpg"
+                  alt="Harsha Vardhan Yellela"
+                  fill
+                  className="object-cover"
+                  style={{ filter: "sepia(20%)" }}
+                />
               </div>
             </div>
 
@@ -61,8 +68,8 @@ export default function About() {
                 a.k.a. &quot;THE CODE SLINGER&quot;
               </p>
               <div className="space-y-1 text-typewriter text-[#5C2E0A]">
-                <p><span className="text-[#8B4513]">STATUS:</span> Graduate Student & Research Assistant</p>
-                <p><span className="text-[#8B4513]">LOCATION:</span> Southfield, Michigan, USA</p>
+                <p><span className="text-[#8B4513]">STATUS:</span> Recent M.S. Graduate | Seeking Opportunities</p>
+                <p><span className="text-[#8B4513]">LOCATION:</span> United States (Open to Relocation)</p>
                 <p><span className="text-[#8B4513]">ORIGIN:</span> Hyderabad, India</p>
               </div>
             </div>
@@ -83,13 +90,17 @@ export default function About() {
               cloud infrastructure that just works.
             </p>
             <p>
-              Currently pursuing a <strong>Master&apos;s in Computer Science</strong> at Lawrence
-              Technological University while working as a <strong>Graduate Research Assistant</strong>
+              Recently graduated with a <strong>Master&apos;s in Computer Science</strong> from Lawrence
+              Technological University (Dec 2024). Worked as a <strong>Graduate Research Assistant</strong>
               focused on Agentic AI and multi-agent systems.
             </p>
             <p>
               Previously rode with <strong>Infor</strong> as a Technical Consultant, developing
               enterprise tools for global clients including <strong>Ferrari, Boeing, and Triumph</strong>.
+            </p>
+            <p>
+              <span className="text-[#8B0000] font-display">Now seeking</span> Backend, DevOps, ML/AI,
+              or Cloud Engineering roles to bring my skills to your posse.
             </p>
           </div>
 
