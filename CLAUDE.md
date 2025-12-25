@@ -111,15 +111,18 @@ src/
 
 ### Phase 1: Core Structure
 - [x] Project initialization
-- [ ] Global styles and CSS variables
-- [ ] Custom cursor (crosshair)
-- [ ] Film grain overlay effect
-- [ ] Basic layout structure
+- [x] Global styles and CSS variables
+- [x] Custom cursor (crosshair & revolver)
+- [x] Film grain overlay effect
+- [x] VHS scanlines effect
+- [x] Basic layout structure
 
 ### Phase 2: Landing Page
-- [ ] Wanted poster design
-- [ ] Bullet hole click effects
-- [ ] Entry animation
+- [x] Wanted poster design
+- [x] Bullet hole click effects
+- [x] Muzzle flash effects
+- [x] Combo meter system
+- [x] Entry animation
 - [ ] Background music toggle
 
 ### Phase 3: Main Sections
@@ -171,7 +174,10 @@ npm run lint
 
 | Date | Task | Details |
 |------|------|---------|
-| 2024-12-25 | Project initialized | Created Next.js 14 project with TypeScript, Tailwind, Framer Motion, GSAP, Howler.js |
+| 2025-12-25 | Project initialized | Created Next.js 14 project with TypeScript, Tailwind, Framer Motion, GSAP, Howler.js |
+| 2025-12-25 | Core theme built | Added globals.css with full color palette, film grain, scanlines, wanted poster styles, bullet holes, muzzle flash, combo bar animations |
+| 2025-12-25 | Landing page created | Built wanted poster with bullet hole click effects, combo meter, muzzle flash, custom cursors |
+| 2025-12-25 | GitHub repo created | Pushed to https://github.com/HAR5HA-7663/harsha-overdose |
 
 ---
 
