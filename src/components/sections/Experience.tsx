@@ -62,35 +62,25 @@ export default function Experience() {
       >
         <div className="relative">
           {/* Timeline Track */}
-          <div className="h-4 bg-[#2A1A0A] border-2 border-[#8B4513] rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-[#8B0000] via-[#FF4500] to-[#FFD700]"
-              style={{
-                width: `${((experiences.length - 1 - currentIndex) / (experiences.length - 1)) * 100}%`,
-              }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
+          <div className="h-1 bg-[#8B4513] rounded-full" />
 
           {/* Timeline Markers */}
-          <div className="absolute inset-0 flex justify-between items-center px-2">
+          <div className="absolute inset-0 flex justify-between items-center">
             {experiences.map((exp, index) => (
               <button
                 key={exp.id}
                 onClick={() => handleRewind(index)}
-                className={`w-6 h-6 rounded-full border-2 transition-all duration-300 z-10 ${
+                className={`w-5 h-5 rounded-full border-2 transition-all duration-300 ${
                   index === currentIndex
-                    ? "bg-[#FFD700] border-[#FFD700] scale-125 shadow-[0_0_15px_rgba(255,215,0,0.5)]"
-                    : index < currentIndex
-                    ? "bg-[#8B0000] border-[#8B0000]"
-                    : "bg-[#2A1A0A] border-[#8B4513] hover:border-[#FFD700]"
+                    ? "bg-[#FFD700] border-[#FFD700] scale-150 shadow-[0_0_15px_rgba(255,215,0,0.5)]"
+                    : "bg-[#2A1A0A] border-[#8B4513] hover:border-[#FFD700] hover:scale-125"
                 }`}
               />
             ))}
           </div>
 
           {/* Year Labels */}
-          <div className="flex justify-between mt-4 px-1">
+          <div className="flex justify-between mt-6">
             {experiences.map((exp) => (
               <span key={exp.id} className="text-xs text-[#D4A574] font-display">
                 {exp.period.split(" - ")[1]}
