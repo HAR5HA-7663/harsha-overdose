@@ -328,7 +328,7 @@ export default function Home() {
               >
                 <p className="text-sm uppercase tracking-wide text-[#8B4513] mb-1">Reward</p>
                 <p className="font-display text-3xl md:text-4xl text-[#8B0000]">
-                  $∞ <span className="text-lg">in VALUE</span>
+                  ฿3,000,000,000
                 </p>
               </motion.div>
 
