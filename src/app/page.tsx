@@ -170,43 +170,57 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 p-4 flex justify-center items-center z-[9999]">
-        <motion.div
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="flex items-center gap-8 px-6 py-3 rounded-full"
-          style={{
-            background: "rgba(26, 26, 26, 0.95)",
-            border: "1px solid rgba(139, 69, 19, 0.5)",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          {["ABOUT", "SKILLS", "PROJECTS", "EXPERIENCE", "CONTACT"].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="text-sm font-display text-[#FFD700] hover:text-white transition-colors tracking-wider"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {item}
-            </a>
-          ))}
+      {/* Sound Toggle - fixed in corner */}
+      <motion.button
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleMute();
+        }}
+        className="fixed top-4 right-4 z-[9999] p-3 rounded-full text-2xl hover:scale-110 transition-transform"
+        style={{
+          background: "rgba(26, 26, 26, 0.8)",
+          border: "1px solid rgba(139, 69, 19, 0.5)",
+        }}
+        title={isMuted ? "Unmute" : "Mute"}
+      >
+        {isMuted ? "🔇" : "🔊"}
+      </motion.button>
 
-          {/* Sound Toggle */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleMute();
-            }}
-            className="text-xl hover:scale-110 transition-transform ml-2"
-            title={isMuted ? "Unmute" : "Mute"}
+      {/* Navigation - only show after scrolling past hero */}
+      <AnimatePresence>
+        {!showHero && (
+          <motion.nav
+            initial={{ y: -60, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -60, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-0 left-0 right-0 p-4 flex justify-center items-center z-[9998]"
           >
-            {isMuted ? "🔇" : "🔊"}
-          </button>
-        </motion.div>
-      </nav>
+            <div
+              className="flex items-center gap-8 px-6 py-3 rounded-full"
+              style={{
+                background: "rgba(26, 26, 26, 0.95)",
+                border: "1px solid rgba(139, 69, 19, 0.5)",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
+              }}
+            >
+              {["ABOUT", "SKILLS", "PROJECTS", "EXPERIENCE", "CONTACT"].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="text-sm font-display text-[#FFD700] hover:text-white transition-colors tracking-wider"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <section
@@ -358,21 +372,11 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* Click Instruction */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.5 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-8 text-sm text-[#D4A574] font-display tracking-wider z-10"
-        >
-          🔫 CLICK ANYWHERE TO SHOOT • {isMuted ? "🔇 SOUND OFF" : "🔊 SOUND ON"}
-        </motion.p>
-
         {/* Scroll Indicator */}
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-20 text-[#FFD700] text-2xl"
+          className="mt-6 text-[#FFD700] text-2xl z-10"
         >
           ▼
         </motion.div>
