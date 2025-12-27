@@ -29,7 +29,7 @@ export const skills: Skill[] = [
   // AI/ML
   { name: "TensorFlow", category: "AI/ML", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg" },
   { name: "PyTorch", category: "AI/ML", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg" },
-  { name: "OpenAI", category: "AI/ML", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/openai/openai-original.svg" },
+  { name: "Scikit-learn", category: "AI/ML", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg" },
   { name: "Hugging Face", category: "AI/ML", icon: "https://huggingface.co/front/assets/huggingface_logo-noborder.svg" },
   { name: "Keras", category: "AI/ML", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/keras/keras-original.svg" },
 
