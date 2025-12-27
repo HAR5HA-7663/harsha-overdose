@@ -18,7 +18,7 @@ export const skills: Skill[] = [
   { name: "Docker", category: "Cloud", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
   { name: "Kubernetes", category: "Cloud", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-original.svg" },
   { name: "Terraform", category: "Cloud", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" },
-  { name: "Lambda", category: "Cloud", icon: "https://cdn.simpleicons.org/awslambda/FF9900" },
+  { name: "Vercel", category: "Cloud", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg" },
 
   // Backend
   { name: "FastAPI", category: "Backend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
@@ -29,9 +29,9 @@ export const skills: Skill[] = [
   // AI/ML
   { name: "TensorFlow", category: "AI/ML", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg" },
   { name: "PyTorch", category: "AI/ML", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg" },
-  { name: "OpenAI", category: "AI/ML", icon: "https://cdn.simpleicons.org/openai/412991" },
+  { name: "OpenAI", category: "AI/ML", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/openai/openai-original.svg" },
   { name: "Hugging Face", category: "AI/ML", icon: "https://huggingface.co/front/assets/huggingface_logo-noborder.svg" },
-  { name: "LangChain", category: "AI/ML", icon: "https://cdn.simpleicons.org/langchain/1C3C3C" },
+  { name: "Keras", category: "AI/ML", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/keras/keras-original.svg" },
 
   // DevOps
   { name: "Jenkins", category: "DevOps", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg" },
