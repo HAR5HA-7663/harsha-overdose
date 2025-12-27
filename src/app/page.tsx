@@ -224,25 +224,33 @@ export default function Home() {
               transition={{ delay: 0.5, type: "spring", bounce: 0.5 }}
               className="absolute top-1/4 text-center px-4"
             >
-              <motion.p
+              <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 0.3, repeat: Infinity }}
-                className="text-wanted text-2xl sm:text-4xl md:text-6xl"
+                className="bg-black/80 px-6 sm:px-10 py-4 sm:py-6 rounded-lg border-4 border-[#8B0000]"
                 style={{
-                  textShadow: "0 0 30px #FF4500, 0 0 60px #8B0000, 0 0 90px #FFD700",
+                  boxShadow: "0 0 40px rgba(139, 0, 0, 0.8), 0 0 80px rgba(255, 69, 0, 0.5)",
                 }}
               >
-                {randomQuote}
-              </motion.p>
-              <motion.p
+                <p
+                  className="font-display text-2xl sm:text-4xl md:text-5xl text-white tracking-wider"
+                  style={{
+                    textShadow: "0 0 20px #FF4500, 2px 2px 0 #8B0000",
+                  }}
+                >
+                  {randomQuote}
+                </p>
+              </motion.div>
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.5 }}
-                className="text-[#FFD700] font-display text-base sm:text-xl mt-4"
-                style={{ textShadow: "0 0 10px #FFD700" }}
+                className="mt-4 bg-[#8B0000]/90 px-4 py-2 rounded inline-block"
               >
-                💀 THE CODE SLINGER STRIKES BACK 💀
-              </motion.p>
+                <p className="text-[#FFD700] font-display text-base sm:text-xl">
+                  💀 THE CODE SLINGER STRIKES BACK 💀
+                </p>
+              </motion.div>
             </motion.div>
 
             {/* Bullet holes appearing across screen */}
