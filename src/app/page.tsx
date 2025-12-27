@@ -260,13 +260,38 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1 + i * 0.1 }}
-                className="absolute text-xl sm:text-3xl"
+                className="absolute"
                 style={{
                   left: `${5 + Math.random() * 90}%`,
                   top: `${5 + Math.random() * 90}%`,
+                  width: `${20 + Math.random() * 15}px`,
+                  height: `${20 + Math.random() * 15}px`,
                 }}
               >
-                🕳️
+                {/* Bullet hole with cracks */}
+                <div
+                  className="relative w-full h-full"
+                  style={{
+                    background: `radial-gradient(circle at center, #000 0%, #1a1a1a 40%, #333 60%, transparent 70%)`,
+                    borderRadius: "50%",
+                    boxShadow: "inset 0 0 3px 2px rgba(0,0,0,0.8), 0 0 2px 1px rgba(50,50,50,0.5)",
+                  }}
+                >
+                  {/* Crack lines radiating out */}
+                  {[...Array(6)].map((_, j) => (
+                    <div
+                      key={j}
+                      className="absolute top-1/2 left-1/2"
+                      style={{
+                        width: `${15 + Math.random() * 20}px`,
+                        height: "2px",
+                        background: "linear-gradient(90deg, #333 0%, #555 30%, transparent 100%)",
+                        transformOrigin: "left center",
+                        transform: `rotate(${j * 60 + Math.random() * 20}deg)`,
+                      }}
+                    />
+                  ))}
+                </div>
               </motion.div>
             ))}
           </motion.div>
