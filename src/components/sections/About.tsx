@@ -1,9 +1,49 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 export default function About() {
+  const [shotAttempts, setShotAttempts] = useState(0);
+  const [showRetaliation, setShowRetaliation] = useState(false);
+  const [muzzleFlashes, setMuzzleFlashes] = useState<{ id: number; x: number; y: number }[]>([]);
+
+  const handlePhotoClick = (e: React.MouseEvent) => {
+    const newAttempts = shotAttempts + 1;
+    setShotAttempts(newAttempts);
+
+    // Add muzzle flash at click position
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const flashId = Date.now();
+    setMuzzleFlashes(prev => [...prev, { id: flashId, x, y }]);
+    setTimeout(() => {
+      setMuzzleFlashes(prev => prev.filter(f => f.id !== flashId));
+    }, 300);
+
+    // After 3 shots, trigger retaliation
+    if (newAttempts >= 3 && !showRetaliation) {
+      setShowRetaliation(true);
+      setTimeout(() => {
+        setShowRetaliation(false);
+        setShotAttempts(0);
+      }, 4000);
+    }
+  };
+
+  const retaliationQuotes = [
+    "YOU CAN'T KILL THE CODE SLINGER!",
+    "NICE TRY, AMIGO!",
+    "I'VE SURVIVED WORSE BUGS!",
+    "THAT TICKLES!",
+    "MY TURN NOW!",
+  ];
+
+  const randomQuote = retaliationQuotes[Math.floor(Math.random() * retaliationQuotes.length)];
+
   return (
     <section id="about" className="min-h-screen py-20 px-4 relative overflow-hidden">
       {/* Desert Background Gradient */}
@@ -17,6 +57,117 @@ export default function About() {
           `,
         }}
       />
+
+      {/* Retaliation Overlay */}
+      <AnimatePresence>
+        {showRetaliation && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center"
+          >
+            {/* Screen shake effect via background flash */}
+            <motion.div
+              animate={{
+                backgroundColor: ["rgba(139,0,0,0)", "rgba(139,0,0,0.3)", "rgba(139,0,0,0)"],
+              }}
+              transition={{ duration: 0.1, repeat: 5 }}
+              className="absolute inset-0"
+            />
+
+            {/* Muzzle flashes shooting back from all directions */}
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{
+                  opacity: 0,
+                  scale: 0,
+                  x: Math.cos((i / 8) * Math.PI * 2) * 400,
+                  y: Math.sin((i / 8) * Math.PI * 2) * 400,
+                }}
+                animate={{
+                  opacity: [0, 1, 1, 0],
+                  scale: [0.5, 1.5, 1, 0],
+                  x: Math.cos((i / 8) * Math.PI * 2) * 100,
+                  y: Math.sin((i / 8) * Math.PI * 2) * 100,
+                }}
+                transition={{
+                  duration: 0.5,
+                  delay: i * 0.1,
+                  repeat: 3,
+                  repeatDelay: 0.2
+                }}
+                className="absolute text-6xl"
+                style={{
+                  filter: "drop-shadow(0 0 20px #FF4500)",
+                }}
+              >
+                🔥
+              </motion.div>
+            ))}
+
+            {/* Gun emoji shooting */}
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{
+                scale: [0, 1.5, 1.2],
+                rotate: [0, 360, 720],
+              }}
+              transition={{ duration: 0.8 }}
+              className="absolute text-8xl"
+              style={{
+                filter: "drop-shadow(0 0 30px #FFD700)",
+              }}
+            >
+              🔫
+            </motion.div>
+
+            {/* Quote */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5, y: 50 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.5, type: "spring", bounce: 0.5 }}
+              className="absolute top-1/3 text-center px-4"
+            >
+              <p
+                className="text-wanted text-3xl sm:text-5xl md:text-6xl"
+                style={{
+                  textShadow: "0 0 30px #FF4500, 0 0 60px #8B0000",
+                  animation: "pulse 0.5s infinite",
+                }}
+              >
+                {randomQuote}
+              </p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5 }}
+                className="text-[#FFD700] font-display text-lg mt-4"
+              >
+                💀 THE CODE SLINGER STRIKES BACK 💀
+              </motion.p>
+            </motion.div>
+
+            {/* Bullet holes appearing on screen */}
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={`bullet-${i}`}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.8 + i * 0.1 }}
+                className="absolute text-2xl"
+                style={{
+                  left: `${10 + Math.random() * 80}%`,
+                  top: `${10 + Math.random() * 80}%`,
+                }}
+              >
+                🕳️
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Section Header */}
       <motion.div
@@ -48,18 +199,57 @@ export default function About() {
 
           {/* Profile Header */}
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
-            {/* Photo */}
-            <div className="w-40 h-40 bg-[#8B4513] p-2 shadow-lg flex-shrink-0 overflow-hidden" style={{ boxShadow: "inset 0 0 20px rgba(0,0,0,0.5)" }}>
+            {/* Photo - Now Clickable Easter Egg */}
+            <motion.div
+              onClick={handlePhotoClick}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-40 h-40 bg-[#8B4513] p-2 shadow-lg flex-shrink-0 overflow-hidden cursor-crosshair relative"
+              style={{ boxShadow: "inset 0 0 20px rgba(0,0,0,0.5)" }}
+            >
               <div className="w-full h-full relative">
                 <Image
                   src="/images/cowboy_headshot.jpg"
                   alt="Harsha Yellela"
                   fill
                   className="object-cover scale-110"
-                  style={{ filter: "sepia(20%)" }}
+                  style={{ filter: showRetaliation ? "brightness(1.5) contrast(1.2)" : "sepia(20%)" }}
                 />
+
+                {/* Muzzle flashes on click */}
+                <AnimatePresence>
+                  {muzzleFlashes.map((flash) => (
+                    <motion.div
+                      key={flash.id}
+                      initial={{ opacity: 1, scale: 0 }}
+                      animate={{ opacity: 0, scale: 2 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute pointer-events-none"
+                      style={{
+                        left: flash.x - 15,
+                        top: flash.y - 15,
+                        filter: "drop-shadow(0 0 10px #FF4500)"
+                      }}
+                    >
+                      <span className="text-3xl">💥</span>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+
+                {/* Shot counter hint */}
+                {shotAttempts > 0 && shotAttempts < 3 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap"
+                  >
+                    <span className="text-[#FF4500] font-display text-xs">
+                      {3 - shotAttempts} more...
+                    </span>
+                  </motion.div>
+                )}
               </div>
-            </div>
+            </motion.div>
 
             {/* Basic Info */}
             <div className="flex-1 text-center md:text-left">
