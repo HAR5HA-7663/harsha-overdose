@@ -30,6 +30,10 @@ export default function Home() {
   const [lastClickTime, setLastClickTime] = useState(0);
   const [showHero, setShowHero] = useState(true);
 
+  // Easter egg state
+  const [photoShots, setPhotoShots] = useState(0);
+  const [showRetaliation, setShowRetaliation] = useState(false);
+
   const { isMuted, toggle: toggleMute } = useSoundToggle();
   const gunshot = useGunshot();
   const comboSound = useComboSound();
@@ -94,6 +98,26 @@ export default function Home() {
     }
   }, [bulletHoles.length, comboCount, showHero, gunshot, comboSound]);
 
+  // Handle photo click for easter egg
+  const handlePhotoClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation(); // Don't trigger regular bullet hole
+
+    const newShots = photoShots + 1;
+    setPhotoShots(newShots);
+
+    // Play sound
+    gunshot.play();
+
+    // Trigger retaliation after 3 shots
+    if (newShots >= 3 && !showRetaliation) {
+      setShowRetaliation(true);
+      setTimeout(() => {
+        setShowRetaliation(false);
+        setPhotoShots(0);
+      }, 4000);
+    }
+  }, [photoShots, showRetaliation, gunshot]);
+
   // Track scroll position for hero section
   useEffect(() => {
     const handleScroll = () => {
@@ -102,6 +126,16 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const retaliationQuotes = [
+    "YOU CAN'T KILL THE CODE SLINGER!",
+    "NICE TRY, AMIGO!",
+    "I'VE SURVIVED WORSE BUGS!",
+    "THAT TICKLES, PARTNER!",
+    "MY TURN NOW!",
+  ];
+
+  const randomQuote = retaliationQuotes[Math.floor(Math.random() * retaliationQuotes.length)];
 
   return (
     <div className="relative">
@@ -117,6 +151,119 @@ export default function Home() {
           `,
         }}
       />
+
+      {/* Easter Egg Retaliation Overlay */}
+      <AnimatePresence>
+        {showRetaliation && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[10000] pointer-events-none flex items-center justify-center"
+          >
+            {/* Screen flash effect */}
+            <motion.div
+              animate={{
+                backgroundColor: ["rgba(139,0,0,0)", "rgba(139,0,0,0.4)", "rgba(139,0,0,0)"],
+              }}
+              transition={{ duration: 0.15, repeat: 6 }}
+              className="absolute inset-0"
+            />
+
+            {/* Fire/explosions shooting from center */}
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{
+                  opacity: 0,
+                  scale: 0,
+                  x: 0,
+                  y: 0,
+                }}
+                animate={{
+                  opacity: [0, 1, 1, 0],
+                  scale: [0.5, 2, 1.5, 0],
+                  x: Math.cos((i / 12) * Math.PI * 2) * 300,
+                  y: Math.sin((i / 12) * Math.PI * 2) * 300,
+                }}
+                transition={{
+                  duration: 0.8,
+                  delay: i * 0.08,
+                  repeat: 2,
+                  repeatDelay: 0.3
+                }}
+                className="absolute text-5xl sm:text-7xl"
+                style={{
+                  filter: "drop-shadow(0 0 20px #FF4500)",
+                }}
+              >
+                {i % 3 === 0 ? "💥" : i % 3 === 1 ? "🔥" : "⚡"}
+              </motion.div>
+            ))}
+
+            {/* Skull in center */}
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{
+                scale: [0, 2, 1.5],
+                rotate: [0, 360, 720],
+              }}
+              transition={{ duration: 1, type: "spring" }}
+              className="absolute text-8xl sm:text-9xl"
+              style={{
+                filter: "drop-shadow(0 0 40px #FFD700) drop-shadow(0 0 80px #FF4500)",
+              }}
+            >
+              💀
+            </motion.div>
+
+            {/* Quote */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5, y: 100 }}
+              animate={{ opacity: 1, scale: 1, y: -50 }}
+              transition={{ delay: 0.5, type: "spring", bounce: 0.5 }}
+              className="absolute top-1/4 text-center px-4"
+            >
+              <motion.p
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 0.3, repeat: Infinity }}
+                className="text-wanted text-2xl sm:text-4xl md:text-6xl"
+                style={{
+                  textShadow: "0 0 30px #FF4500, 0 0 60px #8B0000, 0 0 90px #FFD700",
+                }}
+              >
+                {randomQuote}
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5 }}
+                className="text-[#FFD700] font-display text-base sm:text-xl mt-4"
+                style={{ textShadow: "0 0 10px #FFD700" }}
+              >
+                💀 THE CODE SLINGER STRIKES BACK 💀
+              </motion.p>
+            </motion.div>
+
+            {/* Bullet holes appearing across screen */}
+            {[...Array(15)].map((_, i) => (
+              <motion.div
+                key={`hole-${i}`}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1 + i * 0.1 }}
+                className="absolute text-xl sm:text-3xl"
+                style={{
+                  left: `${5 + Math.random() * 90}%`,
+                  top: `${5 + Math.random() * 90}%`,
+                }}
+              >
+                🕳️
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Bullet Holes (only in hero) */}
       <AnimatePresence>
@@ -273,14 +420,19 @@ export default function Home() {
                 DEAD OR ALIVE
               </motion.p>
 
-              {/* Photo Frame */}
+              {/* Photo Frame - EASTER EGG TARGET */}
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.6 }}
-                className="relative mx-auto w-48 h-48 md:w-64 md:h-64 mb-6 bg-[#8B4513] p-2 shadow-lg"
+                onClick={handlePhotoClick}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="relative mx-auto w-48 h-48 md:w-64 md:h-64 mb-6 bg-[#8B4513] p-2 shadow-lg cursor-crosshair"
                 style={{
-                  boxShadow: "inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3)",
+                  boxShadow: showRetaliation
+                    ? "0 0 30px #FF4500, inset 0 0 20px rgba(0,0,0,0.5)"
+                    : "inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3)",
                 }}
               >
                 <div className="w-full h-full bg-[#2A2A2A] relative overflow-hidden">
@@ -289,10 +441,27 @@ export default function Home() {
                     alt="Harsha Yellela - The Code Slinger"
                     fill
                     className="object-cover scale-110"
-                    style={{ filter: "sepia(30%) contrast(1.1)" }}
+                    style={{
+                      filter: showRetaliation
+                        ? "sepia(10%) brightness(1.3) contrast(1.1)"
+                        : "sepia(30%) contrast(1.1)"
+                    }}
                     priority
                   />
                   <div className="absolute inset-0 bg-[#704214] mix-blend-overlay opacity-20" />
+
+                  {/* Shot indicator on photo */}
+                  {photoShots > 0 && photoShots < 3 && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-[#8B0000]/90 px-2 py-1 rounded"
+                    >
+                      <span className="text-[#FFD700] font-display text-xs">
+                        {3 - photoShots} more...
+                      </span>
+                    </motion.div>
+                  )}
                 </div>
               </motion.div>
 
