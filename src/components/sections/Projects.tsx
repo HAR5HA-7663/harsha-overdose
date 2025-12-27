@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { projects } from "@/data/projects";
+import Link from "next/link";
+import { featuredProjects, allProjects } from "@/data/projects";
 
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
@@ -36,9 +37,9 @@ export default function Projects() {
         </div>
       </motion.div>
 
-      {/* Projects Grid */}
+      {/* Featured Projects Grid */}
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 relative z-10">
-        {projects.map((project, index) => (
+        {featuredProjects.map((project, index) => (
           <motion.div
             key={project.id}
             initial={{ opacity: 0, y: 50, rotateY: -15 }}
@@ -96,7 +97,7 @@ export default function Projects() {
             className="max-w-4xl mx-auto mt-8 relative z-10"
           >
             {(() => {
-              const project = projects.find(p => p.id === selectedProject);
+              const project = featuredProjects.find(p => p.id === selectedProject);
               if (!project) return null;
 
               return (
@@ -165,7 +166,7 @@ export default function Projects() {
                     onClick={() => setSelectedProject(null)}
                     className="absolute top-4 right-4 w-8 h-8 bg-[#8B0000] text-[#FFD700] rounded-full font-bold hover:bg-[#FF4500] transition-colors"
                   >
-                    ×
+                    x
                   </button>
                 </motion.div>
               );
@@ -173,6 +174,37 @@ export default function Projects() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* View All Projects Button */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="text-center mt-12 relative z-10"
+      >
+        <Link href="/projects">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-8 py-4 bg-gradient-to-b from-[#8B0000] to-[#5C0000] text-[#FFD700] font-display text-xl tracking-widest border-2 border-[#FFD700] relative overflow-hidden group"
+            style={{
+              textShadow: "0 0 10px rgba(255, 215, 0, 0.5)",
+              boxShadow: "0 0 20px rgba(139, 0, 0, 0.5), inset 0 0 10px rgba(0,0,0,0.3)",
+            }}
+          >
+            {/* Shine effect */}
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+            <span className="relative flex items-center gap-3">
+              <span>🎯</span>
+              <span>VIEW ALL {allProjects.length} LOCO MOVES</span>
+              <span>🎯</span>
+            </span>
+          </motion.button>
+        </Link>
+        <p className="text-[#8B4513] font-display text-sm mt-3">
+          UNLOCK THE COMPLETE ARSENAL
+        </p>
+      </motion.div>
     </section>
   );
 }

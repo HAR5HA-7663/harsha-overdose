@@ -37,11 +37,13 @@ src/
 │   ├── layout.tsx          # Root layout with fonts, metadata
 │   ├── page.tsx            # Landing page (Wanted poster)
 │   ├── globals.css         # Global styles, CSS variables
+│   ├── projects/
+│   │   └── page.tsx        # All 27 projects page with category filters
 │   └── sections/           # Page sections
 │       ├── Hero.tsx        # Wanted poster landing
 │       ├── Map.tsx         # Los Toros city map navigation
-│       ├── Skills.tsx      # Combo meter skills display
-│       ├── Projects.tsx    # Loco Moves project cards
+│       ├── Skills.tsx      # Icon grid skills display (51 skills)
+│       ├── Projects.tsx    # Loco Moves featured cards + View All button
 │       ├── Experience.tsx  # Rewind timeline
 │       └── Contact.tsx     # Day of the Dead contact
 ├── components/
@@ -127,8 +129,8 @@ src/
 
 ### Phase 3: Main Sections
 - [x] About section (The Outlaw - classified dossier)
-- [x] Combo meter skills section (Arsenal - 24 skills with filters)
-- [x] Loco Moves project cards (8 projects with expand)
+- [x] Skills section (Arsenal - 51 skills with devicon icons and category filters)
+- [x] Loco Moves project cards (8 featured + 27 total on /projects page)
 - [x] Rewind timeline for experience (VHS effect navigation)
 - [x] Contact section with Day of Dead theme (Día de Contacto)
 
@@ -176,10 +178,10 @@ npm run lint
 
 | Date | Task | Details |
 |------|------|---------|
-| 2025-12-25 | Ready for deployment | Full site complete at https://github.com/HAR5HA-7663/harsha-overdose |
 | 2025-12-25 | Cowboy photo & fixes | Added cowboy_headshot.jpg, fixed timeline date order, updated status to "Recent M.S. Graduate" |
 | 2025-12-27 | Resume link added | Added resume PDF to public/, added RESUME button in navbar (orange accent), added resume to Contact section |
-| 2025-12-27 | Skills redesign | Replaced combo meter skills with clean icon grid using devicon/simpleicons CDN, 34 skills with real logos |
+| 2025-12-27 | Skills redesign | Replaced combo meter skills with clean icon grid using devicon CDN, removed Express/Azure/Ansible |
+| 2025-12-27 | All projects page | Added 27 projects from projects.md, created /projects page with category filters, "View All Loco Moves" button on main page |
 
 ---
 
