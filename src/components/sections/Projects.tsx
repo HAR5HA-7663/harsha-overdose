@@ -61,7 +61,7 @@ export default function Projects() {
       </motion.div>
 
       {/* Projects Grid with Inline Expansion */}
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 space-y-3 sm:space-y-6">
         {rows.map((row, rowIndex) => (
           <div key={rowIndex}>
             {/* Row of project cards */}
