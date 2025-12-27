@@ -217,6 +217,15 @@ export default function Home() {
                   {item}
                 </a>
               ))}
+              <a
+                href="/harsha_yellela_resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs sm:text-sm font-display text-[#FF4500] hover:text-white transition-colors tracking-wider border border-[#FF4500] px-2 py-1 rounded"
+                onClick={(e) => e.stopPropagation()}
+              >
+                RESUME
+              </a>
             </div>
           </motion.nav>
         )}

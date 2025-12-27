@@ -146,9 +146,11 @@ src/
 - **Name:** Harsha Vardhan Yellela
 - **Title:** "The Code Slinger"
 - **Email:** harsha.yellela@gmail.com
+- **Portfolio:** https://har5ha.in
 - **GitHub:** https://github.com/HAR5HA-7663
 - **LinkedIn:** https://www.linkedin.com/in/har5ha-7663
 - **Location:** United States
+- **Resume:** /harsha_yellela_resume.pdf (in public folder)
 
 ---
 
@@ -174,10 +176,10 @@ npm run lint
 
 | Date | Task | Details |
 |------|------|---------|
-| 2025-12-25 | Sound effects added | Web Audio API gunshots and combo sounds with mute toggle |
 | 2025-12-25 | Browser tested | All features working - bullet holes, combos, filters, expand cards, rewind, contact |
 | 2025-12-25 | Ready for deployment | Full site complete at https://github.com/HAR5HA-7663/harsha-overdose |
 | 2025-12-25 | Cowboy photo & fixes | Added cowboy_headshot.jpg, fixed timeline date order, updated status to "Recent M.S. Graduate" |
+| 2025-12-27 | Resume link added | Added resume PDF to public/, added RESUME button in navbar (orange accent), added resume to Contact section |
 
 ---
 

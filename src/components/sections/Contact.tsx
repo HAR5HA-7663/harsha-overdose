@@ -35,6 +35,13 @@ export default function Contact() {
       icon: "🐙",
     },
     {
+      type: "resume",
+      label: "RESUME",
+      value: "View / Download",
+      href: "/harsha_yellela_resume.pdf",
+      icon: "📄",
+    },
+    {
       type: "location",
       label: "LOCATION",
       value: "United States",
