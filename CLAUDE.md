@@ -176,10 +176,10 @@ npm run lint
 
 | Date | Task | Details |
 |------|------|---------|
-| 2025-12-25 | Browser tested | All features working - bullet holes, combos, filters, expand cards, rewind, contact |
 | 2025-12-25 | Ready for deployment | Full site complete at https://github.com/HAR5HA-7663/harsha-overdose |
 | 2025-12-25 | Cowboy photo & fixes | Added cowboy_headshot.jpg, fixed timeline date order, updated status to "Recent M.S. Graduate" |
 | 2025-12-27 | Resume link added | Added resume PDF to public/, added RESUME button in navbar (orange accent), added resume to Contact section |
+| 2025-12-27 | Skills redesign | Replaced combo meter skills with clean icon grid using devicon/simpleicons CDN, 34 skills with real logos |
 
 ---
 
