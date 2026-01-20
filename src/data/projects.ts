@@ -16,15 +16,28 @@ export interface Project {
 export const projects: Project[] = [
   // ========== FEATURED PROJECTS (shown on main page) ==========
   {
+    id: 28,
+    name: "BLINDSPOT",
+    subtitle: "Cognitive Bias Detector",
+    description: "Chrome extension that catches cognitive biases in real-time BEFORE you make bad decisions. Integrates Claude API for AI-powered analysis. Detects Sunk Cost Fallacy, Confirmation Bias, Planning Fallacy, Loss Aversion, and more with reframe suggestions.",
+    tech: ["Chrome Extension", "Claude API", "JavaScript", "Manifest V3", "CSS3"],
+    github: "https://github.com/HAR5HA-7663/blindspot",
+    locoMove: "MIND READER",
+    damage: "Bias Detected & Reframed",
+    icon: "🧠",
+    category: "AI Agents/RAG",
+    featured: true,
+  },
+  {
     id: 1,
     name: "RESUME OPTIMIZER",
     subtitle: "QLoRA Fine-Tuning",
     description: "Fine-tuned Qwen3-4B using QLoRA with 4-bit NF4 quantization for resume enhancement. Achieved 9.5/10 quality scores with 18-22GB GPU memory. Processed 1800+ resumes and built REST API with FastAPI.",
     tech: ["PyTorch", "Transformers", "QLoRA", "PEFT", "Qwen3", "FastAPI"],
     github: "https://github.com/HAR5HA-7663/Resume-Optimzer",
-    locoMove: "BRAIN BLAST",
+    locoMove: "FINE-TUNE FURY",
     damage: "9.5/10 Quality Score",
-    icon: "🧠",
+    icon: "🔥",
     category: "ML/AI",
     featured: true,
   },
@@ -104,7 +117,6 @@ export const projects: Project[] = [
     damage: "Spatio-Temporal ML",
     icon: "🚗",
     category: "ML/AI",
-    featured: true,
   },
   {
     id: 8,
