@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { experiences } from "@/data/experience";
+import { useMode } from "@/contexts/ModeContext";
 
 export default function Experience() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -18,6 +19,7 @@ export default function Experience() {
   };
 
   const currentExp = experiences[currentIndex];
+  const { isPro } = useMode();
 
   return (
     <section id="experience" className="min-h-screen py-20 px-4 relative overflow-hidden">
@@ -47,10 +49,16 @@ export default function Experience() {
         viewport={{ once: true }}
         className="text-center mb-12"
       >
-        <h2 className="text-wanted text-4xl md:text-5xl mb-4">REWIND</h2>
-        <p className="text-[#D4A574] font-display text-lg tracking-wider">
-          TRAVEL THROUGH TIME
-        </p>
+        <h2 className="text-wanted text-4xl md:text-5xl mb-2">REWIND</h2>
+        {isPro ? (
+          <p className="text-[#9CA3AF] font-display text-base tracking-wider">
+            Experience &nbsp;·&nbsp; <span className="text-[#D4A574]">TRAVEL THROUGH TIME</span>
+          </p>
+        ) : (
+          <p className="text-[#D4A574] font-display text-lg tracking-wider">
+            TRAVEL THROUGH TIME
+          </p>
+        )}
       </motion.div>
 
       {/* Rewind Slider */}

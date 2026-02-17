@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useMode } from "@/contexts/ModeContext";
 
 export default function About() {
+  const { isPro } = useMode();
   return (
     <section id="about" className="min-h-screen py-20 px-4 relative overflow-hidden">
       {/* Desert Background Gradient */}
@@ -25,10 +27,16 @@ export default function About() {
         viewport={{ once: true }}
         className="text-center mb-16 relative z-10"
       >
-        <h2 className="text-wanted text-4xl md:text-5xl mb-4">THE OUTLAW</h2>
-        <p className="text-[#D4A574] font-display text-lg tracking-wider">
-          BACKGROUND CHECK
-        </p>
+        <h2 className="text-wanted text-4xl md:text-5xl mb-2">THE OUTLAW</h2>
+        {isPro ? (
+          <p className="text-[#9CA3AF] font-display text-base tracking-wider">
+            About &nbsp;·&nbsp; <span className="text-[#D4A574]">BACKGROUND CHECK</span>
+          </p>
+        ) : (
+          <p className="text-[#D4A574] font-display text-lg tracking-wider">
+            BACKGROUND CHECK
+          </p>
+        )}
       </motion.div>
 
       {/* Main Content - Dossier Style */}

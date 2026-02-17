@@ -475,30 +475,34 @@ export default function Home() {
                   boxShadow: "0 0 40px rgba(0,0,0,0.6)",
                 }}
               >
-                {/* Name */}
-                <h1
-                  className="font-display text-3xl md:text-4xl text-white mb-1"
-                  style={{ letterSpacing: "0.04em" }}
-                >
+                {/* Name — small, de-emphasized */}
+                <p className="text-[#6B7280] text-sm mb-3 tracking-wider">
                   Harsha Yellela
+                </p>
+
+                {/* 1. Role target — first and largest */}
+                <h1
+                  className="font-display text-3xl md:text-4xl text-white mb-5"
+                  style={{ letterSpacing: "0.03em", lineHeight: 1.2 }}
+                >
+                  Backend, Cloud &amp; AI Engineer
                 </h1>
 
-                {/* Headline */}
-                <p className="text-[#D4A855] font-display text-xl md:text-2xl mb-1">
-                  Backend, Cloud &amp; AI Engineer
-                </p>
+                {/* 2. Three quantified outcomes — immediately below role */}
+                <div className="space-y-2 mb-6">
+                  {[
+                    "94 AWS Lambda functions + 10 APIs shipped for enterprise workflows",
+                    "70% reduction in manual process time using hybrid AI pipelines",
+                    "Systems supporting teams at Ferrari, Boeing, and Triumph",
+                  ].map((point) => (
+                    <div key={point} className="flex gap-2.5 items-start">
+                      <span className="text-[#D4A855] flex-shrink-0 text-base leading-snug">◆</span>
+                      <p className="text-[#C8C8C8] text-sm leading-snug">{point}</p>
+                    </div>
+                  ))}
+                </div>
 
-                {/* Subheadline */}
-                <p className="text-[#9CA3AF] text-sm md:text-base mb-3">
-                  M.S. Computer Science (Dec 2025) &nbsp;·&nbsp; 5+ years building production APIs, automation, and cloud systems
-                </p>
-
-                {/* Location line */}
-                <p className="text-[#6B7280] text-sm mb-6">
-                  United States &nbsp;·&nbsp; Open to relocation &nbsp;·&nbsp; Actively seeking full-time roles
-                </p>
-
-                {/* CTA Buttons */}
+                {/* 3. CTA Buttons — right after outcomes */}
                 <div className="flex flex-wrap gap-3 mb-7">
                   <a
                     href="https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf"
@@ -527,32 +531,22 @@ export default function Home() {
                   </a>
                 </div>
 
-                {/* Proof Strip */}
-                <div
-                  className="rounded-md p-4 mb-6 space-y-2"
-                  style={{ background: "rgba(212,168,85,0.06)", border: "1px solid rgba(212,168,85,0.15)" }}
-                >
-                  {[
-                    "Built and deployed 94 AWS Lambda functions + 10 APIs for enterprise workflows",
-                    "Reduced manual process time by 70% using hybrid AI pipelines",
-                    "Delivered systems used by teams supporting Ferrari, Boeing, and Triumph",
-                  ].map((point) => (
-                    <p key={point} className="text-[#C8C8C8] text-sm flex gap-2">
-                      <span className="text-[#D4A855] flex-shrink-0">◆</span>
-                      {point}
-                    </p>
-                  ))}
-                </div>
+                {/* Divider */}
+                <div className="h-px mb-5" style={{ background: "rgba(212,168,85,0.15)" }} />
+
+                {/* Availability / context — secondary, below CTAs */}
+                <p className="text-[#6B7280] text-xs mb-4">
+                  M.S. Computer Science (Dec 2025) &nbsp;·&nbsp; United States &nbsp;·&nbsp;
+                  Open to relocation &nbsp;·&nbsp; Actively seeking full-time roles
+                </p>
 
                 {/* Professional Summary */}
                 <p className="text-[#9CA3AF] text-sm leading-relaxed">
-                  Backend/Cloud engineer with 5+ years of experience building scalable services,
-                  automation platforms, and AI-enabled workflows. Recently completed an M.S. in
-                  Computer Science at Lawrence Technological University (Dec 2025), with research
-                  in multi-agent systems, RAG, and cloud deployment. Previously at{" "}
-                  <span className="text-[#D4A574]">Infor</span> developing enterprise solutions
-                  for global customers. Focused on backend engineering, cloud architecture, and
-                  production ML integration.
+                  Backend/Cloud engineer with 5+ years building scalable services, automation
+                  platforms, and AI-enabled workflows. Research in multi-agent systems, RAG, and
+                  cloud deployment at Lawrence Technological University. Previously at{" "}
+                  <span className="text-[#D4A574]">Infor</span> delivering enterprise solutions
+                  for global customers including Ferrari, Boeing, and Triumph.
                 </p>
               </div>
 
