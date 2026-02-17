@@ -435,7 +435,7 @@ export default function Home() {
                 </a>
               ))}
               <a
-                href="/harsha_yellela_resume.pdf"
+                href="https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs sm:text-sm font-display text-[#FF4500] hover:text-white transition-colors tracking-wider border border-[#FF4500] px-2 py-1 rounded"
@@ -536,7 +536,7 @@ export default function Home() {
                 {/* CTA Buttons */}
                 <div className="flex flex-wrap gap-3">
                   <a
-                    href="/harsha_yellela_resume.pdf"
+                    href="https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-5 py-2.5 font-display text-sm tracking-wider rounded transition-colors"

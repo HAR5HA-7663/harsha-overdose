@@ -38,7 +38,7 @@ export default function Contact() {
       type: "resume",
       label: "RESUME",
       value: "View / Download",
-      href: "/harsha_yellela_resume.pdf",
+      href: "https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf",
       icon: "📄",
     },
     {
