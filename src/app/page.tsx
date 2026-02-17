@@ -9,6 +9,7 @@ import Projects from "@/components/sections/Projects";
 import Experience from "@/components/sections/Experience";
 import Contact from "@/components/sections/Contact";
 import { useGunshot, useComboSound, useSoundToggle } from "@/hooks/useSound";
+import { useMode } from "@/contexts/ModeContext";
 
 interface BulletHole {
   id: number;
@@ -35,6 +36,7 @@ export default function Home() {
   const [showRetaliation, setShowRetaliation] = useState(false);
 
   const { isMuted, toggle: toggleMute } = useSoundToggle();
+  const { isPro, toggleMode } = useMode();
   const gunshot = useGunshot();
   const comboSound = useComboSound();
 
@@ -369,6 +371,41 @@ export default function Home() {
         {isMuted ? "🔇" : "🔊"}
       </motion.button>
 
+      {/* Mode Toggle */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        className="fixed top-4 left-4 z-[9999] flex rounded-full overflow-hidden"
+        style={{
+          background: "rgba(26, 26, 26, 0.8)",
+          border: "1px solid rgba(139, 69, 19, 0.5)",
+        }}
+      >
+        <button
+          onClick={() => isPro && toggleMode()}
+          className={`px-3 py-2 text-xs font-display tracking-wider transition-all duration-300 ${
+            !isPro
+              ? "bg-[#8B4513] text-[#FFD700]"
+              : "text-[#8B4513] hover:text-[#D4A574]"
+          }`}
+          title="Creative Mode"
+        >
+          🤠 CREATIVE
+        </button>
+        <button
+          onClick={() => !isPro && toggleMode()}
+          className={`px-3 py-2 text-xs font-display tracking-wider transition-all duration-300 ${
+            isPro
+              ? "bg-[#1A3A5C] text-white"
+              : "text-[#8B4513] hover:text-[#D4A574]"
+          }`}
+          title="Recruiter / Pro Mode"
+        >
+          👔 PRO
+        </button>
+      </motion.div>
+
       {/* Navigation - only show after scrolling past hero */}
       <AnimatePresence>
         {!showHero && (
@@ -414,12 +451,147 @@ export default function Home() {
       {/* Hero Section */}
       <section
         className="min-h-screen flex flex-col items-center justify-center p-4 relative"
-        onClick={handleClick}
+        onClick={!isPro ? handleClick : undefined}
       >
-        {/* Main Wanted Poster */}
-        <AnimatePresence>
-          {showContent && (
+        {/* PRO MODE: Professional hero panel */}
+        <AnimatePresence mode="wait">
+          {isPro && showContent && (
             <motion.div
+              key="pro-hero"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+              className="w-full max-w-2xl relative z-10"
+            >
+              <div
+                className="p-8 md:p-12 rounded-lg"
+                style={{
+                  background: "rgba(15, 20, 30, 0.95)",
+                  border: "1px solid rgba(212, 168, 85, 0.3)",
+                  boxShadow: "0 0 40px rgba(0,0,0,0.6)",
+                }}
+              >
+                {/* Name + Role */}
+                <div className="mb-6">
+                  <h1
+                    className="font-display text-3xl md:text-4xl text-white mb-2"
+                    style={{ letterSpacing: "0.05em" }}
+                  >
+                    Harsha Vardhan Yellela
+                  </h1>
+                  <p className="text-[#D4A855] font-display text-lg md:text-xl">
+                    Backend &amp; Cloud Engineer &nbsp;·&nbsp; M.S. CS (Dec 2025)
+                  </p>
+                </div>
+
+                {/* Value summary */}
+                <p className="text-[#C8C8C8] text-base leading-relaxed mb-8">
+                  5+ years building APIs, ML systems, and cloud infrastructure on
+                  AWS, Kubernetes, Python, and Go. From 94-Lambda serverless
+                  architectures to ML platforms serving 500 RPS.
+                </p>
+
+                {/* 3 Proof metrics */}
+                <div className="grid grid-cols-3 gap-3 mb-8">
+                  {[
+                    { metric: "94", label: "Lambda functions\nin production" },
+                    { metric: "500 RPS", label: "ML platform\n70% cost cut" },
+                    { metric: "27+", label: "Projects shipped\nacross 8 domains" },
+                  ].map((item) => (
+                    <div
+                      key={item.metric}
+                      className="text-center p-3 rounded"
+                      style={{
+                        background: "rgba(212, 168, 85, 0.08)",
+                        border: "1px solid rgba(212, 168, 85, 0.2)",
+                      }}
+                    >
+                      <p className="text-[#D4A855] font-display text-xl md:text-2xl font-bold">
+                        {item.metric}
+                      </p>
+                      <p className="text-[#888] text-xs mt-1 whitespace-pre-line leading-tight">
+                        {item.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Availability strip */}
+                <div
+                  className="flex flex-wrap gap-x-4 gap-y-1 mb-8 text-sm"
+                  style={{ color: "#9CA3AF" }}
+                >
+                  <span>
+                    <span className="text-[#D4A855]">Open to:</span> Backend · Platform · Cloud · AI/ML
+                  </span>
+                  <span>
+                    <span className="text-[#D4A855]">Location:</span> US · Open to relocation
+                  </span>
+                  <span>
+                    <span className="text-[#D4A855]">Available:</span> Immediately
+                  </span>
+                </div>
+
+                {/* CTA Buttons */}
+                <div className="flex flex-wrap gap-3">
+                  <a
+                    href="/harsha_yellela_resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-5 py-2.5 font-display text-sm tracking-wider rounded transition-colors"
+                    style={{
+                      background: "#D4A855",
+                      color: "#0F141E",
+                    }}
+                  >
+                    ↓ RESUME
+                  </a>
+                  <a
+                    href="https://github.com/HAR5HA-7663"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-5 py-2.5 font-display text-sm tracking-wider rounded border transition-colors hover:bg-white/10"
+                    style={{ borderColor: "rgba(212,168,85,0.4)", color: "#D4A855" }}
+                  >
+                    GitHub ↗
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/har5ha-7663"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-5 py-2.5 font-display text-sm tracking-wider rounded border transition-colors hover:bg-white/10"
+                    style={{ borderColor: "rgba(212,168,85,0.4)", color: "#D4A855" }}
+                  >
+                    LinkedIn ↗
+                  </a>
+                  <a
+                    href="mailto:harsha.yellela@gmail.com"
+                    className="px-5 py-2.5 font-display text-sm tracking-wider rounded border transition-colors hover:bg-white/10"
+                    style={{ borderColor: "rgba(212,168,85,0.4)", color: "#D4A855" }}
+                  >
+                    Email ↗
+                  </a>
+                </div>
+              </div>
+
+              {/* Scroll hint */}
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-center mt-6 text-[#D4A855] text-xl"
+              >
+                ▼
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* CREATIVE MODE: Main Wanted Poster */}
+        <AnimatePresence mode="wait">
+          {!isPro && showContent && (
+            <motion.div
+              key="creative-hero"
               initial={{ scale: 0.8, opacity: 0, rotateZ: -5 }}
               animate={{ scale: 1, opacity: 1, rotateZ: 0 }}
               transition={{ type: "spring", duration: 0.8 }}
@@ -561,9 +733,9 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* Enter Button */}
+        {/* Enter Button - Creative Mode only */}
         <AnimatePresence>
-          {showContent && (
+          {showContent && !isPro && (
             <motion.a
               href="#about"
               initial={{ y: 30, opacity: 0 }}
@@ -583,14 +755,16 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* Scroll Indicator */}
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="mt-6 text-[#FFD700] text-2xl z-10"
-        >
-          ▼
-        </motion.div>
+        {/* Scroll Indicator - Creative Mode only (Pro has it inline) */}
+        {!isPro && (
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="mt-6 text-[#FFD700] text-2xl z-10"
+          >
+            ▼
+          </motion.div>
+        )}
       </section>
 
       {/* About Section */}

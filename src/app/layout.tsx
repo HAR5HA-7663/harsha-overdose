@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Rye, Special_Elite, Permanent_Marker } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/components/Providers";
 
 const rye = Rye({
   weight: "400",
@@ -67,16 +68,18 @@ export default function RootLayout({
       <body
         className={`${rye.variable} ${specialElite.variable} ${permanentMarker.variable} antialiased bg-[#1A1A1A] text-[#F4E4BC] min-h-screen`}
       >
-        {/* Film Grain Overlay */}
-        <div className="film-grain" aria-hidden="true" />
+        <Providers>
+          {/* Film Grain Overlay */}
+          <div className="film-grain" aria-hidden="true" />
 
-        {/* Scanlines */}
-        <div className="scanlines" aria-hidden="true" />
+          {/* Scanlines */}
+          <div className="scanlines" aria-hidden="true" />
 
-        {/* Main Content */}
-        <main className="relative z-10">
-          {children}
-        </main>
+          {/* Main Content */}
+          <main className="relative z-10">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );
