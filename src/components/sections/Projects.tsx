@@ -6,8 +6,65 @@ import Link from "next/link";
 import { featuredProjects, allProjects } from "@/data/projects";
 import { useMode } from "@/contexts/ModeContext";
 
-// Plain-English problem + ownership statements for Pro Mode
-const PRO_META: Record<number, { problem: string; role: string }> = {
+// IDs of the 6 projects shown in Pro mode, in recruiter-recommended order
+const PRO_PROJECT_IDS = [4, 11, 2, 3, 5, 8];
+
+// Recruiter-copy for each Pro project
+interface ProMeta {
+  proName: string;
+  problem: string;
+  stack: string[];
+  outcome: string;
+  role: string;
+}
+
+const PRO_META: Record<number, ProMeta> = {
+  4: {
+    proName: "Enterprise Lambda Platform",
+    problem: "Serverless backend platform with AWS Lambda + API Gateway for enterprise workflows",
+    stack: ["AWS Lambda", "API Gateway", "Python", "DynamoDB", "Terraform"],
+    outcome: "94 Lambdas + 10 third-party APIs in production",
+    role: "Built and integrated Stripe, Twilio, DocuSign, QuickBooks, and EagleView APIs across 94 functions",
+  },
+  11: {
+    proName: "AI Workflow Automation",
+    problem: "Multi-agent workflows to automate complex manual processes (Graduate Research)",
+    stack: ["CrewAI", "LangChain", "AWS Fargate", "Amazon EKS", "FastAPI"],
+    outcome: "Reduced manual process time by 70%",
+    role: "Designed and evaluated no-code (n8n) and code-first (CrewAI + LangChain) multi-agent pipelines",
+  },
+  2: {
+    proName: "Toxicity Detection API",
+    problem: "Scalable real-time content moderation service for high-throughput chat streams",
+    stack: ["FastAPI", "Kubernetes", "HuggingFace", "Prometheus", "AWS EKS"],
+    outcome: "Sustained 500 RPS while reducing infrastructure cost by 70%",
+    role: "Designed K8s architecture with HPA, circuit breakers, and Prometheus/Grafana monitoring",
+  },
+  3: {
+    proName: "Feedback Sentiment Platform",
+    problem: "Multi-service feedback/sentiment pipeline with continuous model-driven retraining",
+    stack: ["AWS SageMaker", "ECS Fargate", "DynamoDB", "FastAPI", "Terraform"],
+    outcome: "8 production services with automated model retraining via SNS triggers",
+    role: "Architected end-to-end MLOps pipeline: training, deployment, feedback loop, and auto-redeploy",
+  },
+  5: {
+    proName: "FieldFuze Multi-Tenant Backend",
+    problem: "Backend services with tenant isolation and role-based access control for field management",
+    stack: ["Go", "Gin", "DynamoDB", "JWT", "RBAC", "Docker"],
+    outcome: "Secure multi-tenant access with full user lifecycle and real-time sync",
+    role: "Designed Go/Gin REST API with JWT auth, DynamoDB GSI/LSI data model, and RBAC middleware",
+  },
+  8: {
+    proName: "CRE Research Agent",
+    problem: "Semantic search and retrieval workflows for commercial real-estate research",
+    stack: ["LangChain", "Qdrant", "RAG", "FastAPI", "Llama", "PostgreSQL"],
+    outcome: "Improved research speed and retrieval relevance across domain queries",
+    role: "Built RAG pipeline with vector embeddings, reranking, and ~20 relevant results with inline citations",
+  },
+};
+
+// Fallback PRO_META for featured projects not in PRO_PROJECT_IDS
+const FEATURED_META: Record<number, { problem: string; role: string }> = {
   28: {
     problem: "Real-time cognitive bias detection in the browser before users make bad decisions",
     role: "Built Chrome extension + integrated Claude API for live analysis and reframe suggestions",
@@ -16,29 +73,9 @@ const PRO_META: Record<number, { problem: string; role: string }> = {
     problem: "Resume enhancement via a fine-tuned LLM with production-quality output",
     role: "Fine-tuned Qwen3-4B using QLoRA (4-bit NF4), processed 1,800+ resumes, shipped FastAPI service",
   },
-  2: {
-    problem: "Scalable ML content moderation platform with cost-efficient infra",
-    role: "Designed Kubernetes architecture with HPA, circuit breakers, and Prometheus/Grafana monitoring",
-  },
-  3: {
-    problem: "End-to-end MLOps pipeline with automated retraining on AWS",
-    role: "Architected 8 microservices on ECS Fargate with SageMaker training + SNS-triggered auto-deploy",
-  },
-  4: {
-    problem: "Enterprise serverless backend integrating payments, messaging, and field data",
-    role: "Built 94 Lambda functions and integrated Stripe, Twilio, DocuSign, QuickBooks, EagleView",
-  },
-  5: {
-    problem: "Multi-tenant RBAC API backend for field service management",
-    role: "Designed Go/Gin backend with JWT auth, DynamoDB GSI/LSI, and real-time sync",
-  },
   6: {
     problem: "Autonomous robot navigation and object grasping without human intervention",
     role: "Implemented YOLO + CLIP segmentation pipeline with ROS point cloud processing",
-  },
-  7: {
-    problem: "Traffic anomaly detection using spatio-temporal graph modeling",
-    role: "Built end-to-end GNN pipeline on PeMS-BAY dataset from SUMO simulation to detection",
   },
 };
 
@@ -65,6 +102,11 @@ export default function Projects() {
   for (let i = 0; i < featuredProjects.length; i += columns) {
     rows.push(featuredProjects.slice(i, i + columns));
   }
+
+  // Build the 6 pro projects in specified order from allProjects
+  const proProjects = PRO_PROJECT_IDS
+    .map(id => allProjects.find(p => p.id === id))
+    .filter(Boolean) as typeof allProjects;
 
   return (
     <section id="projects" className="min-h-screen py-20 px-4 relative overflow-hidden">
@@ -105,16 +147,16 @@ export default function Projects() {
 
       <AnimatePresence mode="wait">
         {isPro ? (
-          /* ── PRO MODE: Structured cards visible without clicking ── */
+          /* ── PRO MODE: 6 curated structured cards ── */
           <motion.div
             key="pro-projects"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"
+            className="max-w-5xl mx-auto relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5"
           >
-            {featuredProjects.map((project, index) => {
+            {proProjects.map((project, index) => {
               const meta = PRO_META[project.id];
               return (
                 <motion.div
@@ -122,8 +164,8 @@ export default function Projects() {
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: index * 0.06 }}
-                  className="rounded-lg p-5 sm:p-6 flex flex-col gap-3 group"
+                  transition={{ delay: index * 0.07 }}
+                  className="rounded-lg p-5 flex flex-col gap-3"
                   style={{
                     background: "rgba(15, 20, 30, 0.85)",
                     border: "1px solid rgba(139, 69, 19, 0.35)",
@@ -132,12 +174,12 @@ export default function Projects() {
                   onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(212,168,85,0.5)")}
                   onMouseLeave={e => (e.currentTarget.style.borderColor = "rgba(139, 69, 19, 0.35)")}
                 >
-                  {/* Name + icon row */}
+                  {/* Name + icon */}
                   <div className="flex items-start gap-3">
-                    <span className="text-3xl flex-shrink-0">{project.icon}</span>
+                    <span className="text-2xl flex-shrink-0">{project.icon}</span>
                     <div className="min-w-0">
-                      <h3 className="font-display text-[#FFD700] text-lg leading-tight">
-                        {project.name}
+                      <h3 className="font-display text-[#FFD700] text-base leading-tight">
+                        {meta.proName}
                       </h3>
                       <span
                         className="inline-block text-[10px] font-display tracking-wider px-2 py-0.5 rounded mt-1"
@@ -153,15 +195,11 @@ export default function Projects() {
                   </div>
 
                   {/* Problem */}
-                  {meta && (
-                    <p className="text-[#C8C8C8] text-sm leading-relaxed">
-                      {meta.problem}
-                    </p>
-                  )}
+                  <p className="text-[#C8C8C8] text-sm leading-relaxed">{meta.problem}</p>
 
                   {/* Stack */}
                   <div className="flex flex-wrap gap-1.5">
-                    {project.tech.slice(0, 5).map(t => (
+                    {meta.stack.map(t => (
                       <span
                         key={t}
                         className="text-[10px] font-display px-2 py-0.5 rounded"
@@ -174,28 +212,21 @@ export default function Projects() {
                         {t}
                       </span>
                     ))}
-                    {project.tech.length > 5 && (
-                      <span className="text-[10px] font-display px-2 py-0.5 text-[#8B7355]">
-                        +{project.tech.length - 5} more
-                      </span>
-                    )}
                   </div>
 
                   {/* Outcome */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-[#D4A855] text-xs">◆</span>
-                    <span className="text-[#D4A855] text-sm font-display">{project.damage}</span>
-                  </div>
+                  <p className="text-[#D4A855] text-sm font-display flex gap-2 items-start">
+                    <span className="flex-shrink-0">◆</span>
+                    {meta.outcome}
+                  </p>
 
                   {/* Role */}
-                  {meta && (
-                    <p className="text-[#888] text-xs leading-relaxed italic border-l-2 border-[#8B4513]/40 pl-3">
-                      {meta.role}
-                    </p>
-                  )}
+                  <p className="text-[#888] text-xs leading-relaxed italic border-l-2 border-[#8B4513]/40 pl-3">
+                    {meta.role}
+                  </p>
 
                   {/* Links */}
-                  <div className="flex gap-3 mt-1">
+                  <div className="flex gap-3 mt-auto pt-1">
                     {project.github && (
                       <a
                         href={project.github}
@@ -291,6 +322,7 @@ export default function Projects() {
                       {(() => {
                         const project = featuredProjects.find(p => p.id === selectedProject);
                         if (!project) return null;
+                        const meta = FEATURED_META[project.id];
                         return (
                           <motion.div
                             initial={{ y: -20 }}
@@ -314,6 +346,11 @@ export default function Projects() {
                             <p className="text-typewriter text-[#5C2E0A] mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                               {project.description}
                             </p>
+                            {meta && (
+                              <p className="text-[#7A4820] text-sm mb-4 italic border-l-2 border-[#8B4513]/50 pl-3">
+                                {meta.role}
+                              </p>
+                            )}
                             <div className="mb-4 sm:mb-6">
                               <p className="text-xs uppercase tracking-wide text-[#8B4513] mb-2">WEAPONS USED:</p>
                               <div className="flex flex-wrap gap-1 sm:gap-2">

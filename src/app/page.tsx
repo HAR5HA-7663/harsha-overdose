@@ -424,7 +424,10 @@ export default function Home() {
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
               }}
             >
-              {["ABOUT", "SKILLS", "PROJECTS", "EXPERIENCE", "CONTACT"].map((item) => (
+              {(isPro
+                ? ["About", "Skills", "Projects", "Experience", "Contact"]
+                : ["ABOUT", "SKILLS", "PROJECTS", "EXPERIENCE", "CONTACT"]
+              ).map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
@@ -465,114 +468,92 @@ export default function Home() {
               className="w-full max-w-2xl relative z-10"
             >
               <div
-                className="p-8 md:p-12 rounded-lg"
+                className="p-8 md:p-10 rounded-lg"
                 style={{
                   background: "rgba(15, 20, 30, 0.95)",
                   border: "1px solid rgba(212, 168, 85, 0.3)",
                   boxShadow: "0 0 40px rgba(0,0,0,0.6)",
                 }}
               >
-                {/* Name + Role */}
-                <div className="mb-6">
-                  <h1
-                    className="font-display text-3xl md:text-4xl text-white mb-2"
-                    style={{ letterSpacing: "0.05em" }}
-                  >
-                    Harsha Vardhan Yellela
-                  </h1>
-                  <p className="text-[#D4A855] font-display text-lg md:text-xl">
-                    Backend &amp; Cloud Engineer &nbsp;·&nbsp; M.S. CS (Dec 2025)
-                  </p>
-                </div>
+                {/* Name */}
+                <h1
+                  className="font-display text-3xl md:text-4xl text-white mb-1"
+                  style={{ letterSpacing: "0.04em" }}
+                >
+                  Harsha Yellela
+                </h1>
 
-                {/* Value summary */}
-                <p className="text-[#C8C8C8] text-base leading-relaxed mb-8">
-                  5+ years building APIs, ML systems, and cloud infrastructure on
-                  AWS, Kubernetes, Python, and Go. From 94-Lambda serverless
-                  architectures to ML platforms serving 500 RPS.
+                {/* Headline */}
+                <p className="text-[#D4A855] font-display text-xl md:text-2xl mb-1">
+                  Backend, Cloud &amp; AI Engineer
                 </p>
 
-                {/* 3 Proof metrics */}
-                <div className="grid grid-cols-3 gap-3 mb-8">
-                  {[
-                    { metric: "94", label: "Lambda functions\nin production" },
-                    { metric: "500 RPS", label: "ML platform\n70% cost cut" },
-                    { metric: "27+", label: "Projects shipped\nacross 8 domains" },
-                  ].map((item) => (
-                    <div
-                      key={item.metric}
-                      className="text-center p-3 rounded"
-                      style={{
-                        background: "rgba(212, 168, 85, 0.08)",
-                        border: "1px solid rgba(212, 168, 85, 0.2)",
-                      }}
-                    >
-                      <p className="text-[#D4A855] font-display text-xl md:text-2xl font-bold">
-                        {item.metric}
-                      </p>
-                      <p className="text-[#888] text-xs mt-1 whitespace-pre-line leading-tight">
-                        {item.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                {/* Subheadline */}
+                <p className="text-[#9CA3AF] text-sm md:text-base mb-3">
+                  M.S. Computer Science (Dec 2025) &nbsp;·&nbsp; 5+ years building production APIs, automation, and cloud systems
+                </p>
 
-                {/* Availability strip */}
-                <div
-                  className="flex flex-wrap gap-x-4 gap-y-1 mb-8 text-sm"
-                  style={{ color: "#9CA3AF" }}
-                >
-                  <span>
-                    <span className="text-[#D4A855]">Open to:</span> Backend · Platform · Cloud · AI/ML
-                  </span>
-                  <span>
-                    <span className="text-[#D4A855]">Location:</span> US · Open to relocation
-                  </span>
-                  <span>
-                    <span className="text-[#D4A855]">Available:</span> Immediately
-                  </span>
-                </div>
+                {/* Location line */}
+                <p className="text-[#6B7280] text-sm mb-6">
+                  United States &nbsp;·&nbsp; Open to relocation &nbsp;·&nbsp; Actively seeking full-time roles
+                </p>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-3 mb-7">
                   <a
                     href="https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-5 py-2.5 font-display text-sm tracking-wider rounded transition-colors"
-                    style={{
-                      background: "#D4A855",
-                      color: "#0F141E",
-                    }}
+                    className="px-5 py-2.5 font-display text-sm tracking-wider rounded transition-all hover:brightness-110"
+                    style={{ background: "#D4A855", color: "#0F141E" }}
                   >
-                    ↓ RESUME
-                  </a>
-                  <a
-                    href="https://github.com/HAR5HA-7663"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-5 py-2.5 font-display text-sm tracking-wider rounded border transition-colors hover:bg-white/10"
-                    style={{ borderColor: "rgba(212,168,85,0.4)", color: "#D4A855" }}
-                  >
-                    GitHub ↗
+                    ↓ Download Resume
                   </a>
                   <a
                     href="https://www.linkedin.com/in/har5ha-7663"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-5 py-2.5 font-display text-sm tracking-wider rounded border transition-colors hover:bg-white/10"
-                    style={{ borderColor: "rgba(212,168,85,0.4)", color: "#D4A855" }}
+                    style={{ borderColor: "rgba(212,168,85,0.5)", color: "#D4A855" }}
                   >
                     LinkedIn ↗
                   </a>
                   <a
                     href="mailto:harsha.yellela@gmail.com"
                     className="px-5 py-2.5 font-display text-sm tracking-wider rounded border transition-colors hover:bg-white/10"
-                    style={{ borderColor: "rgba(212,168,85,0.4)", color: "#D4A855" }}
+                    style={{ borderColor: "rgba(212,168,85,0.5)", color: "#D4A855" }}
                   >
                     Email ↗
                   </a>
                 </div>
+
+                {/* Proof Strip */}
+                <div
+                  className="rounded-md p-4 mb-6 space-y-2"
+                  style={{ background: "rgba(212,168,85,0.06)", border: "1px solid rgba(212,168,85,0.15)" }}
+                >
+                  {[
+                    "Built and deployed 94 AWS Lambda functions + 10 APIs for enterprise workflows",
+                    "Reduced manual process time by 70% using hybrid AI pipelines",
+                    "Delivered systems used by teams supporting Ferrari, Boeing, and Triumph",
+                  ].map((point) => (
+                    <p key={point} className="text-[#C8C8C8] text-sm flex gap-2">
+                      <span className="text-[#D4A855] flex-shrink-0">◆</span>
+                      {point}
+                    </p>
+                  ))}
+                </div>
+
+                {/* Professional Summary */}
+                <p className="text-[#9CA3AF] text-sm leading-relaxed">
+                  Backend/Cloud engineer with 5+ years of experience building scalable services,
+                  automation platforms, and AI-enabled workflows. Recently completed an M.S. in
+                  Computer Science at Lawrence Technological University (Dec 2025), with research
+                  in multi-agent systems, RAG, and cloud deployment. Previously at{" "}
+                  <span className="text-[#D4A574]">Infor</span> developing enterprise solutions
+                  for global customers. Focused on backend engineering, cloud architecture, and
+                  production ML integration.
+                </p>
               </div>
 
               {/* Scroll hint */}

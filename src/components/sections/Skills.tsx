@@ -6,11 +6,11 @@ import Image from "next/image";
 import { skills, categories } from "@/data/skills";
 import { useMode } from "@/contexts/ModeContext";
 
+// Recruiter-optimized core stack: role-critical depth signals
 const CORE_STACK = [
-  "Python", "Go", "TypeScript",
-  "AWS", "Kubernetes", "Docker", "Terraform",
-  "FastAPI", "PostgreSQL",
-  "PyTorch", "GitHub Actions", "Redis",
+  "Python", "Go",
+  "FastAPI", "AWS", "Docker", "Kubernetes",
+  "SQL", "GitHub Actions", "Terraform",
 ];
 
 export default function Skills() {

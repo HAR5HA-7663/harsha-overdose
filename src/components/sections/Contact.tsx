@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useMode } from "@/contexts/ModeContext";
 
 export default function Contact() {
   const [copied, setCopied] = useState<string | null>(null);
+  const { isPro } = useMode();
 
   const copyToClipboard = (text: string, type: string) => {
     navigator.clipboard.writeText(text);
@@ -77,11 +79,68 @@ export default function Contact() {
         viewport={{ once: true }}
         className="text-center mb-16 relative z-10"
       >
-        <h2 className="text-wanted text-4xl md:text-5xl mb-4">DÍA DE CONTACTO</h2>
-        <p className="text-[#D4A574] font-display text-lg tracking-wider">
-          SUMMON THE CODE SLINGER
-        </p>
+        <h2 className="text-wanted text-4xl md:text-5xl mb-2">DÍA DE CONTACTO</h2>
+        {isPro ? (
+          <p className="text-[#9CA3AF] font-display text-base tracking-wider">
+            Contact &nbsp;·&nbsp; <span className="text-[#D4A574]">SUMMON THE CODE SLINGER</span>
+          </p>
+        ) : (
+          <p className="text-[#D4A574] font-display text-lg tracking-wider">
+            SUMMON THE CODE SLINGER
+          </p>
+        )}
       </motion.div>
+
+      {/* PRO MODE: Let's Talk CTA block */}
+      {isPro && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-2xl mx-auto mb-10 relative z-10"
+        >
+          <div
+            className="rounded-lg p-7 text-center"
+            style={{
+              background: "rgba(15, 20, 30, 0.9)",
+              border: "1px solid rgba(212, 168, 85, 0.3)",
+            }}
+          >
+            <h3 className="font-display text-2xl text-white mb-3">Let&apos;s Talk</h3>
+            <p className="text-[#9CA3AF] text-sm leading-relaxed mb-6">
+              Open to Backend, Platform, Cloud, and AI Engineer roles.<br />
+              Available for full-time opportunities immediately.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <a
+                href="mailto:harsha.yellela@gmail.com"
+                className="px-6 py-3 font-display text-sm tracking-wider rounded transition-all hover:brightness-110"
+                style={{ background: "#D4A855", color: "#0F141E" }}
+              >
+                Email Harsha
+              </a>
+              <a
+                href="https://www.linkedin.com/in/har5ha-7663"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 font-display text-sm tracking-wider rounded border transition-colors hover:bg-white/10"
+                style={{ borderColor: "rgba(212,168,85,0.5)", color: "#D4A855" }}
+              >
+                LinkedIn ↗
+              </a>
+              <a
+                href="https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 font-display text-sm tracking-wider rounded border transition-colors hover:bg-white/10"
+                style={{ borderColor: "rgba(212,168,85,0.5)", color: "#D4A855" }}
+              >
+                ↓ Download Resume
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Sugar Skull Card */}
       <motion.div
