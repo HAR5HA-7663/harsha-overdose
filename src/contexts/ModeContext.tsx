@@ -2,38 +2,39 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 
-type Mode = "creative" | "pro";
+type Mode = "artistic" | "recruiter";
 
 interface ModeContextValue {
   mode: Mode;
   toggleMode: () => void;
-  isPro: boolean;
+  isRecruiter: boolean;
+  isPro: boolean; // alias for isRecruiter (backward compat)
 }
 
 const ModeContext = createContext<ModeContextValue>({
-  mode: "creative",
+  mode: "recruiter",
   toggleMode: () => {},
-  isPro: false,
+  isRecruiter: true,
+  isPro: true,
 });
 
 export function ModeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setMode] = useState<Mode>("creative");
+  const [mode, setMode] = useState<Mode>("recruiter");
 
-  // Read ?mode=pro from URL on mount
+  // Read ?mode=artistic from URL on mount (artistic is the non-default)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("mode") === "pro") {
-      setMode("pro");
+    if (params.get("mode") === "artistic") {
+      setMode("artistic");
     }
   }, []);
 
   const toggleMode = () => {
     setMode((current) => {
-      const next = current === "creative" ? "pro" : "creative";
-      // Keep URL in sync so the link is always shareable
+      const next = current === "recruiter" ? "artistic" : "recruiter";
       const url = new URL(window.location.href);
-      if (next === "pro") {
-        url.searchParams.set("mode", "pro");
+      if (next === "artistic") {
+        url.searchParams.set("mode", "artistic");
       } else {
         url.searchParams.delete("mode");
       }
@@ -42,8 +43,10 @@ export function ModeProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const isRecruiter = mode === "recruiter";
+
   return (
-    <ModeContext.Provider value={{ mode, toggleMode, isPro: mode === "pro" }}>
+    <ModeContext.Provider value={{ mode, toggleMode, isRecruiter, isPro: isRecruiter }}>
       {children}
     </ModeContext.Provider>
   );

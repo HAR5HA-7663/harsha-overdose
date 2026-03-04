@@ -10,6 +10,7 @@ import Experience from "@/components/sections/Experience";
 import Contact from "@/components/sections/Contact";
 import { useGunshot, useComboSound, useSoundToggle } from "@/hooks/useSound";
 import { useMode } from "@/contexts/ModeContext";
+import RecruiterPage from "@/components/recruiter/RecruiterPage";
 
 interface BulletHole {
   id: number;
@@ -36,7 +37,7 @@ export default function Home() {
   const [showRetaliation, setShowRetaliation] = useState(false);
 
   const { isMuted, toggle: toggleMute } = useSoundToggle();
-  const { isPro, toggleMode } = useMode();
+  const { isRecruiter, isPro, toggleMode } = useMode();
   const gunshot = useGunshot();
   const comboSound = useComboSound();
 
@@ -138,6 +139,43 @@ export default function Home() {
   ];
 
   const randomQuote = retaliationQuotes[Math.floor(Math.random() * retaliationQuotes.length)];
+
+  // Recruiter mode: render the professional portfolio with just the mode toggle overlay
+  if (isRecruiter) {
+    return (
+      <div className="relative">
+        {/* Mode Toggle - always on top */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="fixed top-4 left-4 z-[9999] flex rounded-full overflow-hidden"
+          style={{
+            background: "rgba(4, 8, 15, 0.88)",
+            border: "1px solid rgba(99,102,241,0.3)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <button
+            onClick={toggleMode}
+            className="px-3 py-2 text-xs font-display tracking-wider transition-all duration-300"
+            style={{ color: "#6B7280" }}
+            title="Artistic Mode"
+          >
+            🎨 ARTISTIC
+          </button>
+          <button
+            className="px-3 py-2 text-xs font-display tracking-wider"
+            style={{ background: "#818CF8", color: "#04080F" }}
+            title="Recruiter Mode (active)"
+          >
+            💼 RECRUITER
+          </button>
+        </motion.div>
+        <RecruiterPage />
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
@@ -378,31 +416,34 @@ export default function Home() {
         transition={{ delay: 0.5 }}
         className="fixed top-4 left-4 z-[9999] flex rounded-full overflow-hidden"
         style={{
-          background: "rgba(26, 26, 26, 0.8)",
-          border: "1px solid rgba(139, 69, 19, 0.5)",
+          background: isRecruiter ? "rgba(4, 8, 15, 0.88)" : "rgba(26, 26, 26, 0.8)",
+          border: isRecruiter ? "1px solid rgba(99,102,241,0.3)" : "1px solid rgba(139, 69, 19, 0.5)",
+          backdropFilter: "blur(10px)",
         }}
       >
         <button
-          onClick={() => isPro && toggleMode()}
-          className={`px-3 py-2 text-xs font-display tracking-wider transition-all duration-300 ${
-            !isPro
-              ? "bg-[#8B4513] text-[#FFD700]"
-              : "text-[#8B4513] hover:text-[#D4A574]"
-          }`}
-          title="Creative Mode"
+          onClick={() => isRecruiter && toggleMode()}
+          className={`px-3 py-2 text-xs font-display tracking-wider transition-all duration-300`}
+          style={
+            !isRecruiter
+              ? { background: "#8B4513", color: "#FFD700" }
+              : { color: "#6B7280" }
+          }
+          title="Artistic Mode"
         >
-          🤠 CREATIVE
+          🎨 ARTISTIC
         </button>
         <button
-          onClick={() => !isPro && toggleMode()}
-          className={`px-3 py-2 text-xs font-display tracking-wider transition-all duration-300 ${
-            isPro
-              ? "bg-[#1A3A5C] text-white"
-              : "text-[#8B4513] hover:text-[#D4A574]"
-          }`}
-          title="Recruiter / Pro Mode"
+          onClick={() => !isRecruiter && toggleMode()}
+          className={`px-3 py-2 text-xs font-display tracking-wider transition-all duration-300`}
+          style={
+            isRecruiter
+              ? { background: "#818CF8", color: "#04080F" }
+              : { color: "#8B4513" }
+          }
+          title="Recruiter Mode"
         >
-          👔 PRO
+          💼 RECRUITER
         </button>
       </motion.div>
 
