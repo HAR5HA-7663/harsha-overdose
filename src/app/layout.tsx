@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Rye, Special_Elite, Permanent_Marker } from "next/font/google";
+import { Rye, Special_Elite, Permanent_Marker, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 
@@ -20,6 +20,12 @@ const specialElite = Special_Elite({
 const permanentMarker = Permanent_Marker({
   weight: "400",
   variable: "--font-permanent-marker",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
@@ -66,7 +72,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${rye.variable} ${specialElite.variable} ${permanentMarker.variable} antialiased bg-[#1A1A1A] text-[#F4E4BC] min-h-screen`}
+        className={`${rye.variable} ${specialElite.variable} ${permanentMarker.variable} ${inter.variable} antialiased bg-[#1A1A1A] text-[#F4E4BC] min-h-screen`}
       >
         <Providers>
           {/* Film Grain Overlay */}
