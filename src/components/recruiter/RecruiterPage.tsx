@@ -522,7 +522,7 @@ function RecruiterProjects() {
           className="text-center mt-8"
         >
           <a
-            href="/projects"
+            href="/projects/recruiter"
             className="inline-block px-6 py-3 rounded-xl text-sm font-medium transition-all hover:bg-white/5"
             style={{ border: `1px solid ${C.border}`, color: C.muted }}
           >
