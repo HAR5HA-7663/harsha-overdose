@@ -31,6 +31,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  },
   title: "Harsha Yellela | The Code Slinger",
   description:
     "Portfolio of Harsha Yellela - Backend Engineer, Cloud Architect, AI/ML Engineer. An interactive portfolio experience.",
