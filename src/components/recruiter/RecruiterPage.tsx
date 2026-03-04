@@ -20,7 +20,7 @@ const C = {
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const SKILLS: Record<string, string[]> = {
-  "Core Stack": ["Python", "Go", "TypeScript", "FastAPI", "Gin", "Express.js", "React / Next.js"],
+  "Core Stack": ["Python", "Go", "Java", "TypeScript", "FastAPI", "Spring Boot", "Gin", "Express.js", "React / Next.js"],
   "Cloud & DevOps": ["AWS Lambda", "ECS / EKS", "Docker", "Kubernetes", "Terraform", "GitHub Actions", "Prometheus / Grafana"],
   "AI & ML": ["LangChain", "CrewAI", "GPT-4 / Gemini / Claude", "QLoRA Fine-tuning", "RAG + Vector DBs", "SageMaker", "HuggingFace Transformers"],
   "Databases": ["PostgreSQL", "DynamoDB", "Qdrant", "pgvector", "Redis", "MongoDB"],
