@@ -71,6 +71,18 @@ const PROJECTS = [
 
 const EXPERIENCE = [
   {
+    title: "Student Consultant – Build Fellowship",
+    company: "Open Avenues Foundation",
+    location: "United States · Remote",
+    period: "Feb 2026 – Present",
+    type: "Internship",
+    bullets: [
+      "Building a GPT-style transformer language model from scratch using PyTorch under mentorship of Kacper Raczy (Data Science Fellow, comma.ai)",
+      "Covers transformer architecture, self-attention, positional encoding, tokenization, and text generation",
+      "8-week expert-level project through The Build Fellowship",
+    ],
+  },
+  {
     title: "Graduate Research Assistant – Agentic AI",
     company: "Lawrence Technological University",
     location: "Southfield, MI",

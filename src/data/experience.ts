@@ -12,6 +12,21 @@ export interface Experience {
 // Ordered from most recent to oldest for REWIND timeline
 export const experiences: Experience[] = [
   {
+    id: 0,
+    title: "Student Consultant – Build Fellowship",
+    company: "Open Avenues Foundation",
+    location: "United States · Remote",
+    period: "Feb 2026 - Present",
+    type: "work",
+    bullets: [
+      "Building a GPT-style transformer language model from scratch using PyTorch",
+      "Covers self-attention, positional encoding, tokenization, and text generation",
+      "Mentored by Kacper Raczy (Data Science Fellow, comma.ai)",
+      "8-week expert-level program through The Build Fellowship",
+    ],
+    icon: "🧠",
+  },
+  {
     id: 1,
     title: "Graduate Research Assistant",
     company: "Lawrence Technological University",
