@@ -289,7 +289,7 @@ function RecruiterHero() {
           {[
             { value: "94", label: "Lambda Functions" },
             { value: "70%", label: "Process Time Reduced" },
-            { value: "27+", label: "Projects Built" },
+            { value: "29+", label: "Projects Built" },
             { value: "3 yrs", label: "Professional Exp." },
           ].map((stat) => (
             <motion.div
@@ -514,7 +514,7 @@ function RecruiterProjects() {
             className="inline-block px-6 py-3 rounded-xl text-sm font-medium transition-all hover:bg-white/5"
             style={{ border: `1px solid ${C.border}`, color: C.muted }}
           >
-            View all 27 projects →
+            View all 29 projects →
           </a>
         </motion.div>
       </div>

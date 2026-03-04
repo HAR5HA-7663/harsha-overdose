@@ -361,6 +361,18 @@ export const projects: Project[] = [
     icon: "🦠",
     category: "Mobile/IoT",
   },
+  {
+    id: 29,
+    name: "INVENTRA",
+    subtitle: "Java Spring Boot REST API",
+    description: "Inventory Management REST API built with Java 21 and Spring Boot 3.5. Clean Controller→Service→Repository architecture, paginated search with auto stock status detection (IN_STOCK/LOW_STOCK/OUT_OF_STOCK), Jakarta validation, and JUnit 5 + Mockito unit tests. Containerized with Docker Compose.",
+    tech: ["Java 21", "Spring Boot", "Spring Data JPA", "PostgreSQL", "Docker", "GitHub Actions", "JUnit 5", "OpenAPI"],
+    github: "https://github.com/HAR5HA-7663/inventra",
+    locoMove: "SPRING STRIKER",
+    damage: "10+ Endpoints + Full Tests",
+    icon: "☕",
+    category: "Backend",
+  },
 ];
 
 export const featuredProjects = projects.filter(p => p.featured);
