@@ -116,7 +116,7 @@ export default function About() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
             {[
               { label: "YEARS CODING", value: "5+", icon: "⌨️" },
-              { label: "PROJECTS", value: "29+", icon: "🎯" },
+              { label: "PROJECTS", value: "30", icon: "🎯" },
               { label: "LAMBDAS DEPLOYED", value: "94", icon: "⚡" },
               { label: "COFFEES", value: "∞", icon: "☕" },
             ].map((stat, index) => (

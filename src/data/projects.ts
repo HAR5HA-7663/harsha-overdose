@@ -26,7 +26,7 @@ export const projects: Project[] = [
     damage: "Bias Detected & Reframed",
     icon: "🧠",
     category: "AI Agents/RAG",
-    featured: true,
+    featured: false,
   },
   {
     id: 1,
@@ -86,7 +86,7 @@ export const projects: Project[] = [
     subtitle: "Go Multi-Tenant API",
     description: "Multi-tenant RBAC backend in Go with Gin framework. JWT auth, DynamoDB GSI/LSI, real-time sync for field service management. Complete user lifecycle with role management.",
     tech: ["Go", "Gin", "DynamoDB", "JWT", "RBAC", "Docker"],
-    github: "https://github.com/HAR5HA-7663",
+    github: "https://github.com/HAR5HA-7663/FieldFuze_Backend",
     locoMove: "GO GETTER",
     damage: "Multi-Tenant RBAC",
     icon: "🔷",
@@ -372,6 +372,20 @@ export const projects: Project[] = [
     damage: "10+ Endpoints + Full Tests",
     icon: "☕",
     category: "Backend",
+  },
+  {
+    id: 30,
+    name: "LUFFYGPT",
+    subtitle: "GPT Transformer from Scratch",
+    description: "10.81M-parameter GPT decoder-only transformer built from scratch in PyTorch. Custom BPE tokenizer via SentencePiece achieving 3.11× compression. Trained on dual RTX 3090 GPUs reaching val loss 1.18 at 25K steps. Deployed as Gradio app on HuggingFace Spaces.",
+    tech: ["PyTorch", "SentencePiece", "Gradio", "HuggingFace", "Python"],
+    github: "https://github.com/HAR5HA-7663/luffy-gpt",
+    live: "https://huggingface.co/spaces/HAR5HA-YELLELA/luffy-gpt-space",
+    locoMove: "BRAIN STORM",
+    damage: "10.81M Params Trained",
+    icon: "🧠",
+    category: "ML/AI",
+    featured: true,
   },
 ];
 

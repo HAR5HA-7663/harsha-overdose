@@ -8,6 +8,7 @@ import Skills from "@/components/sections/Skills";
 import Projects from "@/components/sections/Projects";
 import Experience from "@/components/sections/Experience";
 import Contact from "@/components/sections/Contact";
+import Certifications from "@/components/sections/Certifications";
 import { useGunshot, useComboSound, useSoundToggle } from "@/hooks/useSound";
 import { useMode } from "@/contexts/ModeContext";
 import RecruiterPage from "@/components/recruiter/RecruiterPage";
@@ -466,8 +467,8 @@ export default function Home() {
               }}
             >
               {(isPro
-                ? ["About", "Skills", "Projects", "Experience", "Contact"]
-                : ["ABOUT", "SKILLS", "PROJECTS", "EXPERIENCE", "CONTACT"]
+                ? ["About", "Skills", "Projects", "Experience", "Certs", "Contact"]
+                : ["ABOUT", "SKILLS", "PROJECTS", "EXPERIENCE", "CERTS", "CONTACT"]
               ).map((item) => (
                 <a
                   key={item}
@@ -479,7 +480,7 @@ export default function Home() {
                 </a>
               ))}
               <a
-                href="https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf"
+                href="/Harsha_Yellela_resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs sm:text-sm font-display text-[#FF4500] hover:text-white transition-colors tracking-wider border border-[#FF4500] px-2 py-1 rounded"
@@ -546,7 +547,7 @@ export default function Home() {
                 {/* 3. CTA Buttons — right after outcomes */}
                 <div className="flex flex-wrap gap-3 mb-7">
                   <a
-                    href="https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf"
+                    href="/Harsha_Yellela_resume.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-5 py-2.5 font-display text-sm tracking-wider rounded transition-all hover:brightness-110"
@@ -794,6 +795,9 @@ export default function Home() {
 
       {/* Experience Section */}
       <Experience />
+
+      {/* Certifications Section */}
+      <Certifications />
 
       {/* Contact Section */}
       <Contact />

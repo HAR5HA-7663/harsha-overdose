@@ -71,50 +71,28 @@ const PROJECTS = [
 
 const EXPERIENCE = [
   {
-    title: "Student Consultant – Build Fellowship",
-    company: "Open Avenues Foundation",
-    location: "United States · Remote",
-    period: "Feb 2026 – Present",
-    type: "Internship",
-    bullets: [
-      "Building a GPT-style transformer language model from scratch using PyTorch under mentorship of Kacper Raczy (Data Science Fellow, comma.ai)",
-      "Covers transformer architecture, self-attention, positional encoding, tokenization, and text generation",
-      "8-week expert-level project through The Build Fellowship",
-    ],
-  },
-  {
     title: "Graduate Research Assistant – Agentic AI",
     company: "Lawrence Technological University",
     location: "Southfield, MI",
     period: "Jan 2025 – Dec 2025",
     type: "Research",
     bullets: [
-      "Built and compared no-code (n8n) vs. coded multi-agent systems (CrewAI + LangChain MCP) for workflow automation",
-      "Deployed persistent MCP agent services on AWS Fargate / EKS with OpenSearch Serverless Vector Engine for RAG",
-      "Designed hybrid pipelines combining Bedrock-hosted models with custom tools — 70% reduction in manual process time",
+      "Reduced manual research workflow time by 70% by designing multi-agent pipelines (CrewAI + LangChain) that automated literature review and report generation",
+      "Deployed 3 persistent agent services on AWS EKS/Fargate with OpenSearch semantic search across 10K+ documents with sub-second retrieval",
+      "Cut infrastructure provisioning from 2 hours to 15 minutes using Terraform IaC with GitHub Actions CI/CD",
+      "Engineered FastAPI REST and GraphQL APIs backed by AWS Bedrock; benchmarked no-code (n8n) vs. coded agent approaches for 2 follow-on research projects",
     ],
   },
   {
-    title: "LN Technical Consultant",
+    title: "SDE-1 (LN Technical Consultant)",
     company: "Infor India Pvt. Ltd.",
     location: "Hyderabad, India",
     period: "Apr 2022 – Dec 2023",
     type: "Full-time",
     bullets: [
-      "Developed production-ready tools for Ferrari, Boeing, and Triumph via Infor LN ERP workflows",
-      "Integrated Infor ION with AWS S3, Lambda, and API Gateway for asynchronous file-transfer pipelines",
-      "Containerized services with Docker, reducing batch processing delays by ~40%",
-    ],
-  },
-  {
-    title: "Java Backend Apprentice (PEP)",
-    company: "EPAM Systems",
-    location: "Hyderabad, India",
-    period: "Sep 2020 – Jul 2021",
-    type: "Apprenticeship",
-    bullets: [
-      "Completed structured training in Java 8, Spring, REST APIs, and CI/CD fundamentals",
-      "Built practice microservices with JUnit testing and Git-based version control",
+      "Delivered REST API integrations for 3 enterprise clients (Ferrari, Boeing, Triumph) processing 500+ daily transactions through AWS Lambda and API Gateway",
+      "Reduced batch processing failures from weekly to monthly by resolving 15+ pipeline defects across MySQL databases and distributed ERP systems",
+      "Cut deployment turnaround by 25% by containerizing services with Docker and standardizing CI across client environments",
     ],
   },
 ];
@@ -158,7 +136,7 @@ function RecruiterNav() {
       }}
     >
       <div className="flex items-center gap-6 md:gap-8">
-        {["About", "Skills", "Projects", "Experience", "Contact"].map((item) => (
+        {["About", "Skills", "Projects", "Experience", "Certs", "Contact"].map((item) => (
           <a
             key={item}
             href={`#r-${item.toLowerCase()}`}
@@ -169,7 +147,7 @@ function RecruiterNav() {
           </a>
         ))}
         <a
-          href="https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf"
+          href="/Harsha_Yellela_resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
           className="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all hover:brightness-110"
@@ -265,7 +243,7 @@ function RecruiterHero() {
           className="flex flex-wrap justify-center gap-3 mb-12"
         >
           <a
-            href="https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf"
+            href="/Harsha_Yellela_resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 py-3 rounded-xl text-sm font-semibold transition-all hover:brightness-110"
@@ -301,7 +279,7 @@ function RecruiterHero() {
           {[
             { value: "94", label: "Lambda Functions" },
             { value: "70%", label: "Process Time Reduced" },
-            { value: "29+", label: "Projects Built" },
+            { value: "30", label: "Projects Built" },
             { value: "3 yrs", label: "Professional Exp." },
           ].map((stat) => (
             <motion.div
@@ -522,11 +500,11 @@ function RecruiterProjects() {
           className="text-center mt-8"
         >
           <a
-            href="/projects/recruiter"
+            href="/projects"
             className="inline-block px-6 py-3 rounded-xl text-sm font-medium transition-all hover:bg-white/5"
             style={{ border: `1px solid ${C.border}`, color: C.muted }}
           >
-            View all 29 projects →
+            View all 30 projects →
           </a>
         </motion.div>
       </div>
@@ -650,6 +628,45 @@ function RecruiterExperience() {
   );
 }
 
+// ─── Certifications ──────────────────────────────────────────────────────────
+function RecruiterCertifications() {
+  const certs = [
+    { icon: "🤖", name: "Claude with Amazon Bedrock", issuer: "Anthropic", date: "Mar 2026", url: "https://verify.skilljar.com/c/uificikeyd5a" },
+    { icon: "🔗", name: "Model Context Protocol: Advanced Topics", issuer: "Anthropic", date: "Mar 2026", url: "https://verify.skilljar.com/c/42ycargwac88" },
+    { icon: "🏆", name: "Amazon Nova AI Challenge: Trusted AI Track", issuer: "Amazon", date: "2025", url: "" },
+  ];
+  return (
+    <section id="r-certs" className="py-20 px-4">
+      <SectionHeader tag="Verified Credentials" title="Certifications" />
+      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        {certs.map((cert, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            className="rounded-xl p-6 text-center"
+            style={cardStyle}
+          >
+            <div className="text-4xl mb-3">{cert.icon}</div>
+            <h3 className="text-lg font-semibold mb-1" style={{ color: C.text }}>{cert.name}</h3>
+            <p className="text-sm mb-1" style={{ color: C.muted }}>{cert.issuer}</p>
+            <p className="text-xs mb-4" style={{ color: C.dim }}>{cert.date}</p>
+            {cert.url && (
+              <a href={cert.url} target="_blank" rel="noopener noreferrer"
+                className="inline-block px-4 py-1.5 rounded-lg text-sm font-medium transition-all hover:brightness-110"
+                style={{ background: `${C.accent}22`, color: C.accent, border: `1px solid ${C.accent}44` }}>
+                Verify ↗
+              </a>
+            )}
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 // ─── Contact ──────────────────────────────────────────────────────────────────
 function RecruiterContact() {
   return (
@@ -687,7 +704,7 @@ function RecruiterContact() {
               LinkedIn ↗
             </a>
             <a
-              href="https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf"
+              href="/Harsha_Yellela_resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="px-7 py-3.5 rounded-xl text-sm font-semibold transition-all hover:bg-white/5"
@@ -736,7 +753,7 @@ function RecruiterContact() {
           className="mt-16"
         >
           <p className="text-xs" style={{ color: C.dim }}>
-            © 2025 Harsha Yellela · har5ha.in
+            © 2026 Harsha Yellela · har5ha.in
           </p>
         </motion.footer>
       </div>
@@ -753,6 +770,7 @@ export default function RecruiterPage() {
       <RecruiterSkills />
       <RecruiterProjects />
       <RecruiterExperience />
+      <RecruiterCertifications />
       <RecruiterContact />
     </div>
   );

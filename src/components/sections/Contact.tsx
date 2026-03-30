@@ -40,7 +40,7 @@ export default function Contact() {
       type: "resume",
       label: "RESUME",
       value: "View / Download",
-      href: "https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf",
+      href: "/Harsha_Yellela_resume.pdf",
       icon: "📄",
     },
     {
@@ -129,7 +129,7 @@ export default function Contact() {
                 LinkedIn ↗
               </a>
               <a
-                href="https://raw.githubusercontent.com/HAR5HA-7663/resume/main/resumes/Harsha_Yellela_resume.pdf"
+                href="/Harsha_Yellela_resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3 font-display text-sm tracking-wider rounded border transition-colors hover:bg-white/10"
@@ -284,7 +284,7 @@ export default function Contact() {
           CRAFTED WITH 💀 BY THE CODE SLINGER
         </p>
         <p className="text-[#5C2E0A] font-display text-xs mt-2">
-          © 2025 HARSHA YELLELA. ALL RIGHTS RESERVED.
+          © 2026 HARSHA YELLELA. ALL RIGHTS RESERVED.
         </p>
         <p className="text-[#704214] text-xs mt-4 opacity-50">
           Inspired by Total Overdose (2005)

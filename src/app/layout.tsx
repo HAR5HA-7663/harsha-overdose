@@ -31,13 +31,14 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://har5ha.in"),
   icons: {
     icon: "/favicon.png",
     apple: "/favicon.png",
   },
   title: "Harsha Yellela | The Code Slinger",
   description:
-    "Portfolio of Harsha Yellela - Backend Engineer, Cloud Architect, AI/ML Engineer. An interactive portfolio experience.",
+    "Harsha Yellela — Backend & AI Engineer. 3 years building production systems for Ferrari, Boeing, Triumph. AWS, Python, Go, Kubernetes.",
   keywords: [
     "Harsha Yellela",
     "Software Engineer",
@@ -52,7 +53,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Harsha Yellela | The Code Slinger",
     description: "Enter the world of a Code Slinger. Interactive portfolio experience.",
-    url: "https://harsha-overdose.vercel.app",
+    url: "https://har5ha.in",
     siteName: "Harsha Yellela Portfolio",
     locale: "en_US",
     type: "website",
@@ -78,6 +79,22 @@ export default function RootLayout({
       <body
         className={`${rye.variable} ${specialElite.variable} ${permanentMarker.variable} ${inter.variable} antialiased bg-[#1A1A1A] text-[#F4E4BC] min-h-screen`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Harsha Vardhan Yellela",
+              jobTitle: "Backend & AI Engineer",
+              url: "https://har5ha.in",
+              sameAs: [
+                "https://linkedin.com/in/har5ha-7663",
+                "https://github.com/HAR5HA-7663",
+              ],
+            }),
+          }}
+        />
         <Providers>
           {/* Film Grain Overlay */}
           <div className="film-grain" aria-hidden="true" />
