@@ -597,7 +597,7 @@ function RecruiterExperience() {
                   degree: "M.S. Computer Science",
                   school: "Lawrence Technological University",
                   sub: "Southfield, MI",
-                  gpa: "3.6 / 4.0",
+                  gpa: "3.77 / 4.0",
                   year: "Dec 2025",
                 },
                 {

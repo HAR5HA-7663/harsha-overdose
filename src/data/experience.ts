@@ -34,7 +34,7 @@ export const experiences: Experience[] = [
     period: "Jan 2024 - Dec 2025",
     type: "education",
     bullets: [
-      "GPA: 3.6/4.0",
+      "GPA: 3.77/4.0",
       "Focus: AI/ML, Cloud Computing, Distributed Systems",
       "Research: Agentic AI and Multi-Agent Systems",
       "Graduated December 2025",
