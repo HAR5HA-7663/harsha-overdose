@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   title: "Harsha Yellela | The Code Slinger",
   description:
-    "Harsha Yellela — Backend & AI Engineer. 3 years building production systems for Ferrari, Boeing, Triumph. AWS, Python, Go, Kubernetes.",
+    "Harsha Yellela — Software Engineer. 3+ years building scalable cloud-native applications. Java, Python, Spring Boot, FastAPI, AWS, Kubernetes.",
   keywords: [
     "Harsha Yellela",
     "Software Engineer",
@@ -86,7 +86,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Person",
               name: "Harsha Vardhan Yellela",
-              jobTitle: "Backend & AI Engineer",
+              jobTitle: "Software Engineer",
               url: "https://har5ha.in",
               sameAs: [
                 "https://linkedin.com/in/har5ha-7663",

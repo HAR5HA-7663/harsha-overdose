@@ -527,7 +527,7 @@ export default function Home() {
                   className="font-display text-3xl md:text-4xl text-white mb-5"
                   style={{ letterSpacing: "0.03em", lineHeight: 1.2 }}
                 >
-                  Backend, Cloud &amp; AI Engineer
+                  Software Engineer
                 </h1>
 
                 {/* 2. Three quantified outcomes — immediately below role */}
@@ -579,16 +579,17 @@ export default function Home() {
                 {/* Availability / context — secondary, below CTAs */}
                 <p className="text-[#6B7280] text-xs mb-4">
                   M.S. Computer Science (Dec 2025) &nbsp;·&nbsp; United States &nbsp;·&nbsp;
-                  Open to relocation &nbsp;·&nbsp; Actively seeking full-time roles
+                  Software Engineer @ PNC Bank
                 </p>
 
                 {/* Professional Summary */}
                 <p className="text-[#9CA3AF] text-sm leading-relaxed">
-                  Backend/Cloud engineer with 5+ years building scalable services, automation
-                  platforms, and AI-enabled workflows. Research in multi-agent systems, RAG, and
-                  cloud deployment at Lawrence Technological University. Previously at{" "}
-                  <span className="text-[#D4A574]">Infor</span> delivering enterprise solutions
-                  for global customers including Ferrari, Boeing, and Triumph.
+                  Software Engineer with 3+ years of experience building scalable, cloud-native
+                  applications using Java, Python, and modern frameworks. Experienced in designing
+                  microservices, REST/GraphQL APIs, and event-driven systems with Kafka. Currently at{" "}
+                  <span className="text-[#D4A574]">PNC Bank</span> modernizing fraud detection
+                  workflows. Previously at <span className="text-[#D4A574]">Infor</span> delivering
+                  enterprise solutions for Ferrari, Boeing, and Triumph.
                 </p>
               </div>
 
