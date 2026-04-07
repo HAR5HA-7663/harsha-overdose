@@ -76,7 +76,7 @@ export default function About() {
                 a.k.a. &quot;THE CODE SLINGER&quot;
               </p>
               <div className="space-y-1 text-typewriter text-[#5C2E0A]">
-                <p><span className="text-[#8B4513]">STATUS:</span> M.S. Graduate @Dec 2025 | Seeking Opportunities</p>
+                <p><span className="text-[#8B4513]">STATUS:</span> Software Engineer @ PNC Bank</p>
                 <p><span className="text-[#8B4513]">LOCATION:</span> United States (Open to Relocation)</p>
                 <p><span className="text-[#8B4513]">ORIGIN:</span> Hyderabad, India</p>
               </div>
@@ -99,7 +99,7 @@ export default function About() {
             </p>
             <p>
               Graduated with a <strong>Master&apos;s in Computer Science</strong> from Lawrence
-              Technological University (Dec 2025). Worked as a <strong>Graduate Research Assistant</strong>
+              Technological University (Dec 2025). Worked as a <strong>Software Engineer Research Assistant</strong>
               focused on Agentic AI and multi-agent systems.
             </p>
             <p>
@@ -107,8 +107,9 @@ export default function About() {
               enterprise tools for global clients including <strong>Ferrari, Boeing, and Triumph</strong>.
             </p>
             <p>
-              <span className="text-[#8B0000] font-display">Now seeking</span> Backend, DevOps, ML/AI,
-              or Cloud Engineering roles to bring my skills to your posse.
+              <span className="text-[#8B0000] font-display">Currently riding with</span>{" "}
+              <strong>PNC Bank</strong>, building scalable microservices and AI-driven pipelines
+              for fraud detection and risk analytics.
             </p>
           </div>
 

@@ -108,8 +108,8 @@ export default function Contact() {
           >
             <h3 className="font-display text-2xl text-white mb-3">Let&apos;s Talk</h3>
             <p className="text-[#9CA3AF] text-sm leading-relaxed mb-6">
-              Open to Backend, Platform, Cloud, and AI Engineer roles.<br />
-              Available for full-time opportunities immediately.
+              Software Engineer @ PNC Bank.<br />
+              Building scalable cloud-native applications and AI-driven systems.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <a

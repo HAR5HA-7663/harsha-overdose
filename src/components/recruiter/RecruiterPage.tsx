@@ -71,16 +71,35 @@ const PROJECTS = [
 
 const EXPERIENCE = [
   {
-    title: "Graduate Research Assistant – Agentic AI",
+    title: "Software Engineer",
+    company: "PNC Bank",
+    location: "USA",
+    period: "Jan 2026 – Present",
+    type: "Full-time",
+    bullets: [
+      "Engineered scalable microservices using Java (Spring Boot) and Python to modernize fraud detection workflows, reducing transaction anomaly detection latency by 35%",
+      "Architected an AI-driven RAG pipeline using LangChain and AWS Bedrock to enable contextual financial insights from structured and unstructured data",
+      "Implemented event-driven data pipelines using Apache Kafka and Redis caching, reducing API response times below 200ms",
+      "Containerized and deployed services on AWS EKS (Kubernetes + Fargate) to support peak loads of 50K+ daily transactions",
+      "Reduced production downtime by improving observability with ELK stack, Prometheus, and Grafana, lowering MTTR by 40%",
+      "Developed secure REST and GraphQL APIs with Node.js and Spring Security (OAuth2/JWT) for fine-grained access control",
+      "Optimized CI/CD pipelines using Jenkins and GitHub Actions, accelerating release cycles by 30%",
+    ],
+  },
+  {
+    title: "Software Engineer Research Assistant – Agentic AI",
     company: "Lawrence Technological University",
     location: "Southfield, MI",
     period: "Jan 2025 – Dec 2025",
     type: "Research",
     bullets: [
-      "Reduced manual research workflow time by 70% by designing multi-agent pipelines (CrewAI + LangChain) that automated literature review and report generation",
-      "Deployed 3 persistent agent services on AWS EKS/Fargate with OpenSearch semantic search across 10K+ documents with sub-second retrieval",
-      "Cut infrastructure provisioning from 2 hours to 15 minutes using Terraform IaC with GitHub Actions CI/CD",
-      "Engineered FastAPI REST and GraphQL APIs backed by AWS Bedrock; benchmarked no-code (n8n) vs. coded agent approaches for 2 follow-on research projects",
+      "Designed multi-agent orchestration systems using CrewAI and LangChain to automate research workflows, reducing manual effort by 70%",
+      "Built and deployed 3 persistent AI agent services on AWS EKS with Fargate, supporting semantic search across 10K+ documents with sub-second latency",
+      "Developed FastAPI and GraphQL-based backend services integrated with AWS Bedrock for LLM-powered capabilities",
+      "Implemented OpenSearch Serverless and Redis caching layers to optimize document retrieval and session management",
+      "Automated infrastructure provisioning using Terraform and GitHub Actions CI/CD, reducing provisioning time from 2 hours to 15 minutes",
+      "Conducted benchmarking between no-code (n8n) and coded (CrewAI) agent frameworks to guide architectural decisions",
+      "Built scalable backend pipelines in Python with asynchronous processing to handle concurrent agent tasks",
     ],
   },
   {
@@ -90,9 +109,13 @@ const EXPERIENCE = [
     period: "Apr 2022 – Dec 2023",
     type: "Full-time",
     bullets: [
-      "Delivered REST API integrations for 3 enterprise clients (Ferrari, Boeing, Triumph) processing 500+ daily transactions through AWS Lambda and API Gateway",
-      "Reduced batch processing failures from weekly to monthly by resolving 15+ pipeline defects across MySQL databases and distributed ERP systems",
-      "Cut deployment turnaround by 25% by containerizing services with Docker and standardizing CI across client environments",
+      "Developed enterprise-grade RESTful APIs using Java and Spring Boot to integrate ERP systems with external clients (Ferrari, Boeing, Triumph), processing 500+ daily transactions",
+      "Engineered serverless microservices using AWS Lambda, API Gateway, and S3 triggers to automate data ingestion and event processing",
+      "Diagnosed and resolved 15+ critical data pipeline issues across MySQL and distributed systems, reducing failure frequency from weekly to monthly",
+      "Built backend services in C++ for performance-critical modules to optimize data processing and reduce latency in ERP integrations",
+      "Containerized applications using Docker and implemented CI/CD pipelines, reducing release turnaround time by 25%",
+      "Designed frontend components using React.js and JavaScript to improve user interaction with ERP dashboards",
+      "Collaborated in Agile teams to deliver features across microservices and distributed architectures",
     ],
   },
 ];
@@ -199,7 +222,7 @@ function RecruiterHero() {
             }}
           >
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 mr-2 align-middle" />
-            Available · F-1 OPT · Open to full-time roles
+            Software Engineer @ PNC Bank
           </span>
         </motion.div>
 
@@ -217,7 +240,7 @@ function RecruiterHero() {
             className="font-display text-5xl md:text-6xl lg:text-7xl font-bold mb-5"
             style={{ color: C.text, letterSpacing: "-0.03em", lineHeight: 1.1 }}
           >
-            Backend &amp; AI{" "}
+            Software{" "}
             <span
               style={{
                 background: `linear-gradient(135deg, ${C.accent} 0%, #C084FC 100%)`,
@@ -229,9 +252,9 @@ function RecruiterHero() {
             </span>
           </h1>
           <p className="text-lg max-w-xl mx-auto leading-relaxed" style={{ color: C.muted }}>
-            Building scalable cloud systems, AI-powered workflows, and production APIs.
+            Building scalable, cloud-native applications and AI-driven systems.
             <br />
-            M.S. Computer Science · Lawrence Technological University.
+            Currently at PNC Bank · M.S. Computer Science · Lawrence Technological University.
           </p>
         </motion.div>
 
@@ -680,9 +703,8 @@ function RecruiterContact() {
           <SectionHeader tag="Get in Touch" title="Let's Connect" />
 
           <p className="mb-8 leading-relaxed text-lg" style={{ color: C.muted }}>
-            Open to Backend, Cloud, Platform, and AI Engineer roles.
-            <br />
-            Available immediately · F-1 OPT · Open to relocation
+            Software Engineer @ PNC Bank.<br />
+            Building scalable cloud-native applications and AI-driven systems.
           </p>
 
           {/* CTA buttons */}
