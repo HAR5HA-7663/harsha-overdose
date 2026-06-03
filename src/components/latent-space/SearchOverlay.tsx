@@ -20,7 +20,7 @@ export function SearchOverlay({ query, onQueryChange, matchCount }: Props) {
   }, [query])
 
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-20 w-[92%] max-w-xl pointer-events-none">
+    <div className="fixed top-16 sm:top-20 left-1/2 -translate-x-1/2 z-20 w-[88%] max-w-lg pointer-events-none">
       <div className="pointer-events-auto rounded-full border border-white/10 bg-black/40 backdrop-blur-md shadow-2xl">
         <div className="flex items-center gap-3 px-5 py-3">
           <span className="text-[#D4A855] text-lg select-none">◆</span>

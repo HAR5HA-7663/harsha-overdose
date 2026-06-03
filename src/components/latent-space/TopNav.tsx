@@ -5,15 +5,15 @@ import { motion } from 'framer-motion'
 
 export function TopNav() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-10 pointer-events-none">
-      <div className="flex items-center justify-between px-6 py-5">
+    <header className="fixed top-0 left-0 right-0 z-30 pointer-events-none">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="pointer-events-auto"
         >
-          <Link href="/" className="text-white/80 font-mono text-sm tracking-widest hover:text-white">
+          <Link href="/" className="text-white/85 font-mono text-[11px] sm:text-xs tracking-[0.25em] hover:text-white whitespace-nowrap">
             HARSHA · YELLELA
           </Link>
         </motion.div>
@@ -22,19 +22,19 @@ export function TopNav() {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.6 }}
-          className="pointer-events-auto flex items-center gap-5"
+          className="pointer-events-auto flex items-center gap-3 sm:gap-5"
         >
           <a
             href="/Harsha_Yellela_resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/55 hover:text-white text-xs tracking-widest uppercase transition-colors"
+            className="text-white/60 hover:text-white text-[10px] sm:text-xs tracking-widest uppercase transition-colors hidden sm:inline whitespace-nowrap"
           >
             Résumé
           </a>
           <Link
             href="/teli"
-            className="group flex items-center gap-2 text-xs tracking-widest uppercase transition-colors"
+            className="group flex items-center gap-2 text-[10px] sm:text-xs tracking-widest uppercase transition-colors whitespace-nowrap"
             style={{ color: '#FFB347' }}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-[#FFB347] animate-pulse" />

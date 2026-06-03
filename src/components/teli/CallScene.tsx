@@ -225,7 +225,7 @@ export function CallScene({ beat, elapsed }: Props) {
       />
 
       <EffectComposer multisampling={0}>
-        <Bloom intensity={1.1} luminanceThreshold={0.18} luminanceSmoothing={0.4} mipmapBlur />
+        <Bloom intensity={0.7} luminanceThreshold={0.3} luminanceSmoothing={0.45} mipmapBlur />
       </EffectComposer>
     </Canvas>
   )

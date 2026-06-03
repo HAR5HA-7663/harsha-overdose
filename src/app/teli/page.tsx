@@ -68,21 +68,32 @@ export default function TeliPage() {
         </div>
       </header>
 
-      {/* Hero overlay */}
+      {/* Hero overlay — fades after intro so the 3D scene takes over */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="absolute top-20 left-1/2 -translate-x-1/2 z-10 text-center px-6 pointer-events-none max-w-3xl"
+        animate={{ opacity: elapsed > 7 ? 0 : 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="absolute top-16 sm:top-20 left-1/2 -translate-x-1/2 z-10 text-center px-6 pointer-events-none max-w-3xl"
       >
         <p className="text-[10px] uppercase tracking-[0.4em] text-[#FFB347]">teli.ai · Sarah Chen · refinance · cinematic</p>
-        <h1 className="text-white text-3xl md:text-4xl font-bold mt-2" style={{ letterSpacing: '-0.02em' }}>
+        <h1 className="text-white text-2xl md:text-3xl font-bold mt-2" style={{ letterSpacing: '-0.02em' }}>
           A mortgage lead being qualified, in real time
         </h1>
-        <p className="text-white/55 text-sm md:text-base mt-2 max-w-2xl mx-auto leading-relaxed">
-          This is what I ship at teli.ai. Voice (Retell + ElevenLabs + GPT-4o) calls in,
-          RAG over pgvector pulls historical context, the agent qualifies the lead,
-          SMS + email follow up — all under 45 seconds.
+        <p className="text-white/55 text-xs md:text-sm mt-2 max-w-2xl mx-auto leading-relaxed">
+          What I ship at teli.ai. Voice (Retell + ElevenLabs + GPT-4o), RAG over pgvector,
+          SMS + email follow-up — all under 45 seconds.
+        </p>
+      </motion.div>
+
+      {/* Compact running title — appears after hero fades */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: elapsed > 8 ? 1 : 0 }}
+        transition={{ duration: 0.4 }}
+        className="absolute top-16 sm:top-20 left-1/2 -translate-x-1/2 z-10 px-3 py-1.5 rounded-full bg-black/40 border border-white/10 backdrop-blur-md pointer-events-none"
+      >
+        <p className="text-[10px] uppercase tracking-[0.3em] text-white/70 whitespace-nowrap">
+          teli.ai · Sarah · refi · live cinematic
         </p>
       </motion.div>
 
@@ -120,17 +131,17 @@ export default function TeliPage() {
         </div>
       </div>
 
-      {/* Side panels — fixed positioned, do not overlap subtitles */}
-      <div className="absolute top-1/2 right-4 -translate-y-1/2 z-10 w-[320px] hidden lg:block">
+      {/* Side panels — only at very wide viewports (XL+) so we don't crop them */}
+      <div className="absolute top-1/2 right-5 -translate-y-1/2 z-10 w-[300px] hidden xl:block">
         <SMSPanel smsSent={smsSent} />
       </div>
-      <div className="absolute top-1/2 left-4 -translate-y-1/2 z-10 w-[320px] hidden lg:block">
+      <div className="absolute top-1/2 left-5 -translate-y-1/2 z-10 w-[300px] hidden xl:block">
         <EmailPanel emailSent={emailSent} />
       </div>
 
-      {/* Mobile / tablet: stacked side panels below scene */}
-      <div className="lg:hidden absolute inset-x-0 bottom-20 z-10 pointer-events-none">
-        <div className="px-4 grid grid-cols-1 gap-3 pointer-events-auto max-h-[42vh] overflow-y-auto">
+      {/* Tablet / mobile: stacked side panels below scene */}
+      <div className="xl:hidden absolute inset-x-0 bottom-20 z-10 pointer-events-none">
+        <div className="px-4 grid grid-cols-1 md:grid-cols-2 gap-3 pointer-events-auto max-h-[42vh] overflow-y-auto max-w-3xl mx-auto">
           <SMSPanel smsSent={smsSent} />
           <EmailPanel emailSent={emailSent} />
         </div>

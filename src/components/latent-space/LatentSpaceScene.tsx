@@ -155,14 +155,14 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
 
       <EffectComposer multisampling={0}>
         <Bloom
-          intensity={0.9}
-          luminanceThreshold={0.2}
-          luminanceSmoothing={0.4}
+          intensity={0.55}
+          luminanceThreshold={0.32}
+          luminanceSmoothing={0.45}
           mipmapBlur
         />
         <ChromaticAberration
           blendFunction={BlendFunction.NORMAL}
-          offset={new THREE.Vector2(0.0006, 0.0012)}
+          offset={new THREE.Vector2(0.0004, 0.0008)}
           radialModulation={false}
           modulationOffset={0}
         />
