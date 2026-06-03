@@ -39,6 +39,9 @@ export default function TeliPage() {
   const smsSent = BEATS.some(b => b.emit === 'sms-sent' && b.time <= t)
   const emailSent = BEATS.some(b => b.emit === 'email-sent' && b.time <= t)
   const progress = (t / TOTAL_DURATION) * 100
+  // SMS "composing" phase: from the RAG step onward, agent is drafting the follow-up.
+  const smsPhase: 'idle' | 'composing' | 'sent' =
+    smsSent ? 'sent' : t >= 22 ? 'composing' : 'idle'
 
   return (
     <main className="fixed inset-0 overflow-hidden bg-[#06080F]">
@@ -133,7 +136,7 @@ export default function TeliPage() {
 
       {/* Side panels — only at very wide viewports (XL+) so we don't crop them */}
       <div className="absolute top-1/2 right-5 -translate-y-1/2 z-10 w-[300px] hidden xl:block">
-        <SMSPanel smsSent={smsSent} />
+        <SMSPanel smsSent={smsSent} phase={smsPhase} />
       </div>
       <div className="absolute top-1/2 left-5 -translate-y-1/2 z-10 w-[300px] hidden xl:block">
         <EmailPanel emailSent={emailSent} />
@@ -142,7 +145,7 @@ export default function TeliPage() {
       {/* Tablet / mobile: stacked side panels below scene */}
       <div className="xl:hidden absolute inset-x-0 bottom-20 z-10 pointer-events-none">
         <div className="px-4 grid grid-cols-1 md:grid-cols-2 gap-3 pointer-events-auto max-h-[42vh] overflow-y-auto max-w-3xl mx-auto">
-          <SMSPanel smsSent={smsSent} />
+          <SMSPanel smsSent={smsSent} phase={smsPhase} />
           <EmailPanel emailSent={emailSent} />
         </div>
       </div>

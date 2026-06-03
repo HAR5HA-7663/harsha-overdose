@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 
 type Props = {
   smsSent: boolean
+  phase?: 'idle' | 'composing' | 'sent'
 }
 
 const TEN_DLC_STEPS = [
@@ -22,7 +23,7 @@ const SMS_MESSAGES = [
   { from: 'agent', text: 'Great — Jonathan from NEXA will call you within the hour. Reply STOP to opt out.', time: '+1:52' },
 ]
 
-export function SMSPanel({ smsSent }: Props) {
+export function SMSPanel({ smsSent, phase = 'idle' }: Props) {
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -92,10 +93,27 @@ export function SMSPanel({ smsSent }: Props) {
               <p className="text-[9px] text-white/40 mt-1 text-right">{m.time}</p>
             </motion.div>
           ))}
-          {!smsSent && (
+          {!smsSent && phase === 'idle' && (
             <p className="text-center text-white/30 text-[11px] italic py-12">
-              Waiting for lead qualification …
+              <span className="inline-flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Waiting for call to start …
+              </span>
             </p>
+          )}
+          {!smsSent && phase === 'composing' && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="max-w-[80%] rounded-2xl px-3 py-3 text-[12px] bg-[#FFB347]/15 text-[#FFD7A6] ml-auto rounded-tr-sm"
+            >
+              <span className="inline-flex gap-1 items-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FFD7A6] animate-pulse" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FFD7A6] animate-pulse" style={{ animationDelay: '160ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FFD7A6] animate-pulse" style={{ animationDelay: '320ms' }} />
+              </span>
+              <p className="text-[10px] text-white/40 mt-1.5">agent is drafting · 10DLC validated</p>
+            </motion.div>
           )}
         </div>
       </div>
