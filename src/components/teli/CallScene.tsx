@@ -91,8 +91,8 @@ function Beam({ from, to, color, active }: {
 // pgvector chunks that light up during RAG step.
 function VectorChunks({ active }: { active: boolean }) {
   const positions: [number, number, number][] = useMemo(() => [
-    [-4, -1.5, -1.2], [-3.6, -2.2, -0.6], [-4.2, -2.6, -1.5], [-3.8, -1.8, -2.0],
-    [-4.4, -1.2, -0.8], [-3.4, -2.8, -1.0], [-4.0, -2.0, -2.4],
+    [-3.0, -1.4, -1.2], [-2.6, -2.0, -0.6], [-3.2, -2.4, -1.5], [-2.8, -1.6, -2.0],
+    [-3.4, -1.0, -0.8], [-2.4, -2.6, -1.0], [-3.0, -1.8, -2.4],
   ], [])
   return (
     <group>
@@ -110,7 +110,7 @@ function VectorChunks({ active }: { active: boolean }) {
           </mesh>
         </Float>
       ))}
-      <Billboard position={[-3.9, -0.5, -1.2]}>
+      <Billboard position={[-2.9, -0.4, -1.2]}>
         <Text fontSize={0.18} color="#7DD3FC" anchorX="center" outlineColor="#000" outlineWidth={0.005}>pgvector</Text>
       </Billboard>
     </group>
@@ -189,22 +189,22 @@ export function CallScene({ beat, elapsed }: Props) {
       </group>
 
       {/* Top: GPT-4o brain */}
-      <Orb position={[0, 3, -1]} color="#86EFAC" label="GPT-4o" sublabel="brain · function calling" size={0.7} active={openaiActive} pulse={1.6} />
+      <Orb position={[0, 2.4, -1]} color="#86EFAC" label="GPT-4o" sublabel="brain · function calling" size={0.55} active={openaiActive} pulse={1.6} />
 
       {/* Right: Retell (telephony) */}
-      <Orb position={[3.6, 0.8, -0.6]} color="#FFB347" label="Retell" sublabel="number provider" size={0.55} active={retellActive} pulse={1.2} />
+      <Orb position={[2.6, 0.6, -0.6]} color="#FFB347" label="Retell" sublabel="number provider" size={0.45} active={retellActive} pulse={1.2} />
 
       {/* Left: ElevenLabs (voice) */}
-      <Orb position={[-3.4, 1.2, -0.6]} color="#C084FC" label="ElevenLabs" sublabel="voice synthesis" size={0.55} active={elevenActive} pulse={1.4} />
+      <Orb position={[-2.4, 1.0, -0.6]} color="#C084FC" label="ElevenLabs" sublabel="voice synthesis" size={0.45} active={elevenActive} pulse={1.4} />
 
       {/* Bottom-left cluster: pgvector chunks */}
       <VectorChunks active={pgvectorActive} />
 
       {/* Beams */}
-      <Beam from={[3.6, 0.8, -0.6]} to={[0, 0, 0]}   color="#FFB347" active={retellActive} />
-      <Beam from={[0, 3, -1]}       to={[0, 0, 0]}   color="#86EFAC" active={openaiActive} />
-      <Beam from={[-3.4, 1.2, -0.6]} to={[0, 0, 0]}  color="#C084FC" active={elevenActive} />
-      <Beam from={[-3.8, -2.0, -1.4]} to={[0, 0, 0]} color="#7DD3FC" active={pgvectorActive} />
+      <Beam from={[2.6, 0.6, -0.6]}   to={[0, 0, 0]} color="#FFB347" active={retellActive} />
+      <Beam from={[0, 2.4, -1]}       to={[0, 0, 0]} color="#86EFAC" active={openaiActive} />
+      <Beam from={[-2.4, 1.0, -0.6]}  to={[0, 0, 0]} color="#C084FC" active={elevenActive} />
+      <Beam from={[-3.0, -1.8, -1.4]} to={[0, 0, 0]} color="#7DD3FC" active={pgvectorActive} />
 
       {/* Qualified banner */}
       {isQualified && (

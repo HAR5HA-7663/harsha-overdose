@@ -13,7 +13,7 @@ export function HeroCard({ visible }: Props) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: visible ? 1 : 0, y: visible ? 0 : 12 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="fixed bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 z-10 px-4 sm:px-0 w-full sm:w-auto pointer-events-none"
+      className="hidden lg:block fixed bottom-10 left-1/2 -translate-x-1/2 z-10 px-4 sm:px-0 w-full sm:w-auto pointer-events-none"
     >
       <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-black/55 backdrop-blur-md shadow-2xl px-5 sm:px-6 py-4 pointer-events-auto">
         <div className="flex items-baseline gap-2 mb-1">
