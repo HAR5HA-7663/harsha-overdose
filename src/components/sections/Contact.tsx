@@ -108,8 +108,8 @@ export default function Contact() {
           >
             <h3 className="font-display text-2xl text-white mb-3">Let&apos;s Talk</h3>
             <p className="text-[#9CA3AF] text-sm leading-relaxed mb-6">
-              Software Engineer @ PNC Bank.<br />
-              Building scalable cloud-native applications and AI-driven systems.
+              Full Stack Engineer @ teli.ai.<br />
+              Building voice + SMS AI agents for mortgage clients including bevri.ai and NEXA Lending.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <a

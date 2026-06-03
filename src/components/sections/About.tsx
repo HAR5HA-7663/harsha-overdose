@@ -76,7 +76,7 @@ export default function About() {
                 a.k.a. &quot;THE CODE SLINGER&quot;
               </p>
               <div className="space-y-1 text-typewriter text-[#5C2E0A]">
-                <p><span className="text-[#8B4513]">STATUS:</span> Software Engineer @ PNC Bank</p>
+                <p><span className="text-[#8B4513]">STATUS:</span> Full Stack Engineer @ teli.ai</p>
                 <p><span className="text-[#8B4513]">LOCATION:</span> United States (Open to Relocation)</p>
                 <p><span className="text-[#8B4513]">ORIGIN:</span> Hyderabad, India</p>
               </div>
@@ -108,8 +108,8 @@ export default function About() {
             </p>
             <p>
               <span className="text-[#8B0000] font-display">Currently riding with</span>{" "}
-              <strong>PNC Bank</strong>, building scalable microservices and AI-driven pipelines
-              for fraud detection and risk analytics.
+              <strong>teli.ai</strong>, building voice and SMS AI agents on GPT-4o + Twilio + LangChain RAG
+              for mortgage clients including <strong>bevri.ai</strong> and <strong>NEXA Lending</strong>.
             </p>
           </div>
 
