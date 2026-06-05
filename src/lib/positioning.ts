@@ -95,10 +95,10 @@ function runForceLayout(
     vel[n.id] = [0, 0, 0]
   }
 
-  const idealLen = 3.2
-  const repel = 22
-  const center = 0.008
-  const damping = 0.85
+  const idealLen = 2.4
+  const repel = 14
+  const center = 0.014
+  const damping = 0.86
 
   for (let step = 0; step < iterations; step++) {
     // Repulsion (Coulomb-like) — every pair pushes apart, scaled by 1/r²

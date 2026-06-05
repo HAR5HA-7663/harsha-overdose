@@ -20,8 +20,8 @@ type Props = {
 
 // Obsidian-style: radius driven by node degree (link count).
 function radiusFromDegree(degree: number, kind: PositionedNode['kind']): number {
-  const base = kind === 'now' ? 0.28 : kind === 'about' ? 0.22 : 0.14
-  const bump = Math.min(degree, 14) * 0.012
+  const base = kind === 'now' ? 0.55 : kind === 'about' ? 0.42 : 0.26
+  const bump = Math.min(degree, 14) * 0.025
   return base + bump
 }
 
