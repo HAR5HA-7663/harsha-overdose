@@ -44,26 +44,32 @@ export default function TeliPage() {
     smsSent ? 'sent' : t >= 22 ? 'composing' : 'idle'
 
   return (
-    <main className="fixed inset-0 overflow-hidden bg-[#06080F]">
+    <main className="fixed inset-0 overflow-hidden" style={{ background: 'var(--canvas)' }}>
       <div className="absolute inset-0">
         <CallScene beat={beat} elapsed={elapsed} />
       </div>
 
       {/* Top nav */}
       <header className="fixed top-0 left-0 right-0 z-20 pointer-events-none">
-        <div className="flex items-center justify-between px-6 py-5">
-          <Link href="/" className="pointer-events-auto group flex items-center gap-2 text-white/70 hover:text-white text-xs tracking-widest uppercase transition-colors">
+        <div className="flex items-center justify-between px-5 sm:px-6 py-3.5">
+          <Link
+            href="/"
+            className="pointer-events-auto group flex items-center gap-2 text-[var(--body-strong)] hover:text-[var(--ink)] text-[12px] font-medium transition-colors px-2.5 py-1.5 rounded-[3px] hover:bg-[var(--canvas-soft)]"
+          >
             <span className="transition-transform group-hover:-translate-x-0.5">←</span>
-            Latent space
+            Graph
           </Link>
-          <div className="pointer-events-auto flex items-center gap-4">
-            <span className="flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] tracking-widest uppercase bg-[#FFB347]/10 border border-[#FFB347]/40 text-[#FFB347]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FFB347] animate-pulse" />
-              Live · cinematic
+          <div className="pointer-events-auto flex items-center gap-2">
+            <span
+              className="mono flex items-center gap-2 px-2 py-1 rounded-[3px] text-[10px] tracking-[0.2em] uppercase"
+              style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.4)', color: '#F59E0B' }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-pulse" />
+              live · cinematic
             </span>
             <button
               onClick={() => setEngineerOpen(true)}
-              className="text-xs tracking-widest uppercase text-white/55 hover:text-white transition-colors"
+              className="text-[12px] font-medium text-[var(--body-strong)] hover:text-[var(--ink)] px-2.5 py-1.5 rounded-[3px] hover:bg-[var(--canvas-soft)] transition-colors"
             >
               Engineer mode →
             </button>
@@ -71,20 +77,20 @@ export default function TeliPage() {
         </div>
       </header>
 
-      {/* Hero overlay — fades after intro so the 3D scene takes over */}
+      {/* Hero overlay — fades after intro */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: elapsed > 7 ? 0 : 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="absolute top-16 sm:top-20 left-1/2 -translate-x-1/2 z-10 text-center px-6 pointer-events-none max-w-3xl"
+        className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-10 text-center px-6 pointer-events-none max-w-3xl"
       >
-        <p className="text-[10px] uppercase tracking-[0.4em] text-[#FFB347]">teli.ai · Sarah Chen · refinance · cinematic</p>
-        <h1 className="text-white text-2xl md:text-3xl font-bold mt-2" style={{ letterSpacing: '-0.02em' }}>
-          A mortgage lead being qualified, in real time
+        <p className="mono text-[10px] uppercase tracking-[0.4em] text-[#F59E0B]">teli.ai · sarah chen · refinance · cinematic</p>
+        <h1 className="text-[var(--ink)] text-[26px] md:text-[34px] font-medium mt-2.5 leading-[1.1]" style={{ letterSpacing: '-0.025em' }}>
+          A mortgage lead, qualified <span className="serif-italic text-[var(--body-strong)]">in real time</span>
         </h1>
-        <p className="text-white/55 text-xs md:text-sm mt-2 max-w-2xl mx-auto leading-relaxed">
-          What I ship at teli.ai. Voice (Retell + ElevenLabs + GPT-4o), RAG over pgvector,
-          SMS + email follow-up — all under 45 seconds.
+        <p className="text-[var(--body)] text-[13px] md:text-[14px] mt-2.5 max-w-2xl mx-auto leading-[1.5]">
+          What I ship at teli.ai. Voice on Retell + ElevenLabs + GPT-4o, RAG over pgvector,
+          SMS + email follow-up — under 45 seconds.
         </p>
       </motion.div>
 
@@ -93,10 +99,11 @@ export default function TeliPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: elapsed > 8 ? 1 : 0 }}
         transition={{ duration: 0.4 }}
-        className="absolute top-16 sm:top-20 left-1/2 -translate-x-1/2 z-10 px-3 py-1.5 rounded-full bg-black/40 border border-white/10 backdrop-blur-md pointer-events-none"
+        className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-10 px-2.5 py-1 rounded-[3px] pointer-events-none"
+        style={{ background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }}
       >
-        <p className="text-[10px] uppercase tracking-[0.3em] text-white/70 whitespace-nowrap">
-          teli.ai · Sarah · refi · live cinematic
+        <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--body)] whitespace-nowrap">
+          teli.ai · sarah · refi · live cinematic
         </p>
       </motion.div>
 
@@ -104,30 +111,34 @@ export default function TeliPage() {
       <Subtitles beat={beat} elapsed={elapsed} />
 
       {/* Progress + controls */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none px-6 pb-5">
+      <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none px-5 pb-4">
         <div className="max-w-4xl mx-auto pointer-events-auto">
-          <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur-md px-4 py-3 flex items-center gap-4">
+          <div
+            className="rounded-[4px] px-4 py-2.5 flex items-center gap-4"
+            style={{ background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }}
+          >
             <button
               onClick={() => setPaused(p => !p)}
-              className="text-white/70 hover:text-white text-base w-6 h-6 flex items-center justify-center"
+              className="text-[var(--ink)] hover:text-[#F59E0B] text-[14px] w-6 h-6 flex items-center justify-center transition-colors"
               aria-label={paused ? 'Play' : 'Pause'}
             >
               {paused ? '▶' : '❚❚'}
             </button>
             <button
               onClick={() => setElapsed(0)}
-              className="text-white/50 hover:text-white text-xs tracking-widest uppercase"
+              className="text-[var(--body)] hover:text-[var(--ink)] mono text-[11px] tracking-[0.15em] uppercase transition-colors"
             >
-              ↻ Replay
+              ↻ replay
             </button>
-            <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
+            <div className="flex-1 h-0.5 rounded-full overflow-hidden" style={{ background: 'var(--hairline)' }}>
               <motion.div
-                className="h-full bg-[#FFB347]"
+                className="h-full"
+                style={{ background: '#F59E0B' }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.1 }}
               />
             </div>
-            <span className="text-white/40 text-[10px] tabular-nums font-mono">
+            <span className="mono text-[var(--mute)] text-[10px] tabular-nums">
               {t.toFixed(1)}s / {TOTAL_DURATION}s
             </span>
           </div>

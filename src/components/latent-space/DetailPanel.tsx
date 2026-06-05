@@ -16,41 +16,51 @@ export function DetailPanel({ node, onClose }: Props) {
       {node && (
         <motion.aside
           key={node.id}
-          initial={{ x: '110%', opacity: 0 }}
+          initial={{ x: '105%', opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          exit={{ x: '110%', opacity: 0 }}
-          transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-          className="fixed top-0 right-0 h-full w-full sm:w-[440px] z-30 bg-[#0A0D14]/95 backdrop-blur-xl border-l border-white/10 overflow-y-auto"
+          exit={{ x: '105%', opacity: 0 }}
+          transition={{ type: 'spring', damping: 30, stiffness: 240 }}
+          className="fixed top-0 right-0 h-full w-full sm:w-[440px] z-30 overflow-y-auto"
+          style={{ background: 'var(--canvas)', borderLeft: '1px solid var(--hairline)' }}
         >
           <div className="p-7 pt-20 sm:pt-8">
-            <div className="flex items-start justify-between mb-5">
-              <div>
-                <p className="text-[10px] tracking-[0.3em] uppercase mb-2" style={{ color: KIND_COLORS[node.kind] }}>
-                  {kindLabel(node.kind)}
-                </p>
-                <h2 className="text-2xl font-bold text-white leading-tight">{node.title}</h2>
-                <p className="text-white/60 text-sm mt-2 leading-snug">{node.oneLiner}</p>
+            <div className="flex items-start justify-between mb-5 gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <span
+                    className="inline-block w-2 h-2 rounded-full"
+                    style={{ background: KIND_COLORS[node.kind], boxShadow: `0 0 6px ${KIND_COLORS[node.kind]}` }}
+                  />
+                  <p className="mono text-[10px] tracking-[0.3em] uppercase text-[var(--mute)]">
+                    {kindLabel(node.kind)}
+                  </p>
+                </div>
+                <h2 className="text-[24px] font-medium text-[var(--ink)] leading-[1.2] tracking-[-0.015em]">
+                  {node.title}
+                </h2>
+                <p className="text-[var(--body)] text-[14px] mt-2 leading-[1.5]">{node.oneLiner}</p>
               </div>
               <button
                 onClick={onClose}
-                className="text-white/40 hover:text-white text-lg leading-none -mt-1"
+                className="text-[var(--mute)] hover:text-[var(--ink)] text-[14px] leading-none -mt-1 px-2 py-1.5 rounded-[3px] hover:bg-[var(--canvas-soft)]"
                 aria-label="Close"
               >
                 ✕
               </button>
             </div>
 
-            <div className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent my-5" />
+            <div className="h-px my-5" style={{ background: 'var(--hairline)' }} />
 
             <DetailBody detail={node.detail} />
 
-            <div className="flex flex-wrap gap-2 mt-6">
+            <div className="flex flex-wrap gap-1.5 mt-6">
               {node.tags.slice(0, 8).map(tag => (
                 <span
                   key={tag}
-                  className="px-2.5 py-1 rounded-full text-[10px] tracking-wider uppercase bg-white/5 text-white/50 border border-white/10"
+                  className="mono px-2 py-0.5 rounded-[3px] text-[10px] tracking-[0.05em] text-[var(--body)]"
+                  style={{ background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }}
                 >
-                  {tag}
+                  #{tag}
                 </span>
               ))}
             </div>
@@ -64,18 +74,18 @@ export function DetailPanel({ node, onClose }: Props) {
 function DetailBody({ detail }: { detail: NodeDetail }) {
   if (detail.kind === 'about') {
     return (
-      <div className="space-y-4">
+      <div className="space-y-3.5">
         {detail.bio.map((p, i) => (
-          <p key={i} className="text-white/80 text-sm leading-relaxed">{p}</p>
+          <p key={i} className="text-[var(--body-strong)] text-[14px] leading-[1.55]">{p}</p>
         ))}
         <a
           href={detail.resumeUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block mt-3 px-5 py-2.5 rounded-md text-sm font-semibold tracking-wide transition-all hover:brightness-110"
-          style={{ background: '#D4A855', color: '#0A0D14' }}
+          className="inline-block mt-2 px-4 py-2 rounded-[3px] text-[13px] font-medium transition-all hover:brightness-95"
+          style={{ background: 'var(--ink)', color: 'var(--on-primary)' }}
         >
-          ↓ Download résumé
+          Download résumé →
         </a>
       </div>
     )
@@ -83,43 +93,39 @@ function DetailBody({ detail }: { detail: NodeDetail }) {
   if (detail.kind === 'skill') {
     return (
       <div>
-        <p className="text-white/70 text-sm">Category: <span className="text-white">{detail.category}</span></p>
-        <p className="text-white/40 text-xs mt-3 leading-relaxed">
-          Cluster with related skills via the search bar (try the category name).
+        <p className="text-[var(--body)] text-[13px]">
+          Category: <span className="text-[var(--ink)]">{detail.category}</span>
+        </p>
+        <p className="serif-italic text-[var(--mute)] text-[14px] mt-3 leading-[1.5]">
+          Search the graph for related skills using the box above.
         </p>
       </div>
     )
   }
   if (detail.kind === 'project') {
     return (
-      <div className="space-y-4">
-        <p className="text-white/80 text-sm leading-relaxed">{detail.description}</p>
+      <div className="space-y-3.5">
+        <p className="text-[var(--body-strong)] text-[14px] leading-[1.55]">{detail.description}</p>
         {detail.impact && (
-          <p className="text-[#D4A855] text-xs uppercase tracking-widest">★ {detail.impact}</p>
+          <p className="mono text-[11px] uppercase tracking-[0.2em]" style={{ color: '#67E8F9' }}>
+            ★ {detail.impact}
+          </p>
         )}
         <div className="flex flex-wrap gap-1.5">
           {detail.tech.map(t => (
-            <span key={t} className="px-2 py-0.5 rounded text-[10px] bg-white/5 text-white/60">{t}</span>
+            <span key={t} className="mono px-2 py-0.5 rounded-[3px] text-[11px] text-[var(--body)]" style={{ background: 'var(--canvas-soft)' }}>
+              {t}
+            </span>
           ))}
         </div>
-        <div className="flex gap-3 pt-2">
+        <div className="flex gap-3 pt-1">
           {detail.github && (
-            <a
-              href={detail.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-white/70 underline underline-offset-2 hover:text-white"
-            >
+            <a href={detail.github} target="_blank" rel="noopener noreferrer" className="text-[12px] text-[var(--body-strong)] underline underline-offset-2 hover:text-[var(--ink)]">
               GitHub ↗
             </a>
           )}
           {detail.live && (
-            <a
-              href={detail.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-white/70 underline underline-offset-2 hover:text-white"
-            >
+            <a href={detail.live} target="_blank" rel="noopener noreferrer" className="text-[12px] text-[var(--body-strong)] underline underline-offset-2 hover:text-[var(--ink)]">
               Live demo ↗
             </a>
           )}
@@ -129,19 +135,22 @@ function DetailBody({ detail }: { detail: NodeDetail }) {
   }
   if (detail.kind === 'experience') {
     return (
-      <div className="space-y-4">
-        <div className="text-xs text-white/50">
-          <span className="text-white/80">{detail.company}</span> · {detail.location} · {detail.period}
+      <div className="space-y-3">
+        <div className="text-[12px] text-[var(--mute)]">
+          <span className="text-[var(--body-strong)]">{detail.company}</span> · {detail.location} · {detail.period}
         </div>
         {detail.current && (
-          <span className="inline-flex items-center gap-2 px-2 py-1 rounded-full text-[10px] tracking-wider bg-emerald-500/15 border border-emerald-500/40 text-emerald-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> CURRENT
+          <span
+            className="inline-flex items-center gap-2 px-2 py-0.5 rounded-[3px] text-[10px] tracking-widest uppercase mono"
+            style={{ background: 'rgba(52, 211, 153, 0.1)', border: '1px solid rgba(52, 211, 153, 0.4)', color: '#34D399' }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse" /> Current
           </span>
         )}
-        <ul className="space-y-2 mt-2">
+        <ul className="space-y-2 mt-3">
           {detail.bullets.map((b, i) => (
-            <li key={i} className="text-white/75 text-xs leading-relaxed flex gap-2">
-              <span className="text-[#D4A855] flex-shrink-0">◆</span>
+            <li key={i} className="text-[var(--body-strong)] text-[13px] leading-[1.55] flex gap-2.5">
+              <span className="text-[#67E8F9] flex-shrink-0">›</span>
               <span>{b}</span>
             </li>
           ))}
@@ -151,43 +160,51 @@ function DetailBody({ detail }: { detail: NodeDetail }) {
   }
   if (detail.kind === 'contact') {
     return (
-      <div className="space-y-3">
-        <a href={`mailto:${detail.email}`} className="block text-sm text-white/80 hover:text-white">
-          ✉ {detail.email}
+      <div className="space-y-2.5">
+        <a href={`mailto:${detail.email}`} className="block text-[13px] text-[var(--body-strong)] hover:text-[var(--ink)]">
+          → {detail.email}
         </a>
-        <a href={detail.linkedin} target="_blank" rel="noopener noreferrer" className="block text-sm text-white/80 hover:text-white">
-          ⌘ LinkedIn → linkedin.com/in/har5ha-7663
+        <a href={detail.linkedin} target="_blank" rel="noopener noreferrer" className="block text-[13px] text-[var(--body-strong)] hover:text-[var(--ink)]">
+          → linkedin.com/in/har5ha-7663
         </a>
-        <a href={detail.github} target="_blank" rel="noopener noreferrer" className="block text-sm text-white/80 hover:text-white">
-          ⌘ GitHub → github.com/HAR5HA-7663
+        <a href={detail.github} target="_blank" rel="noopener noreferrer" className="block text-[13px] text-[var(--body-strong)] hover:text-[var(--ink)]">
+          → github.com/HAR5HA-7663
         </a>
       </div>
     )
   }
   if (detail.kind === 'now') {
     return (
-      <div className="space-y-5">
-        <p className="text-white/85 text-sm leading-relaxed">{detail.description}</p>
+      <div className="space-y-4">
+        <p className="text-[var(--body-strong)] text-[14px] leading-[1.55]">{detail.description}</p>
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1.5">Active clients</p>
+          <p className="mono text-[10px] uppercase tracking-[0.28em] text-[var(--mute)] mb-2">Active clients</p>
           <div className="flex flex-wrap gap-1.5">
             {detail.clients.map(c => (
-              <span key={c} className="px-2 py-1 text-[11px] rounded bg-[#FFB347]/10 text-[#FFB347] border border-[#FFB347]/30">{c}</span>
+              <span
+                key={c}
+                className="px-2 py-1 text-[11px] rounded-[3px] font-medium"
+                style={{ background: 'rgba(245, 158, 11, 0.08)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.3)' }}
+              >
+                {c}
+              </span>
             ))}
           </div>
         </div>
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1.5">Production stack</p>
+          <p className="mono text-[10px] uppercase tracking-[0.28em] text-[var(--mute)] mb-2">Production stack</p>
           <div className="flex flex-wrap gap-1.5">
             {detail.stack.map(s => (
-              <span key={s} className="px-2 py-0.5 text-[10px] rounded bg-white/5 text-white/70">{s}</span>
+              <span key={s} className="mono px-2 py-0.5 text-[11px] rounded-[3px] text-[var(--body)]" style={{ background: 'var(--canvas-soft)' }}>
+                {s}
+              </span>
             ))}
           </div>
         </div>
         <Link
           href={detail.route}
-          className="inline-block mt-2 px-5 py-3 rounded-md text-sm font-bold tracking-wide transition-all hover:brightness-110"
-          style={{ background: '#FFB347', color: '#0A0D14' }}
+          className="inline-flex items-center gap-2 mt-2 px-4 py-2.5 rounded-[3px] text-[13px] font-medium transition-all"
+          style={{ background: '#F59E0B', color: 'var(--on-primary)' }}
         >
           ▶ Enter the call →
         </Link>

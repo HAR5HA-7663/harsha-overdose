@@ -3,27 +3,30 @@
 import Link from 'next/link'
 import { NODES } from '../../data/nodes'
 
-// Visible only on small screens — gives recruiters a scannable text view
-// when the 3D galaxy isn't enough on a phone.
 export function MobileFallback() {
   const projects = NODES.filter(n => n.kind === 'project')
   const teli = NODES.find(n => n.id === 'now')
 
   return (
-    <section className="lg:hidden fixed bottom-0 inset-x-0 z-20 max-h-[55vh] overflow-y-auto bg-gradient-to-t from-[#06080F] via-[#06080F]/95 to-transparent pt-12 pb-6 px-4 pointer-events-auto">
+    <section
+      className="lg:hidden fixed bottom-0 inset-x-0 z-20 max-h-[58vh] overflow-y-auto pt-10 pb-6 px-4 pointer-events-auto"
+      style={{
+        background: 'linear-gradient(to top, var(--canvas) 60%, transparent)',
+      }}
+    >
       <div className="max-w-md mx-auto space-y-5">
         <div>
-          <p className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-1">Now</p>
-          <p className="text-white text-sm leading-snug">
-            <span className="text-[#FFB347] font-semibold">teli.ai</span> · Full Stack Engineer ·
-            building voice + SMS AI agents for mortgage clients (bevri.ai, NEXA Lending).
-            GPT-4o · LangChain · pgvector · AWS.
+          <p className="mono text-[10px] tracking-[0.3em] uppercase text-[var(--mute)] mb-1.5">Now</p>
+          <p className="text-[var(--body-strong)] text-[14px] leading-[1.55]">
+            <span className="text-[#F59E0B] font-medium">teli.ai</span> — Full Stack Engineer.
+            Building voice + SMS AI agents for mortgage clients (bevri.ai, NEXA Lending).{' '}
+            <span className="mono text-[12px] text-[var(--body)]">GPT-4o · Retell · ElevenLabs · pgvector · AWS.</span>
           </p>
           {teli && (
             <Link
               href="/teli"
-              className="inline-block mt-2 px-4 py-2 rounded-md text-[11px] font-semibold tracking-wider uppercase"
-              style={{ background: '#FFB347', color: '#0A0D14' }}
+              className="inline-flex items-center gap-2 mt-3 px-3.5 py-2 rounded-[3px] text-[12px] font-medium"
+              style={{ background: '#F59E0B', color: 'var(--on-primary)' }}
             >
               ▶ Watch the call →
             </Link>
@@ -31,17 +34,22 @@ export function MobileFallback() {
         </div>
 
         <div>
-          <p className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-1">Selected work</p>
-          <ul className="space-y-1.5">
+          <p className="mono text-[10px] tracking-[0.3em] uppercase text-[var(--mute)] mb-2">Selected work</p>
+          <ul className="space-y-2">
             {projects.slice(0, 5).map(p => {
               const d = p.detail.kind === 'project' ? p.detail : null
               return (
-                <li key={p.id} className="text-xs text-white/75">
-                  <span className="text-white font-medium">{p.title}</span>
-                  <span className="text-white/45 mx-1.5">·</span>
-                  <span className="text-white/55">{p.oneLiner}</span>
+                <li key={p.id} className="text-[13px] leading-[1.4]">
+                  <span className="text-[var(--ink)] font-medium">{p.title}</span>
+                  <span className="text-[var(--mute)] mx-1.5">·</span>
+                  <span className="text-[var(--body)]">{p.oneLiner}</span>
                   {d?.github && (
-                    <a href={d.github} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-[#7DD3FC] underline">
+                    <a
+                      href={d.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-2 text-[11px] text-[#67E8F9] underline underline-offset-2"
+                    >
                       GitHub
                     </a>
                   )}
@@ -51,27 +59,29 @@ export function MobileFallback() {
           </ul>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 pt-1">
+        <div className="flex flex-wrap items-center gap-1.5 pt-1">
           <a
             href="/Harsha_Yellela_resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3.5 py-2 rounded-md text-[11px] font-semibold tracking-wider uppercase"
-            style={{ background: '#D4A855', color: '#0A0D14' }}
+            className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium"
+            style={{ background: 'var(--ink)', color: 'var(--on-primary)' }}
           >
-            ↓ Résumé
+            Résumé
           </a>
           <a
             href="mailto:harsha.yellela@gmail.com"
-            className="px-3.5 py-2 rounded-md text-[11px] font-semibold tracking-wider uppercase border border-white/20 text-white/85"
+            className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body-strong)]"
+            style={{ border: '1px solid var(--hairline)' }}
           >
-            ✉ Email
+            Email
           </a>
           <a
             href="https://github.com/HAR5HA-7663"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3.5 py-2 rounded-md text-[11px] font-semibold tracking-wider uppercase border border-white/20 text-white/85"
+            className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body-strong)]"
+            style={{ border: '1px solid var(--hairline)' }}
           >
             GitHub
           </a>
@@ -79,14 +89,15 @@ export function MobileFallback() {
             href="https://www.linkedin.com/in/har5ha-7663"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3.5 py-2 rounded-md text-[11px] font-semibold tracking-wider uppercase border border-white/20 text-white/85"
+            className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body-strong)]"
+            style={{ border: '1px solid var(--hairline)' }}
           >
             LinkedIn
           </a>
         </div>
 
-        <p className="text-center text-white/30 text-[10px] tracking-widest uppercase pt-2">
-          The latent space above is interactive on desktop.
+        <p className="text-center mono text-[var(--mute)] text-[10px] tracking-[0.25em] uppercase pt-2">
+          The graph above is interactive on desktop.
         </p>
       </div>
     </section>

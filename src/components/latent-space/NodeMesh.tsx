@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useMemo } from 'react'
+import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Billboard, Text } from '@react-three/drei'
 import * as THREE from 'three'
@@ -11,99 +11,123 @@ type Props = {
   color: string
   score?: number
   isSelected: boolean
-  isHighlighted: boolean
-  isDimmed: boolean
+  isHighlighted: boolean   // search match OR neighbor of hover
+  isFocused: boolean       // the hovered node itself
+  isDimmed: boolean        // search active, this node is not a match
   onSelect: () => void
+  onHover: (id: string | null) => void
 }
 
-export function NodeMesh({ node, color, score, isSelected, isHighlighted, isDimmed, onSelect }: Props) {
+// Obsidian-style: radius driven by node degree (link count).
+function radiusFromDegree(degree: number, kind: PositionedNode['kind']): number {
+  const base = kind === 'now' ? 0.32 : kind === 'about' ? 0.26 : 0.16
+  const bump = Math.min(degree, 12) * 0.018
+  return base + bump
+}
+
+export function NodeMesh({
+  node, color, score, isSelected, isHighlighted, isFocused, isDimmed,
+  onSelect, onHover,
+}: Props) {
   const meshRef = useRef<THREE.Mesh>(null)
   const glowRef = useRef<THREE.Mesh>(null)
   const [hovered, setHovered] = useState(false)
 
+  const baseR = radiusFromDegree(node.degree, node.kind)
   const isNow = node.kind === 'now'
-  const baseSize = isNow ? 0.45 : node.kind === 'about' ? 0.32 : 0.22
 
-  useFrame((state) => {
+  useFrame((s) => {
     if (!meshRef.current || !glowRef.current) return
-    const t = state.clock.elapsedTime
-    const pulseAmount = isNow ? 0.18 : isSelected ? 0.12 : 0.04
-    const pulse = 1 + Math.sin(t * (isNow ? 2.2 : 1.4) + node.position[0]) * pulseAmount
-    const highlightBoost = isHighlighted ? 1.4 : 1
-    const dimFactor = isDimmed ? 0.4 : 1
-    const targetScale = baseSize * pulse * highlightBoost * dimFactor * (hovered ? 1.25 : 1)
-    meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.15)
-    glowRef.current.scale.lerp(new THREE.Vector3(targetScale * 2.6, targetScale * 2.6, targetScale * 2.6), 0.15)
+    const t = s.clock.elapsedTime
+    const pulse = isNow ? 1 + Math.sin(t * 2.0) * 0.06 : 1
+    const focus = isFocused || hovered ? 1.4 : isSelected ? 1.2 : 1.0
+    const dim = isDimmed ? 0.55 : 1
+    const target = baseR * pulse * focus * dim
+    meshRef.current.scale.lerp(new THREE.Vector3(target, target, target), 0.18)
+    glowRef.current.scale.lerp(new THREE.Vector3(target * 2.6, target * 2.6, target * 2.6), 0.18)
   })
 
-  const glowColor = useMemo(() => new THREE.Color(color).multiplyScalar(isNow ? 2 : 1.3), [color, isNow])
-  const showLabel = isSelected || hovered || isNow || node.kind === 'about'
-  const showOneLiner = isSelected || hovered
+  // Color decisions — Obsidian uses muted color groups; highlight = brighter
+  const dimColor = '#3a3a3a'
+  const renderColor = isDimmed ? dimColor : color
+  const labelColor = isDimmed ? '#5e5650' : isHighlighted || isFocused ? '#f7f5f0' : '#dad2c1'
+  const showLabel = isFocused || isSelected || hovered || isNow || node.kind === 'about' || node.degree >= 6
 
   return (
     <group position={node.position}>
-      {/* Outer glow */}
+      {/* Soft glow halo */}
       <mesh ref={glowRef}>
-        <sphereGeometry args={[1, 16, 16]} />
+        <sphereGeometry args={[1, 14, 14]} />
         <meshBasicMaterial
-          color={glowColor}
+          color={renderColor}
           transparent
-          opacity={isDimmed ? 0.04 : (isNow ? 0.18 : 0.12)}
+          opacity={isDimmed ? 0.04 : isFocused || isHighlighted ? 0.22 : isNow ? 0.18 : 0.10}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
       </mesh>
 
-      {/* Core */}
+      {/* Core sphere */}
       <mesh
         ref={meshRef}
         onClick={(e) => { e.stopPropagation(); onSelect() }}
-        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer' }}
-        onPointerOut={() => { setHovered(false); document.body.style.cursor = 'default' }}
+        onPointerOver={(e) => {
+          e.stopPropagation()
+          setHovered(true)
+          onHover(node.id)
+          if (typeof document !== 'undefined') document.body.style.cursor = 'pointer'
+        }}
+        onPointerOut={(e) => {
+          e.stopPropagation()
+          setHovered(false)
+          onHover(null)
+          if (typeof document !== 'undefined') document.body.style.cursor = 'default'
+        }}
       >
-        <sphereGeometry args={[1, 24, 24]} />
+        <sphereGeometry args={[1, 20, 20]} />
         <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={isNow ? 1.6 : isHighlighted ? 1.3 : 0.9}
-          roughness={0.4}
-          metalness={0.2}
-          opacity={isDimmed ? 0.45 : 1}
+          color={renderColor}
+          emissive={renderColor}
+          emissiveIntensity={isDimmed ? 0.2 : isFocused || isHighlighted ? 1.6 : isNow ? 1.4 : 0.9}
+          roughness={0.45}
+          metalness={0.15}
+          opacity={isDimmed ? 0.6 : 1}
           transparent
         />
       </mesh>
 
-      {/* Phone ring for the "Now" node */}
+      {/* Hero ring for the "Now" node */}
       {isNow && (
-        <mesh rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[1.2, 0.04, 8, 64]} />
-          <meshBasicMaterial color={color} transparent opacity={0.5} blending={THREE.AdditiveBlending} />
+        <mesh rotation={[Math.PI / 2.6, 0, 0]}>
+          <torusGeometry args={[1.5, 0.04, 8, 64]} />
+          <meshBasicMaterial color={color} transparent opacity={0.45} blending={THREE.AdditiveBlending} />
         </mesh>
       )}
 
       {showLabel && (
         <Billboard>
           <Text
-            position={[0, baseSize + 0.55, 0]}
-            fontSize={0.32}
-            color={isDimmed ? '#7a7a7a' : '#FFFFFF'}
+            position={[0, baseR + 0.32, 0]}
+            fontSize={isNow ? 0.26 : 0.18}
+            color={labelColor}
             anchorX="center"
             anchorY="middle"
-            outlineColor="#000"
+            outlineColor="#1d1916"
             outlineWidth={0.012}
+            letterSpacing={-0.02}
           >
             {node.title}
           </Text>
-          {showOneLiner && (
+          {(isFocused || isSelected) && (
             <Text
-              position={[0, baseSize + 0.22, 0]}
-              fontSize={0.18}
-              color={color}
+              position={[0, baseR + 0.12, 0]}
+              fontSize={0.13}
+              color="#aea69c"
               anchorX="center"
               anchorY="middle"
-              maxWidth={6}
-              outlineColor="#000"
-              outlineWidth={0.005}
+              maxWidth={5}
+              outlineColor="#1d1916"
+              outlineWidth={0.006}
             >
               {node.oneLiner}
             </Text>
@@ -111,17 +135,17 @@ export function NodeMesh({ node, color, score, isSelected, isHighlighted, isDimm
         </Billboard>
       )}
 
-      {/* Score badge during search */}
+      {/* Search score badge */}
       {score !== undefined && score > 0.15 && (
         <Billboard>
           <Text
-            position={[0, -baseSize - 0.25, 0]}
-            fontSize={0.14}
-            color="#D4A855"
+            position={[0, -baseR - 0.18, 0]}
+            fontSize={0.10}
+            color="#67E8F9"
             anchorX="center"
             anchorY="middle"
           >
-            {`◆ ${(score * 100).toFixed(0)}%`}
+            {`${(score * 100).toFixed(0)}%`}
           </Text>
         </Billboard>
       )}

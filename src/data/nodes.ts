@@ -69,14 +69,16 @@ export const TAG_ANCHORS: Record<string, [number, number, number]> = {
   openai:        [ 0.5,  2.0,  5.0],
 }
 
-// Color palette for node kinds.
+// Color palette — Obsidian-style muted groups on warm-dark canvas.
+// Skills/projects lean toward electric cyan (the "knowledge cluster" feel from the reference image).
+// Hero "now" node is amber-warm to stand out as the call-to-action.
 export const KIND_COLORS: Record<NodeKind, string> = {
-  about: '#D4A855',       // sand
-  skill: '#7DD3FC',       // sky-300
-  project: '#C084FC',     // fuchsia-400
-  experience: '#86EFAC',  // green-300
-  contact: '#FB7185',     // rose-400
-  now: '#FFB347',         // tequila gold (HERO)
+  about: '#EAB308',       // amber-500 — about/self
+  skill: '#67E8F9',       // cyan-300 — knowledge cluster
+  project: '#A78BFA',     // violet-400 — built things
+  experience: '#34D399',  // emerald-400 — time
+  contact: '#FB7185',     // rose-400 — reach out
+  now: '#F59E0B',         // amber-500-warm (HERO)
 }
 
 function mkSkill(id: string, title: string, category: string, tags: string[]): GalaxyNode {

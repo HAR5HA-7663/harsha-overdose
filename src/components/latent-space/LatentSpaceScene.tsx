@@ -1,13 +1,19 @@
 'use client'
 
-import { useMemo, useRef, useState, useCallback, useEffect } from 'react'
+import { useMemo, useRef, useState, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, Stars } from '@react-three/drei'
-import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing'
-import { BlendFunction } from 'postprocessing'
+import { OrbitControls } from '@react-three/drei'
+import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import { KIND_COLORS } from '../../data/nodes'
-import { getPositionedNodes, getConnections, embedQuery, cosineSim, type PositionedNode } from '../../lib/positioning'
+import {
+  getGraph,
+  getNeighbors,
+  embedQuery,
+  cosineSim,
+  type PositionedNode,
+  type Link,
+} from '../../lib/positioning'
 import { NodeMesh } from './NodeMesh'
 
 type Props = {
@@ -17,43 +23,59 @@ type Props = {
   onNodes: (nodes: PositionedNode[]) => void
 }
 
-function ConnectionLines({ nodes, connections, scores }: {
+// Animated link tubes — like Obsidian, brighter when their endpoints are highlighted
+function GraphLinks({
+  nodes,
+  links,
+  highlightSet,
+  hasFocus,
+  searchScores,
+  hasSearch,
+}: {
   nodes: PositionedNode[]
-  connections: [string, string][]
-  scores: Record<string, number>
+  links: Link[]
+  highlightSet: Set<string> | null
+  hasFocus: boolean
+  searchScores: Record<string, number>
+  hasSearch: boolean
 }) {
-  const positionsById = useMemo(() => {
+  const posById = useMemo(() => {
     const m: Record<string, [number, number, number]> = {}
     for (const n of nodes) m[n.id] = n.position
     return m
   }, [nodes])
 
-  const lineGeoms = useMemo(() => {
-    return connections.map(([a, b]) => {
-      const pa = positionsById[a]
-      const pb = positionsById[b]
-      if (!pa || !pb) return null
-      const score = ((scores[a] || 0) + (scores[b] || 0)) / 2
-      return { pa, pb, score, key: `${a}-${b}` }
-    }).filter(Boolean) as { pa: [number, number, number]; pb: [number, number, number]; score: number; key: string }[]
-  }, [connections, positionsById, scores])
+  const meshes = useMemo(() => {
+    return links.map(l => {
+      const a = posById[l.source]
+      const b = posById[l.target]
+      if (!a || !b) return null
+      const start = new THREE.Vector3(...a)
+      const end = new THREE.Vector3(...b)
+      const points = [start, end]
+      const geom = new THREE.BufferGeometry().setFromPoints(points)
+      return { geom, link: l }
+    }).filter(Boolean) as { geom: THREE.BufferGeometry; link: Link }[]
+  }, [posById, links])
 
   return (
     <>
-      {lineGeoms.map(({ pa, pb, score, key }) => {
-        const points = [new THREE.Vector3(...pa), new THREE.Vector3(...pb)]
-        const geom = new THREE.BufferGeometry().setFromPoints(points)
-        const opacity = 0.05 + score * 0.4
+      {meshes.map(({ geom, link }) => {
+        const sScore = searchScores[link.source] || 0
+        const tScore = searchScores[link.target] || 0
+        const matched = hasSearch && (sScore > 0.05 || tScore > 0.05)
+        const isFocusEdge = hasFocus && highlightSet && (highlightSet.has(link.source) && highlightSet.has(link.target))
+        const opacity = isFocusEdge ? 0.95 : matched ? 0.6 : hasFocus || hasSearch ? 0.05 : 0.22
+        const color = isFocusEdge || matched ? '#67E8F9' : '#67E8F9'
         const mat = new THREE.LineBasicMaterial({
-          color: '#D4A855',
+          color,
           transparent: true,
           opacity,
           blending: THREE.AdditiveBlending,
           depthWrite: false,
         })
         const line = new THREE.Line(geom, mat)
-        return <primitive key={key} object={line} />
-
+        return <primitive key={`${link.source}-${link.target}`} object={line} />
       })}
     </>
   )
@@ -71,7 +93,7 @@ function SceneCamera({ targetPosition }: { targetPosition: [number, number, numb
       const [x, y, z] = targetPosition
       targetVec.current.set(x, y, z)
       const dir = new THREE.Vector3(x, y, z).normalize()
-      const camOffset = dir.clone().multiplyScalar(4)
+      const camOffset = dir.clone().multiplyScalar(5)
       camTargetVec.current.set(x + camOffset.x, y + camOffset.y, z + camOffset.z)
       hasTarget.current = true
     } else {
@@ -81,8 +103,8 @@ function SceneCamera({ targetPosition }: { targetPosition: [number, number, numb
 
   useFrame(() => {
     if (hasTarget.current && controlsRef.current) {
-      controlsRef.current.target.lerp(targetVec.current, 0.08)
-      camera.position.lerp(camTargetVec.current, 0.06)
+      controlsRef.current.target.lerp(targetVec.current, 0.07)
+      camera.position.lerp(camTargetVec.current, 0.05)
       controlsRef.current.update()
     }
   })
@@ -92,79 +114,107 @@ function SceneCamera({ targetPosition }: { targetPosition: [number, number, numb
       ref={controlsRef}
       enableDamping
       dampingFactor={0.08}
-      minDistance={4}
-      maxDistance={30}
+      minDistance={5}
+      maxDistance={40}
       autoRotate={!hasTarget.current}
-      autoRotateSpeed={0.25}
+      autoRotateSpeed={0.18}
     />
   )
 }
 
 export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props) {
-  const nodes = useMemo(() => getPositionedNodes(), [])
-  const connections = useMemo(() => getConnections(nodes), [nodes])
+  const { nodes, links } = useMemo(() => getGraph(), [])
+  const neighbors = useMemo(() => getNeighbors(links), [links])
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
 
   useEffect(() => {
     onNodes(nodes)
   }, [nodes, onNodes])
 
-  // Compute search scores when query changes.
   const scores = useMemo(() => {
     if (!query.trim()) return {} as Record<string, number>
     const qEmb = embedQuery(query)
-    const result: Record<string, number> = {}
+    const out: Record<string, number> = {}
     for (const n of nodes) {
       const s = cosineSim(qEmb, n.embedding)
-      if (s > 0.05) result[n.id] = s
+      if (s > 0.05) out[n.id] = s
     }
-    return result
+    return out
   }, [nodes, query])
+
+  // Focus set = hovered node + its neighbors, OR selected + neighbors.
+  const focusId = hoveredId || selectedId
+  const focusSet = useMemo(() => {
+    if (!focusId) return null
+    const s = new Set<string>([focusId])
+    const ns = neighbors[focusId]
+    if (ns) for (const n of ns) s.add(n)
+    return s
+  }, [focusId, neighbors])
 
   const selectedNode = nodes.find(n => n.id === selectedId) || null
   const targetPosition = selectedNode?.position || null
 
+  const hasFocus = !!focusSet
+  const hasSearch = Object.keys(scores).length > 0
+
   return (
     <Canvas
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-      camera={{ position: [0, 0, 18], fov: 50 }}
-      style={{ background: '#06080F' }}
+      camera={{ position: [0, 1, 22], fov: 48 }}
+      style={{ background: '#0e0c0a' }}
       dpr={[1, 2]}
+      onPointerMissed={() => { /* click empty space — keep selection */ }}
     >
-      <color attach="background" args={['#06080F']} />
-      <fog attach="fog" args={['#06080F', 12, 40]} />
-      <ambientLight intensity={0.2} />
-      <pointLight position={[10, 10, 10]} intensity={0.8} />
-      <Stars radius={120} depth={50} count={2400} factor={4} saturation={0} fade speed={0.6} />
+      <color attach="background" args={['#0e0c0a']} />
+      <fog attach="fog" args={['#0e0c0a', 14, 48]} />
+      <ambientLight intensity={0.3} />
+      <pointLight position={[6, 6, 8]} intensity={0.6} color="#fcd9b0" />
+      <pointLight position={[-8, -2, 4]} intensity={0.4} color="#67E8F9" />
 
-      <ConnectionLines nodes={nodes} connections={connections} scores={scores} />
+      <GraphLinks
+        nodes={nodes}
+        links={links}
+        highlightSet={focusSet}
+        hasFocus={hasFocus}
+        searchScores={scores}
+        hasSearch={hasSearch}
+      />
 
-      {nodes.map(node => (
-        <NodeMesh
-          key={node.id}
-          node={node}
-          score={scores[node.id]}
-          isSelected={node.id === selectedId}
-          isHighlighted={!!query && (scores[node.id] || 0) > 0.15}
-          isDimmed={!!query && !(scores[node.id] >= 0.05)}
-          color={KIND_COLORS[node.kind]}
-          onSelect={() => onSelect(node.id === selectedId ? null : node.id)}
-        />
-      ))}
+      {nodes.map(node => {
+        const isFocused = focusId === node.id
+        const isNeighbor = focusSet ? focusSet.has(node.id) : false
+        const isHighlighted = hasSearch ? (scores[node.id] || 0) > 0.15 : isNeighbor
+        const isDimmed = hasSearch
+          ? !(scores[node.id] && scores[node.id] >= 0.05)
+          : hasFocus
+            ? !focusSet!.has(node.id)
+            : false
+
+        return (
+          <NodeMesh
+            key={node.id}
+            node={node}
+            score={scores[node.id]}
+            isSelected={node.id === selectedId}
+            isFocused={isFocused}
+            isHighlighted={isHighlighted}
+            isDimmed={isDimmed}
+            color={KIND_COLORS[node.kind]}
+            onSelect={() => onSelect(node.id === selectedId ? null : node.id)}
+            onHover={setHoveredId}
+          />
+        )
+      })}
 
       <SceneCamera targetPosition={targetPosition} />
 
       <EffectComposer multisampling={0}>
         <Bloom
-          intensity={0.55}
-          luminanceThreshold={0.32}
+          intensity={0.6}
+          luminanceThreshold={0.28}
           luminanceSmoothing={0.45}
           mipmapBlur
-        />
-        <ChromaticAberration
-          blendFunction={BlendFunction.NORMAL}
-          offset={new THREE.Vector2(0.0004, 0.0008)}
-          radialModulation={false}
-          modulationOffset={0}
         />
       </EffectComposer>
     </Canvas>

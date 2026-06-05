@@ -12,42 +12,48 @@ export function HeroCard({ visible }: Props) {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: visible ? 1 : 0, y: visible ? 0 : 12 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="hidden lg:block fixed bottom-10 left-1/2 -translate-x-1/2 z-10 px-4 sm:px-0 w-full sm:w-auto pointer-events-none"
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      className="hidden lg:block fixed bottom-8 left-1/2 -translate-x-1/2 z-10 pointer-events-none"
     >
-      <div className="mx-auto max-w-md rounded-2xl border border-white/10 bg-black/55 backdrop-blur-md shadow-2xl px-5 sm:px-6 py-4 pointer-events-auto">
-        <div className="flex items-baseline gap-2 mb-1">
-          <h1 className="text-white text-lg sm:text-xl font-bold tracking-tight">Harsha Yellela</h1>
-          <span className="text-[10px] tracking-widest uppercase text-white/40">3+ yrs</span>
+      <div
+        className="rounded-[4px] px-5 py-4 pointer-events-auto max-w-md"
+        style={{ background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }}
+      >
+        <div className="flex items-baseline gap-2 mb-1.5">
+          <h1 className="text-[var(--ink)] text-[18px] font-medium tracking-[-0.02em]">
+            Harsha Yellela
+          </h1>
+          <span className="serif-italic text-[var(--mute)] text-[14px]">— full-stack &amp; AI</span>
         </div>
-        <p className="text-white/80 text-xs sm:text-sm leading-snug">
-          Full Stack Engineer @{' '}
-          <span className="text-[#FFB347] font-semibold">teli.ai</span>{' '}
-          · voice + SMS AI agents for mortgage · GPT-4o · LangChain · AWS
+        <p className="text-[var(--body)] text-[13px] leading-[1.5]">
+          Full Stack Engineer at{' '}
+          <span className="text-[#F59E0B] font-medium">teli.ai</span>
+          . Voice + SMS AI agents for the mortgage industry.{' '}
+          <span className="text-[var(--body-strong)]">GPT-4o · Retell · ElevenLabs · pgvector RAG · AWS.</span>
         </p>
-        <div className="flex flex-wrap items-center gap-2 mt-3">
+        <div className="flex flex-wrap items-center gap-1.5 mt-3.5">
           <a
             href="/Harsha_Yellela_resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3.5 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-all hover:brightness-110"
-            style={{ background: '#D4A855', color: '#0A0D14' }}
+            className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium transition-all hover:brightness-95"
+            style={{ background: 'var(--ink)', color: 'var(--on-primary)' }}
           >
-            ↓ Résumé
+            Résumé
           </a>
           <Link
             href="/teli"
-            className="px-3.5 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase transition-all hover:brightness-110 flex items-center gap-1.5"
-            style={{ background: 'transparent', border: '1px solid #FFB347', color: '#FFB347' }}
+            className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium transition-all hover:bg-[rgba(245,158,11,0.1)] flex items-center gap-1.5"
+            style={{ border: '1px solid rgba(245, 158, 11, 0.4)', color: '#F59E0B' }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#FFB347] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-pulse" />
             Watch the call →
           </Link>
           <a
             href="mailto:harsha.yellela@gmail.com"
-            className="px-3.5 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase text-white/55 hover:text-white transition-colors"
+            className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body)] hover:text-[var(--ink)] hover:bg-[var(--canvas)] transition-colors"
           >
-            ✉ Email
+            Email
           </a>
         </div>
       </div>

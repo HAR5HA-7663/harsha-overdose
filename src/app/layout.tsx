@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Inter, Instrument_Serif, DM_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,14 +8,16 @@ const inter = Inter({
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-serif-edit",
+  weight: "400",
   subsets: ["latin"],
   display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({
-  variable: "--font-mono",
+const dmMono = DM_Mono({
+  variable: "--font-mono-code",
+  weight: "400",
   subsets: ["latin"],
   display: "swap",
 });
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
   },
   title: "Harsha Yellela — Full Stack Engineer @ teli.ai",
   description:
-    "Full Stack Engineer building voice and SMS AI agents for the mortgage industry. The portfolio is a walkable 3D latent space. Search it, click any node, or step into /teli to watch a live mortgage call get qualified.",
+    "Full Stack Engineer building voice and SMS AI agents for the mortgage industry. The portfolio is a walkable knowledge graph. Search it, click any node, or step into /teli to watch a live mortgage call get qualified.",
   keywords: [
     "Harsha Yellela",
     "Full Stack Engineer",
@@ -39,13 +41,13 @@ export const metadata: Metadata = {
     "LangChain",
     "teli.ai",
     "Portfolio",
-    "Latent Space",
+    "Knowledge Graph",
   ],
   authors: [{ name: "Harsha Yellela" }],
   creator: "Harsha Yellela",
   openGraph: {
     title: "Harsha Yellela — Full Stack Engineer @ teli.ai",
-    description: "A 3D latent-space portfolio. Click any node to retrieve. /teli shows a live mortgage call being qualified by GPT-4o + Retell + ElevenLabs.",
+    description: "A walkable knowledge graph of my work. /teli shows a live mortgage call being qualified by GPT-4o + Retell + ElevenLabs.",
     url: "https://har5ha.in",
     siteName: "Harsha Yellela",
     locale: "en_US",
@@ -54,7 +56,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Harsha Yellela — Full Stack Engineer @ teli.ai",
-    description: "A walkable 3D latent-space portfolio. /teli is a cinematic mortgage call.",
+    description: "A walkable knowledge graph. /teli is a cinematic mortgage call.",
   },
   robots: {
     index: true,
@@ -70,8 +72,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrains.variable} antialiased min-h-screen text-white`}
-        style={{ background: '#06080F', fontFamily: 'var(--font-inter), system-ui, sans-serif' }}
+        className={`${inter.variable} ${instrumentSerif.variable} ${dmMono.variable} antialiased min-h-screen`}
       >
         <script
           type="application/ld+json"
