@@ -1,97 +1,100 @@
-# Wake-Up Report — Portfolio Rebuild
+# Wake-Up Report — Portfolio Redesign (Warp + Obsidian)
 
-**Date:** 2026-06-02
-**Duration:** ~3 hours autonomous
+**Date:** 2026-06-05 (second redesign pass)
 **Status:** SHIPPED. Live at https://har5ha.in + https://har5ha.in/teli
 
 ---
 
-## What you wake up to
+## What's new in this pass
 
-A completely rebuilt portfolio with two modes:
+You asked for two things: implement the **Warp design.md** as the chrome,
+and make the graph feel like an **Obsidian vault** instead of a generic
+particle galaxy. Both done.
 
-### `har5ha.in` — Latent Space (your job-search anchor)
+### Visual identity → Warp aesthetic
 
-A walkable 3D galaxy where every section of your portfolio is an embedding node:
+- Warm dark canvas: `#0e0c0a` base, `#1d1916` graph background, `#2b2622` band, `#383330` card surface, `#3f3a36` hairline
+- Off-white ink `#f7f5f0` as the primary "color" — no chromatic accent
+- Typography: **Inter** for everything, **Instrument Serif** for editorial italic moments ("— full-stack & AI", "in real time"), **DM Mono** for code, captions, badges, timestamps
+- Tight 3-4 px radii throughout. No pills. No backdrop-blur. No drop-shadows. Hairlines + surface contrast carry elevation.
+- All UI shells re-skinned: TopNav, SearchOverlay, HeroCard, GraphLegend (new), DetailPanel, MobileFallback, /teli hero, SMS/Email/Engineer panels, controls.
 
-- **6 node kinds:** about (gold), skill (sky), project (fuchsia), experience (green), contact (rose), now (orange-pulsing teli hero)
-- **Real RAG search:** type "RAG", "voice agents", "mortgage", "Kubernetes" — nodes light up by cosine similarity with % match badges
-- **Click to retrieve:** any node → cinematic camera dolly + slide-in detail panel with bio, tech, GitHub links
-- **Bottom HeroCard (desktop):** name + role + employer + résumé + "Watch the call" CTAs always above the fold
-- **Mobile fallback:** scrollable text view with role, current work, top 5 projects, all contact CTAs
-- **Visual:** custom GLSL-style glow, bloom + chromatic aberration post-processing, ambient star field, animated connection lines between semantically-related nodes
-- **Top nav:** persistent résumé link + pulsing "Now · /teli" link
+### Graph → Obsidian vault behavior
 
-### `har5ha.in/teli` — Cinematic mortgage call (your authenticity anchor)
+- **Force-directed 3D layout** (custom simulation in `src/lib/positioning.ts`) — repulsion + link springs + center pull, 480 iterations, recentered and clamped to ±8.5 each axis so the cluster always fits the camera.
+- **Node radius scales with connection degree**. The "now" hub, LangChain, pgvector etc. become visibly larger because they have more semantic links.
+- **Hover any node** → that node + its neighbors stay bright; everything else dims to ~30%. Classic Obsidian focus pattern.
+- **Search dims non-matches** + shows % similarity chips on the matched nodes. Cosine sim runs client-side.
+- **Cyan connection lines** (electric Obsidian feel) brighten when both endpoints are in the focus set.
+- **GraphLegend** in the bottom-left (desktop) labels the six color groups.
 
-A 45-second simulated call that *embodies* what you ship at teli.ai:
+### /teli still cinematic
 
-- **Story:** Sarah Chen, 32, Michigan, $340K home, refi inquiry from a NEXA Lending Facebook lead
-- **3D stack visualization:** phone center (rings during ring phase), GPT-4o brain orb (top, pulses during thinking + function calls), Retell number provider (right, lights during call), ElevenLabs voice (left, lights during agent speech), pgvector chunks (bottom-left, light during RAG retrieval), animated data-flow beams between all of them
-- **Choreographed beats:** ringing → borrower speaks → GPT-4o thinking → function call fires → pgvector RAG retrieval → agent speaks → SMS sent → email sent → qualified — all with synchronized subtitle phase chips and code overlays
-- **SMS side panel:** 10DLC compliance flow expandable (Brand → Campaign → Use Case → MO/MT → Carrier → Live), live typing indicator from t=22s, full message sequence from t=33s
-- **Email side panel:** loan-officer Jonathan Haddad NEXA Lending follow-up with $84K savings number
-- **Engineer Mode overlay:** full production stack — Retell, ElevenLabs, GPT-4o, Node.js/Next.js, Python FastAPI, LangChain, Supabase + pgvector, SMTP BYOD, AWS ECS/EKS/Lambda, Docker, K8s, GitHub Actions + Jenkins
-- **Controls:** play/pause, replay, scrubbable progress bar
-
----
-
-## Recruiter verdict (Maya Chen, Sr Eng Recruiter, Series B AI startup)
-
-> "Voice agents (Retell + ElevenLabs + GPT-4o function calling), pgvector RAG, 10DLC compliance, multi-tenant Postgres, AWS end-to-end — this is exactly the production AI/ML stack we run. **Yes, call him today.**"
-
-Two rounds of feedback. Round 1 caught above-fold info issues (no role, no employer, no résumé CTA visible). Round 2 confirmed all P0s resolved.
-
-Critiques saved to `/tmp/portfolio-shots/RECRUITER_CRITIQUE.md` and `/tmp/portfolio-shots/v2/RECRUITER_CRITIQUE_V2.md`.
+The 45-second Sarah Chen refi call still works exactly as before — phone center, GPT-4o brain orb top, Retell + ElevenLabs flanking, pgvector chunks bottom-left, SMS panel with 10DLC expandable steps, email panel with NEXA follow-up, engineer-mode architecture overlay. Just re-skinned to the Warp palette.
 
 ---
 
-## Files written (in this repo)
-
-| Layer | File |
-|---|---|
-| Design spec | `docs/superpowers/specs/2026-06-02-portfolio-latent-space-and-teli-route-design.md` |
-| Data | `src/data/nodes.ts` (28 node records) |
-| Positioning | `src/lib/positioning.ts` (deterministic embedding + cosine sim) |
-| Latent Space | `src/components/latent-space/*` (Scene, NodeMesh, SearchOverlay, DetailPanel, HeroCard, TopNav, IntroOverlay, MobileFallback) |
-| /teli | `src/components/teli/*` (CallScene, SMSPanel, EmailPanel, Subtitles, EngineerMode, choreography.ts) |
-| Pages | `src/app/page.tsx`, `src/app/teli/page.tsx`, `src/app/layout.tsx` |
-| Globals | `src/app/globals.css` |
-
-Deleted from layout: legacy Total Overdose film-grain + scanlines + cowboy fonts (incompatible with the new aesthetic).
-
----
-
-## Commits to `origin/main`
+## Files touched
 
 ```
-77514df V4: live SMS typing indicator during qualification phase
-d536eb4 V3: tighten /teli orb positions, HeroCard desktop-only
-256b81b V2: recruiter critique fixes (HeroCard, mobile fallback, lower bloom)
-d58cd88 V1: full LATENT SPACE homepage + /teli cinematic call
-9c5e8ed Replace fake PNC Bank role with real teli.ai Full Stack Engineer role
+src/app/globals.css                          full rewrite — Warp tokens
+src/app/layout.tsx                            Inter + Instrument Serif + DM Mono
+src/data/nodes.ts                             KIND_COLORS → Obsidian palette
+src/lib/positioning.ts                        force-directed simulation
+src/components/latent-space/LatentSpaceScene.tsx   cyan-line GraphLinks + focus highlight
+src/components/latent-space/NodeMesh.tsx           degree-driven radius + dim/focus states
+src/components/latent-space/SearchOverlay.tsx      Warp text-input chrome
+src/components/latent-space/TopNav.tsx             cyan status dot + tight Warp links
+src/components/latent-space/HeroCard.tsx           serif italic editorial, off-white CTA
+src/components/latent-space/DetailPanel.tsx        hairline borders, mono tag chips
+src/components/latent-space/MobileFallback.tsx     warm canvas gradient
+src/components/latent-space/GraphLegend.tsx        NEW — Groups key bottom-left
+src/components/teli/CallScene.tsx                  unchanged structure, Warp colors via tokens
+src/components/teli/SMSPanel.tsx                   Warp card + cyan accents
+src/components/teli/EmailPanel.tsx                 Warp card + rose accent
+src/components/teli/Subtitles.tsx                  mono phase chips
+src/components/teli/EngineerMode.tsx               Warp tabular layout
+src/app/teli/page.tsx                              Warp chrome
+src/app/page.tsx                                   simpler — graph + overlays only
 ```
 
----
-
-## Open follow-ups (for whenever you wake up)
-
-1. **Twilio → Retell correction in resumes.** Earlier in this session I had Twilio listed for teli.ai voice work — you corrected it to Retell mid-session. The portfolio + /teli scene + Engineer Mode all use Retell correctly. But resumes (`sde`, `ml`, `devops`, `ai_automation`, `java_fullstack`, `test_automation`, `resume`, `temp` — all in `/home/har5ha/Desktop/resume/resumes/html/`) and cover letters (`/home/har5ha/Desktop/resume/cover_letters/`) still say "Twilio" for the voice stack. Memory note saved at `~/.claude/projects/-home-har5ha-Desktop-resume/memory/teli_tech_stack.md`. Ask Claude to "fix the Retell vs Twilio thing in my resumes and cover letters" next session.
-
-2. **Optional polish (recruiter v2 marked "polish, not signal"):**
-   - Orb hover labels on the homepage galaxy (today it requires clicking)
-   - Engineer Mode bottom row sometimes scroll-clips on shorter viewports
-   - Connection-line opacity could be tuned higher when matches are active
-
-3. **3D screenshots:** agent-browser headless can't render WebGL on this Linux machine, so I tested by hitting the deployed Vercel CDN. Production screenshots saved to `/tmp/portfolio-shots/v3/` if you want to see what I saw.
+`IntroOverlay.tsx` was dropped — Obsidian doesn't have a flashy "initializing" intro.
 
 ---
 
-## Quick sanity-check URLs
+## Commits
 
-- Home: https://har5ha.in
-- Teli: https://har5ha.in/teli
-- Print resume: https://har5ha.in/Harsha_Yellela_resume.pdf
-- GitHub: https://github.com/HAR5HA-7663/harsha-overdose
+```
+6d2eaa3 Recenter graph at origin + clamp extent ±8.5
+a3360d7 Make graph actually visible: bigger nodes, closer camera, tighter layout
+dc9aa16 Fix invisible graph: nodes were 70% fogged at camera distance
+892d363 Tune graph layout: bigger spread, camera back, smaller halo
+e511105 Redesign: Warp aesthetic + Obsidian-style force-directed knowledge graph
+```
 
-Sleep well. The site is alive.
+Iterated 4 times on the layout/camera/fog to get the graph rendering correctly
+(force layout was collapsing into a single blob, then nodes were too tiny, then
+the cluster centroid drifted, then fog was killing visibility). v9 is the
+ship state — verified at 1920, 1440, 390 viewports.
+
+---
+
+## Still on the open-followups list (from prior run)
+
+1. **Twilio → Retell correction in resumes/cover letters.** The portfolio
+   now uses Retell correctly everywhere; only the resume HTML files and cover
+   letters still need the swap. Memory note saved at
+   `~/.claude/projects/-home-har5ha-Desktop-resume/memory/teli_tech_stack.md`.
+
+---
+
+## Sanity-check URLs
+
+- Home (Obsidian graph + Warp chrome): https://har5ha.in
+- Teli (cinematic call): https://har5ha.in/teli
+- Résumé: https://har5ha.in/Harsha_Yellela_resume.pdf
+- Repo: https://github.com/HAR5HA-7663/harsha-overdose
+
+Both pages confirmed live + functional via agent-browser at multiple viewports.
+
+Sleep well. Site looks like an Obsidian vault now.
