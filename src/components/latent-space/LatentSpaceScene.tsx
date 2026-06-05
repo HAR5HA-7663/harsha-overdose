@@ -115,10 +115,10 @@ function SceneCamera({ targetPosition }: { targetPosition: [number, number, numb
       ref={controlsRef}
       enableDamping
       dampingFactor={0.08}
-      minDistance={8}
-      maxDistance={70}
+      minDistance={6}
+      maxDistance={55}
       autoRotate={!hasTarget.current}
-      autoRotateSpeed={0.18}
+      autoRotateSpeed={0.2}
     />
   )
 }
@@ -162,13 +162,13 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
   return (
     <Canvas
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-      camera={{ position: [0, 2, 38], fov: 50 }}
+      camera={{ position: [0, 1, 26], fov: 52 }}
       style={{ background: '#0e0c0a' }}
       dpr={[1, 2]}
       onPointerMissed={() => { /* click empty space — keep selection */ }}
     >
       <color attach="background" args={['#0e0c0a']} />
-      <fog attach="fog" args={['#0e0c0a', 14, 48]} />
+      <fog attach="fog" args={['#0e0c0a', 32, 70]} />
       <ambientLight intensity={0.3} />
       <pointLight position={[6, 6, 8]} intensity={0.6} color="#fcd9b0" />
       <pointLight position={[-8, -2, 4]} intensity={0.4} color="#67E8F9" />
@@ -212,9 +212,9 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
 
       <EffectComposer multisampling={0}>
         <Bloom
-          intensity={0.6}
-          luminanceThreshold={0.28}
-          luminanceSmoothing={0.45}
+          intensity={0.8}
+          luminanceThreshold={0.18}
+          luminanceSmoothing={0.4}
           mipmapBlur
         />
       </EffectComposer>
