@@ -92,9 +92,10 @@ function SceneCamera({ targetPosition }: { targetPosition: [number, number, numb
     if (targetPosition) {
       const [x, y, z] = targetPosition
       targetVec.current.set(x, y, z)
-      const dir = new THREE.Vector3(x, y, z).normalize()
-      const camOffset = dir.clone().multiplyScalar(5)
-      camTargetVec.current.set(x + camOffset.x, y + camOffset.y, z + camOffset.z)
+      const len = Math.sqrt(x * x + y * y + z * z) || 1
+      const dir = new THREE.Vector3(x / len, y / len, z / len)
+      const dollyDistance = 9
+      camTargetVec.current.set(x + dir.x * dollyDistance, y + dir.y * dollyDistance, z + dir.z * dollyDistance)
       hasTarget.current = true
     } else {
       hasTarget.current = false
@@ -114,8 +115,8 @@ function SceneCamera({ targetPosition }: { targetPosition: [number, number, numb
       ref={controlsRef}
       enableDamping
       dampingFactor={0.08}
-      minDistance={5}
-      maxDistance={40}
+      minDistance={8}
+      maxDistance={70}
       autoRotate={!hasTarget.current}
       autoRotateSpeed={0.18}
     />
@@ -161,7 +162,7 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
   return (
     <Canvas
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-      camera={{ position: [0, 1, 22], fov: 48 }}
+      camera={{ position: [0, 2, 38], fov: 50 }}
       style={{ background: '#0e0c0a' }}
       dpr={[1, 2]}
       onPointerMissed={() => { /* click empty space — keep selection */ }}

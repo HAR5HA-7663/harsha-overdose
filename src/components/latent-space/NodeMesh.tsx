@@ -20,8 +20,8 @@ type Props = {
 
 // Obsidian-style: radius driven by node degree (link count).
 function radiusFromDegree(degree: number, kind: PositionedNode['kind']): number {
-  const base = kind === 'now' ? 0.32 : kind === 'about' ? 0.26 : 0.16
-  const bump = Math.min(degree, 12) * 0.018
+  const base = kind === 'now' ? 0.28 : kind === 'about' ? 0.22 : 0.14
+  const bump = Math.min(degree, 14) * 0.012
   return base + bump
 }
 
@@ -44,7 +44,7 @@ export function NodeMesh({
     const dim = isDimmed ? 0.55 : 1
     const target = baseR * pulse * focus * dim
     meshRef.current.scale.lerp(new THREE.Vector3(target, target, target), 0.18)
-    glowRef.current.scale.lerp(new THREE.Vector3(target * 2.6, target * 2.6, target * 2.6), 0.18)
+    glowRef.current.scale.lerp(new THREE.Vector3(target * 1.9, target * 1.9, target * 1.9), 0.18)
   })
 
   // Color decisions — Obsidian uses muted color groups; highlight = brighter
@@ -55,13 +55,13 @@ export function NodeMesh({
 
   return (
     <group position={node.position}>
-      {/* Soft glow halo */}
+      {/* Soft glow halo — kept subtle so multiple nodes coexist visually */}
       <mesh ref={glowRef}>
         <sphereGeometry args={[1, 14, 14]} />
         <meshBasicMaterial
           color={renderColor}
           transparent
-          opacity={isDimmed ? 0.04 : isFocused || isHighlighted ? 0.22 : isNow ? 0.18 : 0.10}
+          opacity={isDimmed ? 0.02 : isFocused || isHighlighted ? 0.16 : isNow ? 0.12 : 0.07}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />

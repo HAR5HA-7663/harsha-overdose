@@ -77,7 +77,7 @@ function seedRand(seed: string) {
 function runForceLayout(
   nodes: GalaxyNode[],
   links: Link[],
-  iterations = 320,
+  iterations = 480,
 ): Record<string, [number, number, number]> {
   // Seed positions near tag anchors so layout converges to a sensible map.
   const pos: Record<string, [number, number, number]> = {}
@@ -95,10 +95,10 @@ function runForceLayout(
     vel[n.id] = [0, 0, 0]
   }
 
-  const idealLen = 2.4
-  const repel = 14
-  const center = 0.012
-  const damping = 0.86
+  const idealLen = 4.2
+  const repel = 38
+  const center = 0.004
+  const damping = 0.84
 
   for (let step = 0; step < iterations; step++) {
     // Repulsion (Coulomb-like) — every pair pushes apart, scaled by 1/r²
