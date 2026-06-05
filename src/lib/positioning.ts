@@ -79,25 +79,20 @@ function runForceLayout(
   links: Link[],
   iterations = 480,
 ): Record<string, [number, number, number]> {
-  // Seed positions near tag anchors so layout converges to a sensible map.
+  // Seed positions randomly near origin — force layout finds the structure
+  // and the center pull keeps the cluster centered.
   const pos: Record<string, [number, number, number]> = {}
   const vel: Record<string, [number, number, number]> = {}
 
   for (const n of nodes) {
-    const anchors = n.tags.map(t => TAG_ANCHORS[t]).filter(Boolean) as [number, number, number][]
     const r = seedRand(n.id)
-    let cx = 0, cy = 0, cz = 0
-    if (anchors.length > 0) {
-      for (const a of anchors) { cx += a[0]; cy += a[1]; cz += a[2] }
-      cx /= anchors.length; cy /= anchors.length; cz /= anchors.length
-    }
-    pos[n.id] = [cx + r(1) * 1.2, cy + r(2) * 1.2, cz + r(3) * 1.2]
+    pos[n.id] = [r(1) * 3, r(2) * 3, r(3) * 2]
     vel[n.id] = [0, 0, 0]
   }
 
-  const idealLen = 2.4
-  const repel = 14
-  const center = 0.014
+  const idealLen = 2.6
+  const repel = 18
+  const center = 0.03
   const damping = 0.86
 
   for (let step = 0; step < iterations; step++) {
@@ -151,6 +146,21 @@ function runForceLayout(
       p[2] += v[2] * scale
       v[0] *= damping; v[1] *= damping; v[2] *= damping
     }
+  }
+
+  // Recenter the whole cluster on origin and clamp extents so the camera sees everything.
+  let cx = 0, cy = 0, cz = 0
+  for (const n of nodes) {
+    cx += pos[n.id][0]
+    cy += pos[n.id][1]
+    cz += pos[n.id][2]
+  }
+  cx /= nodes.length; cy /= nodes.length; cz /= nodes.length
+  const extent = 8.5
+  for (const n of nodes) {
+    pos[n.id][0] = Math.max(-extent, Math.min(extent, pos[n.id][0] - cx))
+    pos[n.id][1] = Math.max(-extent, Math.min(extent, pos[n.id][1] - cy))
+    pos[n.id][2] = Math.max(-extent * 0.7, Math.min(extent * 0.7, pos[n.id][2] - cz))
   }
   return pos
 }

@@ -162,13 +162,13 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
   return (
     <Canvas
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-      camera={{ position: [0, 0.5, 16], fov: 55 }}
+      camera={{ position: [0, 0, 18], fov: 50 }}
       style={{ background: '#0e0c0a' }}
       dpr={[1, 2]}
       onPointerMissed={() => { /* click empty space — keep selection */ }}
     >
       <color attach="background" args={['#0e0c0a']} />
-      <fog attach="fog" args={['#0e0c0a', 18, 36]} />
+      <fog attach="fog" args={['#0e0c0a', 22, 40]} />
       <ambientLight intensity={0.3} />
       <pointLight position={[6, 6, 8]} intensity={0.6} color="#fcd9b0" />
       <pointLight position={[-8, -2, 4]} intensity={0.4} color="#67E8F9" />
