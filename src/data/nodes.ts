@@ -6,7 +6,20 @@ export type NodeKind = 'about' | 'skill' | 'project' | 'experience' | 'contact' 
 export type NodeDetail =
   | { kind: 'about'; bio: string[]; resumeUrl: string }
   | { kind: 'skill'; category: string }
-  | { kind: 'project'; description: string; tech: string[]; github?: string; live?: string; impact?: string }
+  | {
+      kind: 'project'
+      description: string
+      tech: string[]
+      github?: string
+      live?: string
+      impact?: string
+      caseStudy?: {
+        problem: string
+        approach: { title: string; body: string }[]
+        metrics: { value: string; label: string }[]
+        receipt?: string
+      }
+    }
   | { kind: 'experience'; company: string; period: string; location: string; bullets: string[]; current?: boolean }
   | { kind: 'contact'; email: string; linkedin: string; github: string; portfolio: string }
   | { kind: 'now'; description: string; clients: string[]; stack: string[]; route: string }
@@ -212,6 +225,34 @@ export const NODES: GalaxyNode[] = [
       tech: ['PyTorch', 'QLoRA', 'PEFT', 'TRL', 'Transformers', 'FastAPI'],
       github: 'https://github.com/HAR5HA-7663/Resume-Optimzer',
       impact: '9.5/10 GPT eval · 22GB peak VRAM',
+      caseStudy: {
+        problem:
+          'Off-the-shelf LLMs write resume bullets that pass human eyes but lose the ATS keyword fight. A 70B model run was infeasible on a single 3090 — and a 7B with prompt-engineering kept producing tokens not present in the JD.',
+        approach: [
+          {
+            title: 'Curate JD → bullet pairs',
+            body: '1,304 examples from public JDs + Harsha-shipped bullets, each annotated with the ATS keyword the bullet must carry.',
+          },
+          {
+            title: 'QLoRA on Qwen3-4B',
+            body: '4-bit NF4 quantization, LoRA rank 16 / alpha 32, 3 epochs at batch 4 with gradient accumulation 4. Adapter checkpoints under 200 MB.',
+          },
+          {
+            title: 'Serve through FastAPI',
+            body: 'Adapter merged at load, streamed via SSE behind a JD-paste form. 3–5 s p95 on a single 3090 — production-feasible.',
+          },
+          {
+            title: 'Eval gate',
+            body: 'GPT-4 graded each bullet for JD keyword presence + ATS-style verbs. Continued training until a 200-bullet holdout averaged 9.5 / 10.',
+          },
+        ],
+        metrics: [
+          { value: '9.5 / 10', label: 'GPT eval' },
+          { value: '18–22 GB', label: 'VRAM peak' },
+          { value: '3–5 s', label: 'p95 latency' },
+        ],
+        receipt: 'github.com/HAR5HA-7663/Resume-Optimzer',
+      },
     },
   },
   {
@@ -273,6 +314,34 @@ export const NODES: GalaxyNode[] = [
       github: 'https://github.com/HAR5HA-7663/luffy-gpt',
       live: 'https://huggingface.co/spaces/HAR5HA-YELLELA/luffy-gpt-space',
       impact: 'val loss 1.18 · 10.81M params',
+      caseStudy: {
+        problem:
+          'Most "I built a transformer from scratch" repos stop at a toy character-level model that overfits in 10 minutes. The bar was higher: a real BPE tokenizer, a multi-GPU run, and a hosted demo a stranger could chat with.',
+        approach: [
+          {
+            title: 'BPE tokenizer first',
+            body: 'Trained SentencePiece on the One Piece scripts corpus — 3.11× compression vs character-level — so the model has a meaningful vocabulary before training step 0.',
+          },
+          {
+            title: 'Decoder-only architecture',
+            body: '6 heads × 6 layers, multi-head causal self-attention, pre-LN residuals. 10.81 M params — small enough to iterate, large enough to actually learn structure.',
+          },
+          {
+            title: 'Dual-3090 training loop',
+            body: 'DDP across both RTX 3090s, mixed-precision, gradient accumulation. 25 K steps drove val loss from 5.4 → 1.18 over ~6 hours of wall-clock.',
+          },
+          {
+            title: 'Ship the demo',
+            body: 'Adapter pushed to HuggingFace Hub, Gradio Space live with a chat box — a stranger can talk to LuffyGPT in their browser without me touching anything.',
+          },
+        ],
+        metrics: [
+          { value: '10.81 M', label: 'params' },
+          { value: '1.18', label: 'val loss @ 25K' },
+          { value: '3.11×', label: 'BPE compression' },
+        ],
+        receipt: 'huggingface.co/spaces/HAR5HA-YELLELA/luffy-gpt-space',
+      },
     },
   },
   {

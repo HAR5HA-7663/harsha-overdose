@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { LivePulse } from './LivePulse'
 
 export function TopNav() {
   return (
@@ -31,8 +32,9 @@ export function TopNav() {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.5 }}
-          className="pointer-events-auto flex items-center gap-1"
+          className="pointer-events-auto flex items-center gap-2"
         >
+          <LivePulse />
           <a
             href="/Harsha_Yellela_resume.pdf"
             target="_blank"

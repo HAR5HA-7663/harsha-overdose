@@ -103,14 +103,67 @@ function DetailBody({ detail }: { detail: NodeDetail }) {
     )
   }
   if (detail.kind === 'project') {
+    const cs = detail.caseStudy
     return (
-      <div className="space-y-3.5">
+      <div className="space-y-4">
         <p className="text-[var(--body-strong)] text-[14px] leading-[1.55]">{detail.description}</p>
         {detail.impact && (
           <p className="mono text-[11px] uppercase tracking-[0.2em]" style={{ color: '#67E8F9' }}>
             ★ {detail.impact}
           </p>
         )}
+
+        {cs && (
+          <div className="rounded-[4px] p-4 space-y-4" style={{ background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }}>
+            <div>
+              <p className="mono text-[9px] uppercase tracking-[0.32em] text-[var(--mute)] mb-1">Problem</p>
+              <p className="text-[var(--body-strong)] text-[13px] leading-[1.55]">{cs.problem}</p>
+            </div>
+
+            <div>
+              <p className="mono text-[9px] uppercase tracking-[0.32em] text-[var(--mute)] mb-2">Approach</p>
+              <ol className="space-y-2.5">
+                {cs.approach.map((step, i) => (
+                  <li key={step.title} className="flex gap-3">
+                    <span className="mono text-[10px] text-[#67E8F9] mt-1 tabular-nums w-4 flex-shrink-0">
+                      0{i + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-[var(--ink)] text-[12.5px] font-medium leading-[1.35]">{step.title}</p>
+                      <p className="text-[var(--body)] text-[12px] leading-[1.5] mt-0.5">{step.body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            <div>
+              <p className="mono text-[9px] uppercase tracking-[0.32em] text-[var(--mute)] mb-2">Receipts</p>
+              <div className="grid grid-cols-3 gap-2">
+                {cs.metrics.map(m => (
+                  <div
+                    key={m.label}
+                    className="rounded-[3px] px-2 py-2 text-center"
+                    style={{ background: 'var(--canvas)', border: '1px solid var(--hairline)' }}
+                  >
+                    <p className="font-display text-[var(--ink)] text-[16px] leading-[1.05] font-normal" style={{ letterSpacing: '-0.015em', fontVariationSettings: '"SOFT" 100, "opsz" 144' }}>
+                      {m.value}
+                    </p>
+                    <p className="mono text-[8.5px] uppercase tracking-[0.18em] text-[var(--mute)] mt-1">
+                      {m.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              {cs.receipt && (
+                <p className="mono text-[10px] text-[var(--mute)] mt-2.5 truncate">
+                  <span className="text-[var(--body)]">→</span> {cs.receipt}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-wrap gap-1.5">
           {detail.tech.map(t => (
             <span key={t} className="mono px-2 py-0.5 rounded-[3px] text-[11px] text-[var(--body)]" style={{ background: 'var(--canvas-soft)' }}>
