@@ -13,10 +13,10 @@ const SPEAKER_LABEL: Record<NonNullable<Beat['speaker']>, { name: string; color:
 const PHASE_LABEL: Record<Beat['phase'], string> = {
   ringing: 'ringing',
   borrower: 'borrower',
-  thinking: 'gpt-4o · thinking',
+  thinking: 'reasoning · thinking',
   'tool-call': 'function call',
   rag: 'pgvector · rag',
-  agent: 'agent · elevenlabs',
+  agent: 'agent · tts',
   qualified: 'qualified',
   idle: 'idle',
 }

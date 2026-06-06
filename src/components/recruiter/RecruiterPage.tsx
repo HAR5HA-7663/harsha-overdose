@@ -77,7 +77,7 @@ const EXPERIENCE = [
     period: "Apr 2026 – Present",
     type: "Full-time",
     bullets: [
-      "Built voice calling AI agents with OpenAI GPT-4o function calling and Twilio telephony for mortgage clients including bevri.ai and NEXA Lending, with real-time transcription, summarization, and auto-qualification of leads in production",
+      "Built voice-calling AI agents with function-calling reasoning + streaming TTS over a telephony layer for mortgage clients including bevri.ai and NEXA Lending — real-time transcription, summarization, and auto-qualification of leads live in production.",
       "Shipped SMS agentic workflows with 10DLC compliance, agent-creation pipeline, and conversation state management in Node.js — live for mortgage broker clients today",
       "Integrated teli.ai voice and SMS agentic capabilities into bevri.ai via REST APIs and Next.js + Node.js services for imminent customer launch",
       "Implemented multi-tenant data isolation in bevri.ai with row-level security on Supabase/PostgreSQL, enabling per-loan-officer workable environments",
