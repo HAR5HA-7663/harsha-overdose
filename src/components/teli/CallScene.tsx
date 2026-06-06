@@ -198,8 +198,8 @@ export function CallScene({ beat, elapsed }: Props) {
         <PhoneObject ringing={retellActive} />
       </group>
 
-      {/* Top: GPT-4o brain */}
-      <Orb position={[0, 2.4, -1]} color="#86EFAC" label="GPT-4o" sublabel="brain · function calling" size={0.55} active={openaiActive} pulse={1.6} />
+      {/* Top: agent brain (LLM with function calling) */}
+      <Orb position={[0, 2.4, -1]} color="#86EFAC" label="reasoning" sublabel="brain · function calling" size={0.55} active={openaiActive} pulse={1.6} />
 
       {/* Right: Retell (telephony) */}
       <Orb position={[2.6, 0.6, -0.6]} color="#FFB347" label="Retell" sublabel="number provider" size={0.45} active={retellActive} pulse={1.2} />
