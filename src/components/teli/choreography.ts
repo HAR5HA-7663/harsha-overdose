@@ -11,7 +11,7 @@ export type Beat = {
 
 export const BEATS: Beat[] = [
   { time: 0.0,  phase: 'ringing', caption: 'Incoming call · NEXA Lending lead · Sarah Chen · Michigan' },
-  { time: 3.0,  phase: 'ringing', caption: '◐ Connecting via Retell …' },
+  { time: 3.0,  phase: 'ringing', caption: '◐ Connecting via telephony layer …' },
   { time: 5.0,  phase: 'borrower', speaker: 'sarah', caption: '"Hi, I saw your ad on Facebook — I want to refinance my mortgage."' },
   { time: 9.5,  phase: 'thinking', caption: 'agent.think("classify intent")' },
   { time: 11.0, phase: 'thinking', caption: '→ intent = refinance_inquiry · confidence 0.94' },

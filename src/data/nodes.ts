@@ -77,7 +77,7 @@ export const TAG_ANCHORS: Record<string, [number, number, number]> = {
   // Current work (front-center, brightest)
   current:       [ 0.0,  1.5,  5.0],
   mortgage:      [-1.0,  1.0,  5.5],
-  retell:        [ 1.0,  0.5,  5.5],
+  telephony:        [ 1.0,  0.5,  5.5],
   elevenlabs:    [-0.5,  2.0,  5.0],
   openai:        [ 0.5,  2.0,  5.0],
 }
@@ -131,7 +131,7 @@ export const NODES: GalaxyNode[] = [
     kind: 'now',
     title: 'Now → teli.ai',
     oneLiner: 'Agentic voice + SMS for mortgage LOs. Click to enter the call.',
-    tags: ['current', 'voice-agent', 'mortgage', 'rag', 'agentic', 'retell', 'elevenlabs', 'openai'],
+    tags: ['current', 'voice-agent', 'mortgage', 'rag', 'agentic', 'telephony', 'elevenlabs', 'openai'],
     detail: {
       kind: 'now',
       description:
@@ -144,7 +144,7 @@ export const NODES: GalaxyNode[] = [
         'Cross-encoder reranking',
         'pgvector · multi-tenant Postgres RLS',
         '10DLC SMS state machine',
-        'Retell telephony · ElevenLabs voice',
+        'Telephony layer · streaming TTS voice',
         'AWS ECS/EKS/Lambda · K8s · CI/CD',
       ],
       route: '/teli',
@@ -165,7 +165,7 @@ export const NODES: GalaxyNode[] = [
       location: 'Remote, USA',
       current: true,
       bullets: [
-        'Built voice-calling AI agents with function-calling reasoning on Retell + ElevenLabs for mortgage clients (bevri.ai, NEXA Lending) — real-time transcription, summarization, lead auto-qualification live in production.',
+        'Built voice-calling AI agents with function-calling reasoning + streaming TTS over a telephony layer for mortgage clients (bevri.ai, NEXA Lending) — real-time transcription, summarization, lead auto-qualification live in production.',
         'Shipped SMS agentic workflows with full 10DLC compliance registration — live in production today.',
         'Engineered RAG pipeline ingesting chat/call transcripts into pgvector with LangChain orchestration.',
         'Owned end-to-end deployment on AWS (ECS, EKS, Lambda) with Docker, K8s, GitHub Actions/Jenkins CI/CD at 99%+ uptime.',

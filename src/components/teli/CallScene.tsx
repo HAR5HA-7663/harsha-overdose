@@ -156,9 +156,10 @@ function CameraRig() {
   // Don't call s.clock.getDelta() — R3F already calls it once per frame and
   // pulling it again here corrupts the timing for other consumers (the second
   // call returns ~0 because oldTime has been updated).
+  // Subtle parallax only — the scene should feel composed, not swimmy.
   useFrame((s) => {
-    s.camera.position.x = Math.sin(s.clock.elapsedTime * 0.12) * 0.6
-    s.camera.position.y = 0.4 + Math.cos(s.clock.elapsedTime * 0.1) * 0.3
+    s.camera.position.x = Math.sin(s.clock.elapsedTime * 0.08) * 0.35
+    s.camera.position.y = 0.6 + Math.cos(s.clock.elapsedTime * 0.07) * 0.18
     s.camera.lookAt(0, 0, 0)
   })
   return null
@@ -173,7 +174,7 @@ export function CallScene({ beat, elapsed }: Props) {
   const isBorrower = beat.phase === 'borrower'
   const isQualified = beat.phase === 'qualified'
 
-  const retellActive = isRinging || isBorrower
+  const telephonyActive = isRinging || isBorrower
   const openaiActive = isThinking || isTool || isAgent
   const elevenActive = isAgent
   const pgvectorActive = isRag
@@ -181,12 +182,12 @@ export function CallScene({ beat, elapsed }: Props) {
   return (
     <Canvas
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-      camera={{ position: [0, 0.4, 6.5], fov: 50 }}
+      camera={{ position: [0, 0.6, 11], fov: 38 }}
       style={{ background: '#06080F' }}
       dpr={[1, 2]}
     >
       <color attach="background" args={['#06080F']} />
-      <fog attach="fog" args={['#06080F', 6, 28]} />
+      <fog attach="fog" args={['#06080F', 10, 36]} />
       <ambientLight intensity={0.3} />
       <pointLight position={[0, 4, 4]} intensity={1.2} color="#FFB347" />
       <pointLight position={[-4, -2, 2]} intensity={0.6} color="#7DD3FC" />
@@ -195,23 +196,23 @@ export function CallScene({ beat, elapsed }: Props) {
 
       {/* Center: the call (phone) */}
       <group position={[0, 0, 0]}>
-        <PhoneObject ringing={retellActive} />
+        <PhoneObject ringing={telephonyActive} />
       </group>
 
       {/* Top: agent brain (LLM with function calling) */}
-      <Orb position={[0, 2.4, -1]} color="#86EFAC" label="reasoning" sublabel="brain · function calling" size={0.55} active={openaiActive} pulse={1.6} />
+      <Orb position={[0, 2.4, -1]} color="#86EFAC" label="reasoning" sublabel="brain · function calling" size={0.5} active={openaiActive} pulse={1.6} />
 
-      {/* Right: Retell (telephony) */}
-      <Orb position={[2.6, 0.6, -0.6]} color="#FFB347" label="Retell" sublabel="number provider" size={0.45} active={retellActive} pulse={1.2} />
+      {/* Right: telephony (PSTN provider — kept generic) */}
+      <Orb position={[2.6, 0.6, -0.6]} color="#FFB347" label="telephony" sublabel="PSTN · session streaming" size={0.4} active={telephonyActive} pulse={1.2} />
 
-      {/* Left: ElevenLabs (voice) */}
-      <Orb position={[-2.4, 1.0, -0.6]} color="#C084FC" label="ElevenLabs" sublabel="voice synthesis" size={0.45} active={elevenActive} pulse={1.4} />
+      {/* Left: voice synthesis (TTS) */}
+      <Orb position={[-2.4, 1.0, -0.6]} color="#C084FC" label="voice" sublabel="streaming TTS" size={0.4} active={elevenActive} pulse={1.4} />
 
       {/* Bottom-left cluster: pgvector chunks */}
       <VectorChunks active={pgvectorActive} />
 
       {/* Beams */}
-      <Beam from={[2.6, 0.6, -0.6]}   to={[0, 0, 0]} color="#FFB347" active={retellActive} />
+      <Beam from={[2.6, 0.6, -0.6]}   to={[0, 0, 0]} color="#FFB347" active={telephonyActive} />
       <Beam from={[0, 2.4, -1]}       to={[0, 0, 0]} color="#86EFAC" active={openaiActive} />
       <Beam from={[-2.4, 1.0, -0.6]}  to={[0, 0, 0]} color="#C084FC" active={elevenActive} />
       <Beam from={[-3.0, -1.8, -1.4]} to={[0, 0, 0]} color="#7DD3FC" active={pgvectorActive} />
@@ -228,14 +229,14 @@ export function CallScene({ beat, elapsed }: Props) {
       <OrbitControls
         enableDamping
         dampingFactor={0.08}
-        minDistance={4}
-        maxDistance={14}
+        minDistance={7}
+        maxDistance={18}
         enablePan={false}
         autoRotate={false}
       />
 
       <EffectComposer multisampling={0}>
-        <Bloom intensity={0.7} luminanceThreshold={0.3} luminanceSmoothing={0.45} mipmapBlur />
+        <Bloom intensity={0.55} luminanceThreshold={0.35} luminanceSmoothing={0.5} mipmapBlur />
       </EffectComposer>
     </Canvas>
   )

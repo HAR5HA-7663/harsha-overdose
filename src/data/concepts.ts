@@ -23,9 +23,9 @@ function concept({ id, title, oneLiner, tags }: ConceptInit): GalaxyNode {
 
 export const CONCEPT_NODES: GalaxyNode[] = [
   // ── teli.ai voice agent fan-out ────────────────────────────────────────
-  concept({ id: 'retell-tel', title: 'Retell', oneLiner: 'Number provider · session streaming', tags: ['current', 'voice-agent', 'retell', 'api'] }),
-  concept({ id: 'elevenlabs-tts', title: 'ElevenLabs TTS', oneLiner: 'Voice synthesis · low-latency', tags: ['current', 'voice-agent', 'elevenlabs', 'ai-ml'] }),
-  concept({ id: 'gpt4o-fc', title: 'GPT-4o · function calling', oneLiner: 'Tool use · structured output', tags: ['current', 'agentic', 'llm', 'openai', 'voice-agent'] }),
+  concept({ id: 'telephony-layer', title: 'Telephony layer', oneLiner: 'PSTN provider · session streaming', tags: ['current', 'voice-agent', 'telephony', 'api'] }),
+  concept({ id: 'streaming-tts', title: 'Streaming TTS', oneLiner: 'Voice synthesis · sub-300ms', tags: ['current', 'voice-agent', 'tts', 'ai-ml'] }),
+  concept({ id: 'fc-reasoning', title: 'Function-calling reasoning', oneLiner: 'Tool use · structured output', tags: ['current', 'agentic', 'llm', 'voice-agent'] }),
   concept({ id: 'realtime-asr', title: 'Real-time transcription', oneLiner: 'Streaming STT · word-level latency', tags: ['current', 'voice-agent', 'ai-ml'] }),
   concept({ id: 'lead-qualifier', title: 'Lead qualifier agent', oneLiner: 'Mortgage intent classification', tags: ['current', 'mortgage', 'agentic', 'llm'] }),
   concept({ id: 'call-summary', title: 'Call summarization', oneLiner: 'Post-call notes · LO handoff', tags: ['current', 'voice-agent', 'llm', 'mortgage'] }),

@@ -112,7 +112,7 @@ export default function TeliPage() {
           A mortgage lead, qualified <span className="serif-italic text-[var(--body-strong)]">in real time</span>
         </h1>
         <p className="text-[var(--body)] text-[13px] md:text-[14px] mt-2.5 max-w-2xl mx-auto leading-[1.5]">
-          What I ship at teli.ai. Function-calling reasoning on Retell + ElevenLabs, hybrid RAG over pgvector,
+          What I ship at teli.ai. Function-calling reasoning + streaming TTS over a telephony layer, hybrid RAG over pgvector,
           SMS + email follow-up — under 45 seconds.
         </p>
       </motion.div>

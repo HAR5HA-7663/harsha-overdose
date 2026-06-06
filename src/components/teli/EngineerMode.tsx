@@ -8,9 +8,9 @@ const STACK_LAYERS = [
   {
     title: 'Edge / Voice',
     items: [
-      { name: 'Retell', detail: 'number provider · inbound + outbound · session-level streaming' },
-      { name: 'ElevenLabs', detail: 'voice synthesis · low-latency streaming TTS' },
-      { name: 'OpenAI GPT-4o', detail: 'brain · function calling · structured output' },
+      { name: 'Telephony layer', detail: 'PSTN provider · inbound + outbound · session-level streaming' },
+      { name: 'Streaming TTS', detail: 'low-latency voice synthesis · sub-300ms' },
+      { name: 'Reasoning model', detail: 'brain · function calling · structured-output tool schemas' },
     ],
   },
   {
@@ -40,7 +40,7 @@ const STACK_LAYERS = [
 ]
 
 const MODALITIES = [
-  { tag: 'VOICE', label: 'GPT-4o + ElevenLabs + Retell', desc: 'inbound + outbound calls, real-time transcription, function-call qualification' },
+  { tag: 'VOICE', label: 'Reasoning model + streaming TTS + telephony', desc: 'inbound + outbound calls, real-time transcription, function-call qualification' },
   { tag: 'SMS', label: '10DLC-compliant agents', desc: 'brand registration through carrier approval — 4,500 segments/day' },
   { tag: 'EMAIL', label: 'SMTP follow-up', desc: 'loan-officer BYOD · templated re-engagement after qualified calls' },
 ]

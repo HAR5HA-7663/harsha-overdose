@@ -111,7 +111,7 @@ export default function About() {
             <p>
               <span className="text-[#8B0000] font-display">Currently riding with</span>{" "}
               <strong>teli.ai</strong>, building voice and SMS AI agents — function-calling
-              reasoning on Retell + ElevenLabs + LangChain RAG over pgvector — for mortgage
+              reasoning + streaming TTS + LangChain RAG over pgvector — for mortgage
               clients including <strong>bevri.ai</strong> and <strong>NEXA Lending</strong>.
             </p>
           </div>
