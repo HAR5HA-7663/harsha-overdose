@@ -13,6 +13,8 @@
     "@react-three/fiber": "^9.6.1",
     "@react-three/postprocessing": "^3.0.4",
     "@types/howler": "^2.2.12",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "framer-motion": "^12.23.26",
     "geist": "^1.7.2",
     "gsap": "^3.14.2",
