@@ -14,11 +14,12 @@ type Props = {
 
 // A floating glowing sphere with optional pulsing.
 function Orb({
-  position, color, label, sublabel, size = 1, active = false, pulse = 1,
+  position, color, size = 1, active = false, pulse = 1,
 }: {
   position: [number, number, number]
   color: string
-  label: string
+  /** Kept on the prop signature for call-site clarity but not rendered in 3D — see comment below. */
+  label?: string
   sublabel?: string
   size?: number
   active?: boolean
@@ -47,12 +48,10 @@ function Orb({
         <sphereGeometry args={[1, 32, 32]} />
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={active ? 1.8 : 0.7} roughness={0.3} metalness={0.3} />
       </mesh>
-      <Billboard>
-        <Text position={[0, size + 0.7, 0]} fontSize={0.32} color="#fff" anchorX="center" outlineColor="#000" outlineWidth={0.012}>{label}</Text>
-        {sublabel && (
-          <Text position={[0, size + 0.36, 0]} fontSize={0.18} color={color} anchorX="center">{sublabel}</Text>
-        )}
-      </Billboard>
+      {/* In-scene Text labels intentionally removed — the static ArchKey
+          legend in /teli's BAND 2 corner names the orbs. Keeping 3D Text
+          off the orbs means no chance of giant labels crashing into the hero
+          band again (the bug in the user's screenshot 03:11). */}
     </group>
   )
 }
@@ -182,12 +181,12 @@ export function CallScene({ beat, elapsed }: Props) {
   return (
     <Canvas
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-      camera={{ position: [0, 0.6, 11], fov: 38 }}
+      camera={{ position: [0, 0.6, 16], fov: 48 }}
       style={{ background: '#06080F' }}
       dpr={[1, 2]}
     >
       <color attach="background" args={['#06080F']} />
-      <fog attach="fog" args={['#06080F', 10, 36]} />
+      <fog attach="fog" args={['#06080F', 14, 42]} />
       <ambientLight intensity={0.3} />
       <pointLight position={[0, 4, 4]} intensity={1.2} color="#FFB347" />
       <pointLight position={[-4, -2, 2]} intensity={0.6} color="#7DD3FC" />
@@ -200,21 +199,21 @@ export function CallScene({ beat, elapsed }: Props) {
       </group>
 
       {/* Top: agent brain (LLM with function calling) */}
-      <Orb position={[0, 2.4, -1]} color="#86EFAC" label="reasoning" sublabel="brain · function calling" size={0.5} active={openaiActive} pulse={1.6} />
+      <Orb position={[0, 2.6, -1]} color="#86EFAC" label="reasoning" sublabel="brain · function calling" size={0.4} active={openaiActive} pulse={1.6} />
 
       {/* Right: telephony (PSTN provider — kept generic) */}
-      <Orb position={[2.6, 0.6, -0.6]} color="#FFB347" label="telephony" sublabel="PSTN · session streaming" size={0.4} active={telephonyActive} pulse={1.2} />
+      <Orb position={[3.0, 0.6, -0.6]} color="#FFB347" label="telephony" sublabel="PSTN · session streaming" size={0.32} active={telephonyActive} pulse={1.2} />
 
       {/* Left: voice synthesis (TTS) */}
-      <Orb position={[-2.4, 1.0, -0.6]} color="#C084FC" label="voice" sublabel="streaming TTS" size={0.4} active={elevenActive} pulse={1.4} />
+      <Orb position={[-2.8, 1.0, -0.6]} color="#C084FC" label="voice" sublabel="streaming TTS" size={0.32} active={elevenActive} pulse={1.4} />
 
       {/* Bottom-left cluster: pgvector chunks */}
       <VectorChunks active={pgvectorActive} />
 
       {/* Beams */}
-      <Beam from={[2.6, 0.6, -0.6]}   to={[0, 0, 0]} color="#FFB347" active={telephonyActive} />
-      <Beam from={[0, 2.4, -1]}       to={[0, 0, 0]} color="#86EFAC" active={openaiActive} />
-      <Beam from={[-2.4, 1.0, -0.6]}  to={[0, 0, 0]} color="#C084FC" active={elevenActive} />
+      <Beam from={[3.0, 0.6, -0.6]}   to={[0, 0, 0]} color="#FFB347" active={telephonyActive} />
+      <Beam from={[0, 2.6, -1]}       to={[0, 0, 0]} color="#86EFAC" active={openaiActive} />
+      <Beam from={[-2.8, 1.0, -0.6]}  to={[0, 0, 0]} color="#C084FC" active={elevenActive} />
       <Beam from={[-3.0, -1.8, -1.4]} to={[0, 0, 0]} color="#7DD3FC" active={pgvectorActive} />
 
       {/* Qualified banner */}
@@ -229,8 +228,8 @@ export function CallScene({ beat, elapsed }: Props) {
       <OrbitControls
         enableDamping
         dampingFactor={0.08}
-        minDistance={7}
-        maxDistance={18}
+        minDistance={10}
+        maxDistance={24}
         enablePan={false}
         autoRotate={false}
       />
