@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useMemo, useState, useEffect } from 'react'
+import { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Float, Billboard, Text } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
@@ -58,24 +58,33 @@ function Orb({
 }
 
 // A beam between two orbs that gets brighter when "data" is flowing.
+// IMPORTANT: `from`/`to` come in as inline tuple literals from the parent and
+// would otherwise invalidate useMemo every frame (CallScene re-renders each
+// frame). Stringify them as the dep so geometry rebuilds only when the actual
+// coordinates change. Geometry is disposed on unmount.
 function Beam({ from, to, color, active }: {
   from: [number, number, number]
   to: [number, number, number]
   color: string
   active: boolean
 }) {
-  const curve = useMemo(() => {
-    const start = new THREE.Vector3(...from)
-    const end = new THREE.Vector3(...to)
+  const depKey = `${from[0]},${from[1]},${from[2]}|${to[0]},${to[1]},${to[2]}`
+
+  const geom = useMemo(() => {
+    const start = new THREE.Vector3(from[0], from[1], from[2])
+    const end = new THREE.Vector3(to[0], to[1], to[2])
     const mid = start.clone().add(end).multiplyScalar(0.5)
     mid.y += 0.4
-    return new THREE.CatmullRomCurve3([start, mid, end])
-  }, [from, to])
+    const curve = new THREE.CatmullRomCurve3([start, mid, end])
+    return new THREE.TubeGeometry(curve, 24, 0.035, 6, false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [depKey])
 
-  const geom = useMemo(() => new THREE.TubeGeometry(curve, 24, 0.035, 6, false), [curve])
+  useEffect(() => () => geom.dispose(), [geom])
+
   const matRef = useRef<THREE.MeshBasicMaterial>(null)
 
-  useFrame((s) => {
+  useFrame(() => {
     if (!matRef.current) return
     const target = active ? 0.85 : 0.18
     matRef.current.opacity += (target - matRef.current.opacity) * 0.08
@@ -83,7 +92,7 @@ function Beam({ from, to, color, active }: {
 
   return (
     <mesh geometry={geom}>
-      <meshBasicMaterial ref={matRef} color={color} transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} />
+      <meshBasicMaterial ref={matRef} color={color} transparent blending={THREE.AdditiveBlending} depthWrite={false} />
     </mesh>
   )
 }
@@ -144,9 +153,10 @@ function PhoneObject({ ringing }: { ringing: boolean }) {
 }
 
 function CameraRig() {
-  const t = useRef(0)
+  // Don't call s.clock.getDelta() — R3F already calls it once per frame and
+  // pulling it again here corrupts the timing for other consumers (the second
+  // call returns ~0 because oldTime has been updated).
   useFrame((s) => {
-    t.current += s.clock.getDelta()
     s.camera.position.x = Math.sin(s.clock.elapsedTime * 0.12) * 0.6
     s.camera.position.y = 0.4 + Math.cos(s.clock.elapsedTime * 0.1) * 0.3
     s.camera.lookAt(0, 0, 0)

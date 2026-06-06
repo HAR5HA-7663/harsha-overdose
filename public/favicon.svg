@@ -1,46 +1,68 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <radialGradient id="bg" cx="50%" cy="50%" r="55%">
+    <radialGradient id="bg" cx="50%" cy="42%" r="58%">
       <stop offset="0%" stop-color="#1d1916"/>
       <stop offset="100%" stop-color="#0a0908"/>
     </radialGradient>
-    <radialGradient id="cyanGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#A5F3FC" stop-opacity="1"/>
-      <stop offset="40%" stop-color="#67E8F9" stop-opacity="0.9"/>
-      <stop offset="100%" stop-color="#67E8F9" stop-opacity="0"/>
+    <radialGradient id="cyan" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#A5F3FC"/>
+      <stop offset="100%" stop-color="#67E8F9"/>
     </radialGradient>
-    <radialGradient id="amberGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#FCD9B0" stop-opacity="1"/>
-      <stop offset="40%" stop-color="#F59E0B" stop-opacity="0.9"/>
-      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+    <radialGradient id="amber" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FCD9B0"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
     </radialGradient>
   </defs>
 
-  <rect width="64" height="64" rx="12" fill="url(#bg)"/>
+  <rect width="64" height="64" rx="13" fill="url(#bg)"/>
+  <rect x="0.5" y="0.5" width="63" height="63" rx="12.5" fill="none" stroke="#3f3a36" stroke-width="1"/>
 
-  <!-- edges (graph connections) -->
-  <g stroke="#67E8F9" stroke-width="1.4" stroke-linecap="round" opacity="0.85">
-    <line x1="32" y1="20" x2="16" y2="36"/>
-    <line x1="32" y1="20" x2="48" y2="36"/>
-    <line x1="16" y1="36" x2="32" y2="48"/>
-    <line x1="48" y1="36" x2="32" y2="48"/>
-    <line x1="16" y1="36" x2="48" y2="36"/>
-    <line x1="32" y1="20" x2="32" y2="48"/>
+  <!-- Node-graph that reads as HY. Each letter is built from small connected nodes. -->
+  <!-- H: left vertical (3 nodes), right vertical (3 nodes), crossbar (1 node) -->
+  <!-- Y: top-left, top-right diagonal nodes converge to stem (2 nodes) -->
+
+  <!-- Edges (drawn first, behind nodes) -->
+  <g stroke="#67E8F9" stroke-width="1.2" stroke-linecap="round" opacity="0.75" fill="none">
+    <!-- H verticals + crossbar -->
+    <line x1="13" y1="18" x2="13" y2="32"/>
+    <line x1="13" y1="32" x2="13" y2="46"/>
+    <line x1="25" y1="18" x2="25" y2="32"/>
+    <line x1="25" y1="32" x2="25" y2="46"/>
+    <line x1="13" y1="32" x2="25" y2="32"/>
+    <!-- Y arms + stem -->
+    <line x1="36" y1="18" x2="45" y2="34"/>
+    <line x1="54" y1="18" x2="45" y2="34"/>
+    <line x1="45" y1="34" x2="45" y2="46"/>
   </g>
-  <g stroke="#A5F3FC" stroke-width="0.7" stroke-linecap="round" opacity="0.55">
-    <line x1="32" y1="20" x2="16" y2="36"/>
-    <line x1="32" y1="20" x2="48" y2="36"/>
+
+  <!-- Subtle highlight passes — a bright "current" path -->
+  <g stroke="#A5F3FC" stroke-width="0.5" stroke-linecap="round" opacity="0.6" fill="none">
+    <line x1="13" y1="32" x2="25" y2="32"/>
+    <line x1="45" y1="34" x2="45" y2="46"/>
   </g>
 
-  <!-- secondary glow rings on nodes -->
-  <circle cx="16" cy="36" r="8" fill="url(#cyanGlow)"/>
-  <circle cx="48" cy="36" r="8" fill="url(#cyanGlow)"/>
-  <circle cx="32" cy="48" r="8" fill="url(#cyanGlow)"/>
-  <circle cx="32" cy="20" r="9" fill="url(#amberGlow)"/>
+  <!-- H nodes -->
+  <g>
+    <circle cx="13" cy="18" r="2.6" fill="url(#cyan)"/>
+    <circle cx="13" cy="32" r="2.4" fill="url(#cyan)"/>
+    <circle cx="13" cy="46" r="2.6" fill="url(#cyan)"/>
+    <circle cx="25" cy="18" r="2.6" fill="url(#cyan)"/>
+    <circle cx="25" cy="32" r="2.4" fill="url(#cyan)"/>
+    <circle cx="25" cy="46" r="2.6" fill="url(#cyan)"/>
+  </g>
 
-  <!-- node cores -->
-  <circle cx="16" cy="36" r="3.4" fill="#A5F3FC"/>
-  <circle cx="48" cy="36" r="3.4" fill="#A5F3FC"/>
-  <circle cx="32" cy="48" r="3.4" fill="#A5F3FC"/>
-  <circle cx="32" cy="20" r="4.4" fill="#FCD9B0"/>
+  <!-- Y nodes -->
+  <g>
+    <circle cx="36" cy="18" r="2.6" fill="url(#cyan)"/>
+    <circle cx="54" cy="18" r="2.6" fill="url(#cyan)"/>
+    <!-- the junction is the hub — amber, like the "now" node on the real site -->
+    <circle cx="45" cy="34" r="4.5" fill="url(#amber)" opacity="0.35"/>
+    <circle cx="45" cy="34" r="3.0" fill="url(#amber)"/>
+    <circle cx="45" cy="46" r="2.6" fill="url(#cyan)"/>
+  </g>
+
+  <!-- Status pulse — the "live" dot from the top nav -->
+  <circle cx="56" cy="55" r="1.6" fill="#34D399">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="1.8s" repeatCount="indefinite"/>
+  </circle>
 </svg>

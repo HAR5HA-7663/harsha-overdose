@@ -8,12 +8,33 @@ import { SMSPanel } from '../../components/teli/SMSPanel'
 import { EmailPanel } from '../../components/teli/EmailPanel'
 import { Subtitles } from '../../components/teli/Subtitles'
 import { EngineerMode } from '../../components/teli/EngineerMode'
+import { SceneErrorBoundary } from '../../components/teli/SceneErrorBoundary'
 import { BEATS, getCurrentBeat, TOTAL_DURATION } from '../../components/teli/choreography'
 
 const CallScene = dynamic(
   () => import('../../components/teli/CallScene').then(m => m.CallScene),
   { ssr: false, loading: () => null },
 )
+
+function SceneFallback() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center px-6">
+      <div
+        className="max-w-md text-center rounded-[4px] p-6"
+        style={{ background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }}
+      >
+        <p className="mono text-[10px] uppercase tracking-[0.3em] text-[var(--mute)]">3D scene · degraded</p>
+        <h2 className="text-[var(--ink)] text-[18px] font-medium mt-2 tracking-[-0.015em]">
+          WebGL unavailable in this browser
+        </h2>
+        <p className="text-[var(--body)] text-[13px] mt-2 leading-[1.5]">
+          The cinematic 3D scene needs hardware-accelerated WebGL. Subtitles,
+          progress, SMS, email, and engineer mode below still work.
+        </p>
+      </div>
+    </div>
+  )
+}
 
 export default function TeliPage() {
   const [elapsed, setElapsed] = useState(0)
@@ -46,7 +67,9 @@ export default function TeliPage() {
   return (
     <main className="fixed inset-0 overflow-hidden" style={{ background: 'var(--canvas)' }}>
       <div className="absolute inset-0">
-        <CallScene beat={beat} elapsed={elapsed} />
+        <SceneErrorBoundary fallback={<SceneFallback />}>
+          <CallScene beat={beat} elapsed={elapsed} />
+        </SceneErrorBoundary>
       </div>
 
       {/* Top nav */}

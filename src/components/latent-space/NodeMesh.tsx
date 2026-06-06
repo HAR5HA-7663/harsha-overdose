@@ -20,8 +20,8 @@ type Props = {
 
 // Obsidian-style: radius driven by node degree (link count).
 function radiusFromDegree(degree: number, kind: PositionedNode['kind']): number {
-  const base = kind === 'now' ? 0.55 : kind === 'about' ? 0.42 : 0.26
-  const bump = Math.min(degree, 14) * 0.025
+  const base = kind === 'now' ? 0.4 : kind === 'about' ? 0.32 : 0.22
+  const bump = Math.min(degree, 12) * 0.018
   return base + bump
 }
 
@@ -55,13 +55,13 @@ export function NodeMesh({
 
   return (
     <group position={node.position}>
-      {/* Soft glow halo — kept subtle so multiple nodes coexist visually */}
+      {/* Soft halo — quietly lit; brightens only on interaction */}
       <mesh ref={glowRef}>
         <sphereGeometry args={[1, 14, 14]} />
         <meshBasicMaterial
           color={renderColor}
           transparent
-          opacity={isDimmed ? 0.02 : isFocused || isHighlighted ? 0.16 : isNow ? 0.12 : 0.07}
+          opacity={isDimmed ? 0.015 : isFocused || isHighlighted ? 0.11 : isNow ? 0.08 : 0.045}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />

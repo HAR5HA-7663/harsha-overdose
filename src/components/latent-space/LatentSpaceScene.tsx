@@ -198,13 +198,13 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
   return (
     <Canvas
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-      camera={{ position: [0, 0, 14], fov: 55 }}
-      style={{ background: '#0a0908' }}
+      camera={{ position: [0, 0, 16], fov: 52 }}
+      style={{ background: '#0e0c0a' }}
       dpr={[1, 2]}
       onPointerMissed={() => { /* click empty space — keep selection */ }}
     >
-      <color attach="background" args={['#0a0908']} />
-      <fog attach="fog" args={['#0a0908', 16, 30]} />
+      <color attach="background" args={['#0e0c0a']} />
+      <fog attach="fog" args={['#0e0c0a', 18, 34]} />
       <ambientLight intensity={0.3} />
       <pointLight position={[6, 6, 8]} intensity={0.6} color="#fcd9b0" />
       <pointLight position={[-8, -2, 4]} intensity={0.4} color="#67E8F9" />
@@ -248,9 +248,9 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
 
       <EffectComposer multisampling={0}>
         <Bloom
-          intensity={1.4}
-          luminanceThreshold={0.12}
-          luminanceSmoothing={0.35}
+          intensity={0.55}
+          luminanceThreshold={0.3}
+          luminanceSmoothing={0.4}
           mipmapBlur
         />
       </EffectComposer>

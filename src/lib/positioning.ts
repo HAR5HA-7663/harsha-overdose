@@ -1,10 +1,12 @@
 // 3D force-directed positioning + pseudo-embedding for the knowledge-graph view.
 // Obsidian-style: nodes repel each other, linked nodes attract, gentle pull to origin.
 
-import { NODES as MAIN_NODES, type GalaxyNode } from '../data/nodes'
-import { CONCEPT_NODES } from '../data/concepts'
+import { NODES, type GalaxyNode } from '../data/nodes'
 
-const NODES: GalaxyNode[] = [...MAIN_NODES, ...CONCEPT_NODES]
+// Concept fan-out nodes intentionally disabled — the dense version (~84 nodes)
+// felt like visual noise. Restoring the original ~28-node graph so each label
+// can read clearly. To re-enable, import CONCEPT_NODES from '../data/concepts'
+// and spread them into NODES.
 
 export type PositionedNode = GalaxyNode & {
   position: [number, number, number]
@@ -47,8 +49,8 @@ function getLinks(): Link[] {
       const a = new Set(NODES[i].tags)
       let shared = 0
       for (const t of NODES[j].tags) if (a.has(t)) shared++
-      // 1+ shared tag forms a link — gives the dense Obsidian-vault network.
-      if (shared >= 1) links.push({ source: NODES[i].id, target: NODES[j].id, weight: shared })
+      // 2+ shared tags — restrained network, easier to read each cluster.
+      if (shared >= 2) links.push({ source: NODES[i].id, target: NODES[j].id, weight: shared })
     }
   }
   return links
@@ -94,10 +96,10 @@ function runForceLayout(
     vel[n.id] = [0, 0, 0]
   }
 
-  const idealLen = 1.9
-  const repel = 8
+  const idealLen = 2.4
+  const repel = 14
   const center = 0.025
-  const damping = 0.87
+  const damping = 0.86
 
   for (let step = 0; step < iterations; step++) {
     // Repulsion (Coulomb-like) — every pair pushes apart, scaled by 1/r²

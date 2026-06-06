@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  /* Warp palette — warm dark canvas */
-  --canvas: #1d1916;        /* base — slightly deeper than Warp's #2b2622 for graph contrast */
-  --canvas-band: #2b2622;   /* Warp canvas */
-  --canvas-soft: #383330;   /* card / mockup surface */
-  --hairline: #3f3a36;      /* 1px divider */
-  --ink: #f7f5f0;           /* off-white primary text */
+  /* Warm dark canvas — base palette */
+  --canvas: #0e0c0a;
+  --canvas-band: #1d1916;
+  --canvas-soft: #28231f;
+  --hairline: #3f3a36;
+  --ink: #f7f5f0;
   --body-strong: #dad2c1;
   --body: #c9c0ad;
   --mute: #aea69c;
-  --on-primary: #2b2622;
+  --on-primary: #1d1916;
 
-  /* Graph accents — Obsidian electric-cyan family */
-  --node-core: #67E8F9;     /* cyan-300, the bright hub */
-  --node-hot: #22D3EE;      /* cyan-400 */
-  --node-warm: #A5F3FC;     /* cyan-200 — links */
-  --node-dim: #475569;      /* slate-600 — dimmed state */
+  /* Graph accents — Obsidian electric cyan family */
+  --node-core: #67E8F9;
+  --node-hot: #22D3EE;
+  --node-warm: #A5F3FC;
+  --node-dim: #475569;
   --link-base: rgba(103, 232, 249, 0.18);
   --link-hover: rgba(103, 232, 249, 0.85);
 
-  /* Semantic kind tints — muted, used for subtle differentiation */
+  /* Semantic kind tints */
   --kind-about: #EAB308;
   --kind-skill: #67E8F9;
   --kind-project: #A78BFA;
@@ -43,12 +43,11 @@
   --color-node-hot: var(--node-hot);
   --color-node-warm: var(--node-warm);
   --color-node-dim: var(--node-dim);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-inter);
+  --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-display);
   --font-serif: var(--font-serif-edit);
   --font-mono: var(--font-mono-code);
 
-  /* Tight Warp radii */
   --radius-xs: 2px;
   --radius-sm: 3px;
   --radius-md: 4px;
@@ -64,15 +63,44 @@ html, body {
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
-  font-feature-settings: 'cv11', 'ss01';
+  /* Body text: Geist Sans — distinctive, technical, readable */
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.005em;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
   overflow: hidden;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Display headlines: Fraunces — editorial serif with character */
+.font-display,
+h1,
+h2 {
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  font-feature-settings: 'ss01', 'ss02', 'cpsp';
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 100, "opsz" 144;
+}
+
+/* Editorial italic moment */
+.serif-italic {
+  font-family: var(--font-serif-edit), Georgia, "Times New Roman", serif;
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+
+/* Monospace — JetBrains Mono */
+.mono,
+code,
+kbd,
+samp {
+  font-family: var(--font-mono-code), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-feature-settings: 'ss01', 'ss02', 'ss03', 'cv01';
 }
 
 /* Warp-style scrollbar */
@@ -82,20 +110,21 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--mute); }
 
 :focus-visible {
-  outline: 1px solid var(--ink);
+  outline: 1px solid var(--node-core);
   outline-offset: 2px;
 }
 
-/* Utility: serif italic editorial moment */
-.serif-italic {
-  font-family: var(--font-serif-edit), Georgia, 'Times New Roman', serif;
-  font-style: italic;
-  letter-spacing: -0.01em;
+/* Selection */
+::selection {
+  background: rgba(103, 232, 249, 0.28);
+  color: var(--ink);
 }
 
-/* Utility: mono code */
-.mono {
-  font-family: var(--font-mono-code), ui-monospace, SFMono-Regular, Menlo, monospace;
+/* Touch-friendly tap targets on mobile */
+@media (hover: none) {
+  button, a, [role="button"] {
+    min-height: 44px;
+  }
 }
 
 /* Reduced motion */

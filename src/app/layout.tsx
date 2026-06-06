@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
-import { Inter, Instrument_Serif, DM_Mono } from "next/font/google";
+import { Fraunces, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+// Editorial serif display — Fraunces has SOFT + opsz axes for character.
+const fraunces = Fraunces({
+  variable: "--font-display",
   subsets: ["latin"],
+  axes: ["SOFT", "opsz"],
   display: "swap",
 });
 
+// Italic moment serif — Instrument Serif italic for editorial lines.
 const instrumentSerif = Instrument_Serif({
   variable: "--font-serif-edit",
   weight: "400",
@@ -15,9 +19,9 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
-const dmMono = DM_Mono({
+// Distinctive monospace.
+const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono-code",
-  weight: "400",
   subsets: ["latin"],
   display: "swap",
 });
@@ -50,7 +54,7 @@ export const metadata: Metadata = {
   creator: "Harsha Yellela",
   openGraph: {
     title: "Harsha Yellela — Full Stack Engineer @ teli.ai",
-    description: "A walkable knowledge graph of my work. /teli shows a live mortgage call being qualified by GPT-4o + Retell + ElevenLabs.",
+    description: "A walkable knowledge graph of my work. /teli shows a live mortgage call being qualified by streaming voice + hybrid RAG.",
     url: "https://har5ha.in",
     siteName: "Harsha Yellela",
     locale: "en_US",
@@ -73,10 +77,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body
-        className={`${inter.variable} ${instrumentSerif.variable} ${dmMono.variable} antialiased min-h-screen`}
-      >
+    <html lang="en" className={`scroll-smooth ${GeistSans.variable} ${fraunces.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}>
+      <body className="antialiased min-h-screen">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
