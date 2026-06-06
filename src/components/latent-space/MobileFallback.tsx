@@ -73,15 +73,13 @@ export function MobileFallback({ force = false, fullScreen = false }: Props) {
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <a
-            href="/Harsha_Yellela_resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/resume"
             className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium"
             style={{ background: 'var(--ink)', color: 'var(--on-primary)' }}
           >
             Résumé
-          </a>
+          </Link>
           <a
             href="mailto:harsha.yellela@gmail.com"
             className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body-strong)]"

@@ -52,15 +52,13 @@ export default function RecruiterProjectsPage() {
             <span className="text-[var(--body)] text-[11px]">recruiter view</span>
           </Link>
           <div className="flex items-center gap-2">
-            <a
-              href="/Harsha_Yellela_resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/resume"
               className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium"
               style={{ background: 'var(--ink)', color: 'var(--on-primary)' }}
             >
               Résumé
-            </a>
+            </Link>
             <Link
               href="/teli"
               className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium inline-flex items-center gap-1.5"

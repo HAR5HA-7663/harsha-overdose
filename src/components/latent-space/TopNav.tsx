@@ -35,14 +35,12 @@ export function TopNav() {
           className="pointer-events-auto flex items-center gap-2"
         >
           <LivePulse />
-          <a
-            href="/Harsha_Yellela_resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/resume"
             className="hidden sm:inline-flex items-center px-2.5 py-1.5 text-[12px] font-medium text-[var(--body-strong)] hover:text-[var(--ink)] rounded-[3px] hover:bg-[var(--canvas-soft)] transition-colors"
           >
             Résumé
-          </a>
+          </Link>
           <a
             href="https://github.com/HAR5HA-7663"
             target="_blank"

@@ -12,8 +12,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/github", destination: "https://github.com/HAR5HA-7663", permanent: false },
       { source: "/linkedin", destination: "https://www.linkedin.com/in/har5ha-7663", permanent: false },
-      { source: "/cv", destination: "/Harsha_Yellela_resume.pdf", permanent: false },
-      { source: "/resume", destination: "/Harsha_Yellela_resume.pdf", permanent: false },
+      { source: "/cv", destination: "/Harsha_Yellela_SDE.pdf", permanent: false },
     ];
   },
 };
