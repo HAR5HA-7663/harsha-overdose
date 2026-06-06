@@ -36,15 +36,13 @@ export function HeroCard({ visible }: Props) {
           <span className="mono text-[12px] text-[var(--body-strong)]">function calling · streaming ASR/TTS · hybrid RAG over pgvector · multi-tenant RLS.</span>
         </p>
         <div className="flex flex-wrap items-center gap-1.5 mt-3.5">
-          <a
-            href="/Harsha_Yellela_resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/resume"
             className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium transition-all hover:brightness-95"
             style={{ background: 'var(--ink)', color: 'var(--on-primary)' }}
           >
             Résumé
-          </a>
+          </Link>
           <Link
             href="/teli"
             className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium transition-all hover:bg-[rgba(245,158,11,0.1)] flex items-center gap-1.5"

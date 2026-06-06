@@ -121,7 +121,7 @@ export const NODES: GalaxyNode[] = [
         "Before teli I spent a year at Lawrence Tech as a research assistant — CrewAI + LangGraph multi-agent orchestration, MCP servers on AWS Fargate/EKS, OpenSearch hybrid retrieval, no-code vs coded agent benchmarking. MS in Computer Science (3.77 GPA).",
         "Two years before that I was on the Infor LN CD (Custom Development) team in Hyderabad — building ERP integrations onsite for enterprise clients like Ferrari, Boeing, and Triumph through Infor ION + AWS Lambda/S3 event flows. The Ferrari moment is when software stopped being academic.",
       ],
-      resumeUrl: '/Harsha_Yellela_resume.pdf',
+      resumeUrl: '/resume',
     },
   },
 
