@@ -1,7 +1,10 @@
 // 3D force-directed positioning + pseudo-embedding for the knowledge-graph view.
 // Obsidian-style: nodes repel each other, linked nodes attract, gentle pull to origin.
 
-import { NODES, TAG_ANCHORS, type GalaxyNode } from '../data/nodes'
+import { NODES as MAIN_NODES, type GalaxyNode } from '../data/nodes'
+import { CONCEPT_NODES } from '../data/concepts'
+
+const NODES: GalaxyNode[] = [...MAIN_NODES, ...CONCEPT_NODES]
 
 export type PositionedNode = GalaxyNode & {
   position: [number, number, number]
@@ -44,7 +47,8 @@ function getLinks(): Link[] {
       const a = new Set(NODES[i].tags)
       let shared = 0
       for (const t of NODES[j].tags) if (a.has(t)) shared++
-      if (shared >= 2) links.push({ source: NODES[i].id, target: NODES[j].id, weight: shared })
+      // 1+ shared tag forms a link — gives the dense Obsidian-vault network.
+      if (shared >= 1) links.push({ source: NODES[i].id, target: NODES[j].id, weight: shared })
     }
   }
   return links
@@ -90,10 +94,10 @@ function runForceLayout(
     vel[n.id] = [0, 0, 0]
   }
 
-  const idealLen = 2.6
-  const repel = 18
-  const center = 0.03
-  const damping = 0.86
+  const idealLen = 1.9
+  const repel = 8
+  const center = 0.025
+  const damping = 0.87
 
   for (let step = 0; step < iterations; step++) {
     // Repulsion (Coulomb-like) — every pair pushes apart, scaled by 1/r²
@@ -156,11 +160,11 @@ function runForceLayout(
     cz += pos[n.id][2]
   }
   cx /= nodes.length; cy /= nodes.length; cz /= nodes.length
-  const extent = 8.5
+  const extent = 9.5
   for (const n of nodes) {
     pos[n.id][0] = Math.max(-extent, Math.min(extent, pos[n.id][0] - cx))
     pos[n.id][1] = Math.max(-extent, Math.min(extent, pos[n.id][1] - cy))
-    pos[n.id][2] = Math.max(-extent * 0.7, Math.min(extent * 0.7, pos[n.id][2] - cz))
+    pos[n.id][2] = Math.max(-extent * 0.55, Math.min(extent * 0.55, pos[n.id][2] - cz))
   }
   return pos
 }

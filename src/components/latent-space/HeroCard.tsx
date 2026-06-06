@@ -28,8 +28,8 @@ export function HeroCard({ visible }: Props) {
         <p className="text-[var(--body)] text-[13px] leading-[1.5]">
           Full Stack Engineer at{' '}
           <span className="text-[#F59E0B] font-medium">teli.ai</span>
-          . Voice + SMS AI agents for the mortgage industry.{' '}
-          <span className="text-[var(--body-strong)]">GPT-4o · Retell · ElevenLabs · pgvector RAG · AWS.</span>
+          . Agentic voice + SMS for mortgage LOs.{' '}
+          <span className="text-[var(--body-strong)]">function calling · streaming ASR/TTS · hybrid RAG over pgvector · multi-tenant Postgres RLS.</span>
         </p>
         <div className="flex flex-wrap items-center gap-1.5 mt-3.5">
           <a

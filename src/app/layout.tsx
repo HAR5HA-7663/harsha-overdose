@@ -25,12 +25,15 @@ const dmMono = DM_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://har5ha.in"),
   icons: {
-    icon: "/favicon.png",
-    apple: "/favicon.png",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    apple: "/favicon.svg",
   },
   title: "Harsha Yellela — Full Stack Engineer @ teli.ai",
   description:
-    "Full Stack Engineer building voice and SMS AI agents for the mortgage industry. The portfolio is a walkable knowledge graph. Search it, click any node, or step into /teli to watch a live mortgage call get qualified.",
+    "Full Stack Engineer shipping agentic voice + SMS for the mortgage industry — function calling, streaming ASR/TTS, hybrid RAG over pgvector, multi-tenant Postgres RLS. Portfolio is a walkable knowledge graph; /teli is a cinematic mortgage call.",
   keywords: [
     "Harsha Yellela",
     "Full Stack Engineer",

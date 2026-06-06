@@ -19,8 +19,8 @@ export function MobileFallback() {
           <p className="mono text-[10px] tracking-[0.3em] uppercase text-[var(--mute)] mb-1.5">Now</p>
           <p className="text-[var(--body-strong)] text-[14px] leading-[1.55]">
             <span className="text-[#F59E0B] font-medium">teli.ai</span> — Full Stack Engineer.
-            Building voice + SMS AI agents for mortgage clients (bevri.ai, NEXA Lending).{' '}
-            <span className="mono text-[12px] text-[var(--body)]">GPT-4o · Retell · ElevenLabs · pgvector · AWS.</span>
+            Agentic voice + SMS for mortgage LOs (bevri.ai, NEXA Lending).{' '}
+            <span className="mono text-[12px] text-[var(--body)]">function calling · streaming ASR/TTS · hybrid RAG over pgvector · multi-tenant RLS.</span>
           </p>
           {teli && (
             <Link

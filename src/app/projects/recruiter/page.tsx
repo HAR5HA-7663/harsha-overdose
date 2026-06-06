@@ -1,368 +1,228 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
-import { allProjects, categories } from "@/data/projects";
+import { useMemo, useState } from 'react'
+import Link from 'next/link'
+import { allProjects } from '@/data/projects'
 
-const C = {
-  bg: "#04080F",
-  surface: "rgba(15, 23, 42, 0.85)",
-  border: "rgba(99, 102, 241, 0.18)",
-  borderHover: "rgba(99, 102, 241, 0.45)",
-  accent: "#818CF8",
-  gold: "#F59E0B",
-  text: "#E2E8F0",
-  muted: "#94A3B8",
-  dim: "#475569",
-};
+const FEATURED_IDS = new Set([28, 5, 1, 14, 11])
 
-const cardStyle: React.CSSProperties = {
-  background: C.surface,
-  border: `1px solid ${C.border}`,
-  backdropFilter: "blur(10px)",
-  borderRadius: "12px",
-};
+const STATS = [
+  { label: 'Years shipping', value: '3+' },
+  { label: 'Projects on GitHub', value: '30+' },
+  { label: 'AWS Lambda fns shipped', value: '94' },
+  { label: 'Production uptime', value: '99%+' },
+]
+
+const SUMMARY = [
+  {
+    head: 'Current — teli.ai',
+    body: 'Agentic voice + SMS for the mortgage industry. Function calling with structured-output tool schemas, streaming ASR with partial-result handling, sub-300ms TTS, hybrid RAG (BM25 + dense) over pgvector with cross-encoder reranking, multi-tenant Postgres RLS per loan officer, 10DLC SMS state machine. Clients: bevri.ai, NEXA Lending.',
+  },
+  {
+    head: 'Then — Lawrence Tech (GRA)',
+    body: 'Multi-agent orchestration with CrewAI + LangGraph + MCP servers, deployed on AWS Fargate/EKS. Hybrid OpenSearch retrieval over 10K+ docs with sub-second latency. Benchmarked no-code vs coded agent stacks to inform downstream work.',
+  },
+  {
+    head: 'Before — Infor (Ferrari · Boeing · Triumph)',
+    body: 'REST integrations and event flows through Infor ION + AWS Lambda/S3. Containerized service deploys, cut release turnaround by 25%, drove pipeline failure frequency from weekly to monthly.',
+  },
+]
 
 export default function RecruiterProjectsPage() {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [selected, setSelected] = useState<number | null>(null);
-
-  // Apply recruiter-mode cursor + font (same as RecruiterPage)
-  useEffect(() => {
-    document.body.classList.add("recruiter-mode");
-    return () => document.body.classList.remove("recruiter-mode");
-  }, []);
-
-  const filtered =
-    activeCategory === "All"
-      ? allProjects
-      : allProjects.filter((p) => p.category === activeCategory);
-
-  const selectedProject = allProjects.find((p) => p.id === selected) ?? null;
+  const [active, setActive] = useState<'featured' | 'all'>('featured')
+  const projects = useMemo(
+    () => (active === 'featured' ? allProjects.filter(p => FEATURED_IDS.has(p.id)) : allProjects),
+    [active],
+  )
 
   return (
-    <main
-      className="min-h-screen relative"
-      style={{ background: C.bg, color: C.text }}
-    >
-      {/* Dot grid background */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `radial-gradient(${C.accent}15 1px, transparent 1px)`,
-          backgroundSize: "32px 32px",
-        }}
-      />
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse 80% 40% at 50% 0%, rgba(99,102,241,0.1) 0%, transparent 70%)`,
-        }}
-      />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-12">
-        {/* Back nav */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="mb-10"
-        >
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm transition-colors hover:text-white"
-            style={{ color: C.muted }}
-          >
-            ← Back to Portfolio
+    <main className="min-h-screen" style={{ background: 'var(--canvas)' }}>
+      <header
+        className="sticky top-0 z-30"
+        style={{ background: 'rgba(14, 12, 10, 0.85)', borderBottom: '1px solid var(--hairline)', backdropFilter: 'blur(8px)' }}
+      >
+        <div className="max-w-5xl mx-auto px-6 py-3.5 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-[var(--ink)] text-[13px] font-medium">
+            <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: '#67E8F9', boxShadow: '0 0 8px #67E8F9' }} />
+            Harsha Yellela
+            <span className="text-[var(--mute)] text-[11px]">·</span>
+            <span className="text-[var(--body)] text-[11px]">recruiter view</span>
           </Link>
-        </motion.div>
-
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-10"
-        >
-          <p
-            className="text-sm font-medium tracking-widest uppercase mb-2"
-            style={{ color: C.accent }}
-          >
-            Selected Work
-          </p>
-          <h1
-            className="font-display text-4xl md:text-5xl font-bold mb-3"
-            style={{ color: C.text, letterSpacing: "-0.02em" }}
-          >
-            All Projects
-          </h1>
-          <p style={{ color: C.muted }}>
-            {allProjects.length} projects · click any card to expand
-          </p>
-        </motion.div>
-
-        {/* Category filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="flex flex-wrap gap-2 mb-8"
-        >
-          {["All", ...categories].map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-                setActiveCategory(cat);
-                setSelected(null);
-              }}
-              className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
-              style={{
-                background: activeCategory === cat ? C.accent : "transparent",
-                color: activeCategory === cat ? "#04080F" : C.muted,
-                border: `1px solid ${activeCategory === cat ? C.accent : C.border}`,
-              }}
+          <div className="flex items-center gap-2">
+            <a
+              href="/Harsha_Yellela_resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium"
+              style={{ background: 'var(--ink)', color: 'var(--on-primary)' }}
             >
-              {cat}
-            </button>
-          ))}
-        </motion.div>
+              Résumé
+            </a>
+            <Link
+              href="/teli"
+              className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium inline-flex items-center gap-1.5"
+              style={{ border: '1px solid rgba(245, 158, 11, 0.4)', color: '#F59E0B' }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-pulse" />
+              Watch the call →
+            </Link>
+          </div>
+        </div>
+      </header>
 
-        {/* Count */}
-        <p className="text-xs mb-6" style={{ color: C.dim }}>
-          Showing {filtered.length} of {allProjects.length}
+      <section className="max-w-5xl mx-auto px-6 pt-12">
+        <p className="mono text-[11px] uppercase tracking-[0.32em] text-[var(--mute)]">For recruiters</p>
+        <h1 className="text-[var(--ink)] text-[40px] md:text-[52px] font-normal mt-3" style={{ letterSpacing: '-0.025em', lineHeight: 1.04 }}>
+          The 60-second version of <span className="serif-italic text-[var(--body-strong)]">my work</span>.
+        </h1>
+        <p className="text-[var(--body)] text-[15px] mt-4 max-w-2xl leading-[1.6]">
+          Full Stack Engineer at <span className="text-[#F59E0B] font-medium">teli.ai</span>{' '}
+          shipping agentic voice + SMS for the mortgage industry. The graph at{' '}
+          <Link href="/" className="text-[#67E8F9] underline underline-offset-2">/</Link>{' '}
+          is the long version; this page is the short one.
         </p>
+      </section>
 
-        {/* Grid */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-        >
-          <AnimatePresence>
-            {filtered.map((project, i) => (
-              <motion.div
-                key={project.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ delay: i * 0.03 }}
-                onClick={() =>
-                  setSelected(selected === project.id ? null : project.id)
-                }
-                whileHover={{ y: -4 }}
-                className="p-5 rounded-xl cursor-pointer transition-all duration-200 relative"
-                style={{
-                  ...cardStyle,
-                  border: `1px solid ${
-                    selected === project.id ? C.accent : C.border
-                  }`,
-                  boxShadow:
-                    selected === project.id
-                      ? `0 0 0 1px ${C.accent}, 0 8px 32px rgba(0,0,0,0.4)`
-                      : "none",
-                }}
-              >
-                {/* Featured badge */}
-                {project.featured && (
-                  <span
-                    className="absolute top-3 right-3 text-xs px-2 py-0.5 rounded-full font-medium"
-                    style={{
-                      background: "rgba(99,102,241,0.15)",
-                      color: C.accent,
-                      border: `1px solid ${C.border}`,
-                    }}
-                  >
-                    Featured
-                  </span>
-                )}
-
-                {/* Icon + name */}
-                <div className="flex items-start gap-3 mb-3">
-                  <span className="text-3xl flex-shrink-0">{project.icon}</span>
-                  <div>
-                    <h3
-                      className="font-semibold leading-tight"
-                      style={{ color: C.text }}
-                    >
-                      {project.name}
-                    </h3>
-                    <p className="text-xs mt-0.5" style={{ color: C.muted }}>
-                      {project.subtitle}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Category */}
-                <span
-                  className="text-xs px-2 py-0.5 rounded-md font-medium"
-                  style={{
-                    background: "rgba(99,102,241,0.1)",
-                    color: C.accent,
-                  }}
-                >
-                  {project.category}
-                </span>
-
-                {/* Impact */}
-                <div className="mt-3">
-                  <span
-                    className="text-xs px-2 py-1 rounded-md"
-                    style={{
-                      background: "rgba(245,158,11,0.1)",
-                      color: C.gold,
-                      border: "1px solid rgba(245,158,11,0.2)",
-                    }}
-                  >
-                    ◆ {project.damage}
-                  </span>
-                </div>
-
-                {/* Expand indicator */}
-                <p
-                  className="text-xs mt-3"
-                  style={{ color: C.dim }}
-                >
-                  {selected === project.id ? "▲ collapse" : "▼ expand"}
-                </p>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-      </div>
-
-      {/* Expanded detail drawer */}
-      <AnimatePresence>
-        {selectedProject && (
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            transition={{ type: "spring", damping: 25 }}
-            className="fixed bottom-0 left-0 right-0 z-50 max-h-[70vh] overflow-y-auto"
-            style={{
-              background: "rgba(9, 14, 26, 0.98)",
-              borderTop: `1px solid ${C.accent}40`,
-              backdropFilter: "blur(20px)",
-            }}
+      <section className="max-w-5xl mx-auto px-6 mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
+        {STATS.map(s => (
+          <div
+            key={s.label}
+            className="rounded-[4px] px-4 py-3"
+            style={{ background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }}
           >
-            <div className="max-w-4xl mx-auto px-6 py-8">
-              {/* Header row */}
-              <div className="flex items-start justify-between gap-4 mb-5">
-                <div className="flex items-start gap-4">
-                  <span className="text-5xl">{selectedProject.icon}</span>
-                  <div>
-                    <h2
-                      className="font-display text-2xl font-bold"
-                      style={{ color: C.text }}
-                    >
-                      {selectedProject.name}
-                    </h2>
-                    <p className="text-sm mt-0.5" style={{ color: C.muted }}>
-                      {selectedProject.subtitle}
-                    </p>
-                    <span
-                      className="inline-block mt-1 text-xs px-2 py-0.5 rounded-md"
-                      style={{
-                        background: "rgba(99,102,241,0.12)",
-                        color: C.accent,
-                      }}
-                    >
-                      {selectedProject.category}
-                    </span>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setSelected(null)}
-                  className="flex-shrink-0 w-8 h-8 rounded-full text-sm font-bold flex items-center justify-center transition-colors hover:bg-white/10"
-                  style={{ color: C.muted, border: `1px solid ${C.border}` }}
-                >
-                  ✕
-                </button>
+            <p className="mono text-[10px] uppercase tracking-[0.2em] text-[var(--mute)]">{s.label}</p>
+            <p className="text-[var(--ink)] text-[24px] font-normal mt-1 tracking-[-0.02em]">{s.value}</p>
+          </div>
+        ))}
+      </section>
+
+      <section className="max-w-5xl mx-auto px-6 mt-14">
+        <p className="mono text-[11px] uppercase tracking-[0.32em] text-[var(--mute)] mb-5">Career arc</p>
+        <div className="space-y-6">
+          {SUMMARY.map(s => (
+            <article key={s.head}>
+              <h3 className="text-[var(--ink)] text-[17px] font-medium tracking-[-0.015em] mb-1.5">{s.head}</h3>
+              <p className="text-[var(--body-strong)] text-[14px] leading-[1.6]">{s.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="max-w-5xl mx-auto px-6 mt-14">
+        <div className="flex items-end justify-between mb-5">
+          <div>
+            <p className="mono text-[11px] uppercase tracking-[0.32em] text-[var(--mute)]">Projects</p>
+            <h2 className="text-[var(--ink)] text-[24px] font-medium mt-1 tracking-[-0.015em]">
+              {active === 'featured' ? 'Top picks' : 'All of them'}
+            </h2>
+          </div>
+          <div className="flex gap-1">
+            <button
+              onClick={() => setActive('featured')}
+              className={`mono px-2.5 py-1 rounded-[3px] text-[11px] tracking-[0.05em] ${active === 'featured' ? 'text-[var(--on-primary)]' : 'text-[var(--body)]'}`}
+              style={
+                active === 'featured'
+                  ? { background: 'var(--ink)' }
+                  : { background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }
+              }
+            >
+              Featured
+            </button>
+            <button
+              onClick={() => setActive('all')}
+              className={`mono px-2.5 py-1 rounded-[3px] text-[11px] tracking-[0.05em] ${active === 'all' ? 'text-[var(--on-primary)]' : 'text-[var(--body)]'}`}
+              style={
+                active === 'all'
+                  ? { background: 'var(--ink)' }
+                  : { background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }
+              }
+            >
+              All
+            </button>
+          </div>
+        </div>
+
+        <ul style={{ borderTop: '1px solid var(--hairline)' }}>
+          {projects.map(p => (
+            <li
+              key={p.id}
+              className="grid grid-cols-1 md:grid-cols-[1fr_2fr_auto] items-baseline gap-4 py-4"
+              style={{ borderBottom: '1px solid var(--hairline)' }}
+            >
+              <div>
+                <p className="text-[var(--ink)] text-[15px] font-medium tracking-[-0.01em]">{p.name}</p>
+                <p className="mono text-[10px] uppercase tracking-[0.15em] text-[var(--mute)] mt-1">{p.category}</p>
               </div>
-
-              {/* Description */}
-              <p
-                className="text-sm leading-relaxed mb-5"
-                style={{ color: C.muted }}
-              >
-                {selectedProject.description}
-              </p>
-
-              {/* Stack */}
-              <div className="mb-5">
-                <p
-                  className="text-xs font-semibold tracking-widest uppercase mb-2"
-                  style={{ color: C.dim }}
-                >
-                  Tech Stack
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {selectedProject.tech.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-3 py-1 rounded-lg text-xs font-medium"
-                      style={{
-                        background: "rgba(99,102,241,0.1)",
-                        color: C.accent,
-                        border: `1px solid ${C.border}`,
-                      }}
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Outcome */}
-              <div
-                className="p-4 rounded-xl mb-5"
-                style={{
-                  background: "rgba(245,158,11,0.08)",
-                  border: "1px solid rgba(245,158,11,0.22)",
-                }}
-              >
-                <p
-                  className="text-xs font-semibold mb-1"
-                  style={{ color: C.gold }}
-                >
-                  ◆ Impact / Outcome
-                </p>
-                <p className="text-sm" style={{ color: "#FCD34D" }}>
-                  {selectedProject.damage}
-                </p>
-              </div>
-
-              {/* Links */}
-              <div className="flex flex-wrap gap-3">
-                {selectedProject.github && (
-                  <a
-                    href={selectedProject.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:brightness-110"
-                    style={{ background: C.accent, color: "#04080F" }}
-                  >
+              <p className="text-[var(--body)] text-[13px] leading-[1.5]">{p.description}</p>
+              <div className="flex items-center gap-3 mono text-[11px]">
+                {p.tech.slice(0, 3).map(t => (
+                  <span key={t} className="text-[var(--mute)]">{t}</span>
+                ))}
+                {p.github && (
+                  <a href={p.github} target="_blank" rel="noopener noreferrer" className="text-[#67E8F9] underline underline-offset-2">
                     GitHub ↗
                   </a>
                 )}
-                {selectedProject.live && (
-                  <a
-                    href={selectedProject.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:bg-white/5"
-                    style={{
-                      border: `1px solid ${C.border}`,
-                      color: C.text,
-                    }}
-                  >
-                    Live Demo ↗
+                {p.live && (
+                  <a href={p.live} target="_blank" rel="noopener noreferrer" className="text-[#67E8F9] underline underline-offset-2">
+                    Live ↗
                   </a>
                 )}
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="max-w-5xl mx-auto px-6 mt-14 mb-16">
+        <div
+          className="rounded-[4px] p-6"
+          style={{ background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }}
+        >
+          <p className="mono text-[10px] uppercase tracking-[0.32em] text-[var(--mute)] mb-2">Get in touch</p>
+          <h3 className="text-[var(--ink)] text-[22px] font-medium tracking-[-0.015em]">Talk to me directly</h3>
+          <p className="text-[var(--body)] text-[14px] mt-2 max-w-xl leading-[1.55]">
+            On F-1 OPT, authorized to work in the US, H-1B sponsorship needed long-term. Remote or
+            relocate, two weeks' notice.
+          </p>
+          <div className="flex flex-wrap gap-1.5 mt-4">
+            <a
+              href="mailto:harsha.yellela@gmail.com"
+              className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium"
+              style={{ background: 'var(--ink)', color: 'var(--on-primary)' }}
+            >
+              Email
+            </a>
+            <a
+              href="/linkedin"
+              className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body-strong)]"
+              style={{ border: '1px solid var(--hairline)' }}
+            >
+              LinkedIn
+            </a>
+            <a
+              href="/github"
+              className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body-strong)]"
+              style={{ border: '1px solid var(--hairline)' }}
+            >
+              GitHub
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <footer style={{ borderTop: '1px solid var(--hairline)' }}>
+        <div className="max-w-5xl mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-3 text-[12px]">
+          <p className="text-[var(--mute)]">© {new Date().getFullYear()} Harsha Yellela.</p>
+          <nav className="flex items-center gap-4 mono text-[11px] uppercase tracking-[0.12em]">
+            <Link href="/" className="text-[var(--body)] hover:text-[var(--ink)]">graph</Link>
+            <Link href="/teli" className="text-[var(--body)] hover:text-[var(--ink)]">/teli</Link>
+            <Link href="/projects" className="text-[var(--body)] hover:text-[var(--ink)]">all projects</Link>
+            <Link href="/privacy" className="text-[var(--body)] hover:text-[var(--ink)]">privacy</Link>
+            <Link href="/terms" className="text-[var(--body)] hover:text-[var(--ink)]">terms</Link>
+          </nav>
+        </div>
+      </footer>
     </main>
-  );
+  )
 }

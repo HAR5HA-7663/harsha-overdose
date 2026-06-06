@@ -23,7 +23,10 @@ type Props = {
   onNodes: (nodes: PositionedNode[]) => void
 }
 
-// Animated link tubes — like Obsidian, brighter when their endpoints are highlighted
+// Dense Obsidian-style link network: one merged LineSegments mesh with
+// per-vertex colors so we don't blow up draw calls at 500+ links. A second,
+// brighter LineSegments mesh is drawn on top for highlighted edges (focus +
+// search matches). Bloom + additive blending gives the glowing-vault feel.
 function GraphLinks({
   nodes,
   links,
@@ -45,38 +48,71 @@ function GraphLinks({
     return m
   }, [nodes])
 
-  const meshes = useMemo(() => {
-    return links.map(l => {
+  // Base layer — every link drawn dimly. Wide-ish, low opacity.
+  const baseGeom = useMemo(() => {
+    const positions: number[] = []
+    for (const l of links) {
       const a = posById[l.source]
       const b = posById[l.target]
-      if (!a || !b) return null
-      const start = new THREE.Vector3(...a)
-      const end = new THREE.Vector3(...b)
-      const points = [start, end]
-      const geom = new THREE.BufferGeometry().setFromPoints(points)
-      return { geom, link: l }
-    }).filter(Boolean) as { geom: THREE.BufferGeometry; link: Link }[]
-  }, [posById, links])
+      if (!a || !b) continue
+      positions.push(a[0], a[1], a[2], b[0], b[1], b[2])
+    }
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+    return g
+  }, [links, posById])
+
+  // Highlight layer — only links incident to focus/search rebuild this geometry.
+  const highlightGeom = useMemo(() => {
+    const positions: number[] = []
+    if (!hasFocus && !hasSearch) {
+      const g = new THREE.BufferGeometry()
+      g.setAttribute('position', new THREE.Float32BufferAttribute([], 3))
+      return g
+    }
+    for (const l of links) {
+      const a = posById[l.source]
+      const b = posById[l.target]
+      if (!a || !b) continue
+      let bright = false
+      if (hasFocus && highlightSet && highlightSet.has(l.source) && highlightSet.has(l.target)) bright = true
+      if (hasSearch) {
+        const s = searchScores[l.source] || 0
+        const t = searchScores[l.target] || 0
+        if (s > 0.05 || t > 0.05) bright = true
+      }
+      if (!bright) continue
+      positions.push(a[0], a[1], a[2], b[0], b[1], b[2])
+    }
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+    return g
+  }, [links, posById, highlightSet, hasFocus, searchScores, hasSearch])
+
+  const baseOpacity = hasFocus || hasSearch ? 0.08 : 0.32
+  const baseMat = useMemo(() => new THREE.LineBasicMaterial({
+    color: '#67E8F9',
+    transparent: true,
+    opacity: baseOpacity,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  }), [baseOpacity])
+
+  const highlightMat = useMemo(() => new THREE.LineBasicMaterial({
+    color: '#A5F3FC',
+    transparent: true,
+    opacity: 0.9,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  }), [])
+
+  const baseSegs = useMemo(() => new THREE.LineSegments(baseGeom, baseMat), [baseGeom, baseMat])
+  const hlSegs = useMemo(() => new THREE.LineSegments(highlightGeom, highlightMat), [highlightGeom, highlightMat])
 
   return (
     <>
-      {meshes.map(({ geom, link }) => {
-        const sScore = searchScores[link.source] || 0
-        const tScore = searchScores[link.target] || 0
-        const matched = hasSearch && (sScore > 0.05 || tScore > 0.05)
-        const isFocusEdge = hasFocus && highlightSet && (highlightSet.has(link.source) && highlightSet.has(link.target))
-        const opacity = isFocusEdge ? 0.95 : matched ? 0.6 : hasFocus || hasSearch ? 0.05 : 0.22
-        const color = isFocusEdge || matched ? '#67E8F9' : '#67E8F9'
-        const mat = new THREE.LineBasicMaterial({
-          color,
-          transparent: true,
-          opacity,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false,
-        })
-        const line = new THREE.Line(geom, mat)
-        return <primitive key={`${link.source}-${link.target}`} object={line} />
-      })}
+      <primitive object={baseSegs} />
+      <primitive object={hlSegs} />
     </>
   )
 }
@@ -162,13 +198,13 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
   return (
     <Canvas
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-      camera={{ position: [0, 0, 18], fov: 50 }}
-      style={{ background: '#0e0c0a' }}
+      camera={{ position: [0, 0, 14], fov: 55 }}
+      style={{ background: '#0a0908' }}
       dpr={[1, 2]}
       onPointerMissed={() => { /* click empty space — keep selection */ }}
     >
-      <color attach="background" args={['#0e0c0a']} />
-      <fog attach="fog" args={['#0e0c0a', 22, 40]} />
+      <color attach="background" args={['#0a0908']} />
+      <fog attach="fog" args={['#0a0908', 16, 30]} />
       <ambientLight intensity={0.3} />
       <pointLight position={[6, 6, 8]} intensity={0.6} color="#fcd9b0" />
       <pointLight position={[-8, -2, 4]} intensity={0.4} color="#67E8F9" />
@@ -212,9 +248,9 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
 
       <EffectComposer multisampling={0}>
         <Bloom
-          intensity={0.8}
-          luminanceThreshold={0.18}
-          luminanceSmoothing={0.4}
+          intensity={1.4}
+          luminanceThreshold={0.12}
+          luminanceSmoothing={0.35}
           mipmapBlur
         />
       </EffectComposer>
