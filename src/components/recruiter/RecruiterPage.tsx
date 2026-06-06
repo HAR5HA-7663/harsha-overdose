@@ -103,19 +103,19 @@ const EXPERIENCE = [
     ],
   },
   {
-    title: "SDE-1 (LN Technical Consultant)",
+    title: "Software Engineer — Infor LN CD (Custom Development)",
     company: "Infor India Pvt. Ltd.",
-    location: "Hyderabad, India",
+    location: "Hyderabad, India · onsite",
     period: "Apr 2022 – Dec 2023",
     type: "Full-time",
     bullets: [
-      "Developed enterprise-grade RESTful APIs using Java and Spring Boot to integrate ERP systems with external clients (Ferrari, Boeing, Triumph), processing 500+ daily transactions",
-      "Engineered serverless microservices using AWS Lambda, API Gateway, and S3 triggers to automate data ingestion and event processing",
-      "Diagnosed and resolved 15+ critical data pipeline issues across MySQL and distributed systems, reducing failure frequency from weekly to monthly",
-      "Built backend services in C++ for performance-critical modules to optimize data processing and reduce latency in ERP integrations",
-      "Containerized applications using Docker and implemented CI/CD pipelines, reducing release turnaround time by 25%",
-      "Designed frontend components using React.js and JavaScript to improve user interaction with ERP dashboards",
-      "Collaborated in Agile teams to deliver features across microservices and distributed architectures",
+      "Worked on ERP integration for enterprise clients like Ferrari, Boeing, and Triumph through the Infor LN CD (Custom Development) team — primarily onsite in Hyderabad with extended onsite stints.",
+      "Built enterprise-grade RESTful APIs using Java and Spring Boot to integrate Infor LN with external client systems, processing 500+ daily transactions in production.",
+      "Engineered serverless microservices using AWS Lambda, API Gateway, and S3 triggers to automate data ingestion and event processing.",
+      "Diagnosed and resolved 15+ critical data pipeline issues across MySQL and distributed systems, reducing failure frequency from weekly to monthly.",
+      "Built backend services in C++ for performance-critical modules to reduce latency in ERP integrations.",
+      "Containerized applications with Docker and implemented CI/CD pipelines, cutting release turnaround by 25%.",
+      "Designed frontend components with React.js and JavaScript to improve user interaction with ERP dashboards.",
     ],
   },
 ];
@@ -330,7 +330,7 @@ function RecruiterHero() {
           style={cardStyle}
         >
           {[
-            { icon: "🏢", text: "Enterprise tools used by Ferrari, Boeing & Triumph at Infor" },
+            { icon: "🏢", text: "Built enterprise ERP integrations on the Infor LN CD (Custom Development) team — onsite work for Ferrari, Boeing, and Triumph" },
             { icon: "🤖", text: "Multi-agent AI pipelines deployed on AWS Fargate / EKS at LTU" },
             { icon: "☁️", text: "Serverless SaaS (Resumade.in) with sub-2s generation & 95%+ uptime" },
           ].map((item) => (

@@ -13,7 +13,9 @@ const STATS = [
   { label: 'Production uptime', value: '99%+' },
 ]
 
-const SUMMARY = [
+type SummaryEntry = { head: string; note?: string; body: string }
+
+const SUMMARY: SummaryEntry[] = [
   {
     head: 'Current — teli.ai',
     body: 'Agentic voice + SMS for the mortgage industry. Function calling with structured-output tool schemas, streaming ASR with partial-result handling, sub-300ms TTS, hybrid RAG (BM25 + dense) over pgvector with cross-encoder reranking, multi-tenant Postgres RLS per loan officer, 10DLC SMS state machine. Clients: bevri.ai, NEXA Lending.',
@@ -23,7 +25,8 @@ const SUMMARY = [
     body: 'Multi-agent orchestration with CrewAI + LangGraph + MCP servers, deployed on AWS Fargate/EKS. Hybrid OpenSearch retrieval over 10K+ docs with sub-second latency. Benchmarked no-code vs coded agent stacks to inform downstream work.',
   },
   {
-    head: 'Before — Infor (Ferrari · Boeing · Triumph)',
+    head: 'Before — Infor LN CD (Custom Development) team',
+    note: 'Onsite, Hyderabad — built ERP integrations for clients like Ferrari, Boeing, and Triumph',
     body: 'REST integrations and event flows through Infor ION + AWS Lambda/S3. Containerized service deploys, cut release turnaround by 25%, drove pipeline failure frequency from weekly to monthly.',
   },
 ]
@@ -101,7 +104,12 @@ export default function RecruiterProjectsPage() {
         <div className="space-y-6">
           {SUMMARY.map(s => (
             <article key={s.head}>
-              <h3 className="text-[var(--ink)] text-[17px] font-medium tracking-[-0.015em] mb-1.5">{s.head}</h3>
+              <h3 className="text-[var(--ink)] text-[17px] font-medium tracking-[-0.015em]">{s.head}</h3>
+              {s.note && (
+                <p className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--mute)] mt-1 mb-1.5">
+                  {s.note}
+                </p>
+              )}
               <p className="text-[var(--body-strong)] text-[14px] leading-[1.6]">{s.body}</p>
             </article>
           ))}

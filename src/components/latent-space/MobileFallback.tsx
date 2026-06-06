@@ -3,16 +3,29 @@
 import Link from 'next/link'
 import { NODES } from '../../data/nodes'
 
-export function MobileFallback() {
+type Props = {
+  /** When true, render at all viewport widths (used as the WebGL-unavailable fallback). */
+  force?: boolean
+  /** When true, render full-screen (not a bottom sheet) — paired with force for no-WebGL hosts. */
+  fullScreen?: boolean
+}
+
+export function MobileFallback({ force = false, fullScreen = false }: Props) {
   const projects = NODES.filter(n => n.kind === 'project')
   const teli = NODES.find(n => n.id === 'now')
 
+  const visibilityClass = force ? '' : 'lg:hidden'
+  const layoutClass = fullScreen
+    ? 'fixed inset-0 z-20 overflow-y-auto pt-24 pb-12 px-4 pointer-events-auto'
+    : 'fixed bottom-0 inset-x-0 z-20 max-h-[58vh] overflow-y-auto pt-10 pb-6 px-4 pointer-events-auto'
+  const background = fullScreen
+    ? 'var(--canvas)'
+    : 'linear-gradient(to top, var(--canvas) 60%, transparent)'
+
   return (
     <section
-      className="lg:hidden fixed bottom-0 inset-x-0 z-20 max-h-[58vh] overflow-y-auto pt-10 pb-6 px-4 pointer-events-auto"
-      style={{
-        background: 'linear-gradient(to top, var(--canvas) 60%, transparent)',
-      }}
+      className={`${visibilityClass} ${layoutClass}`}
+      style={{ background }}
     >
       <div className="max-w-md mx-auto space-y-5">
         <div>
@@ -96,9 +109,21 @@ export function MobileFallback() {
           </a>
         </div>
 
-        <p className="text-center mono text-[var(--mute)] text-[10px] tracking-[0.25em] uppercase pt-2">
-          The graph above is interactive on desktop.
-        </p>
+        {!fullScreen && (
+          <p className="text-center mono text-[var(--mute)] text-[10px] tracking-[0.25em] uppercase pt-2">
+            The graph above is interactive on desktop.
+          </p>
+        )}
+        {fullScreen && (
+          <div className="rounded-[4px] p-3.5 mt-2" style={{ background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }}>
+            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--mute)] mb-2">3D graph · degraded</p>
+            <p className="text-[var(--body)] text-[12px] leading-[1.55]">
+              Your browser disabled WebGL so the interactive 3D knowledge-graph can&apos;t render.
+              Try Chrome / Safari / Firefox with hardware acceleration enabled — the read-only
+              version above still has everything.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   )

@@ -106,7 +106,7 @@ export const NODES: GalaxyNode[] = [
       bio: [
         "I'm a Full Stack Engineer at teli.ai shipping agentic voice + SMS for the mortgage industry — function calling, streaming ASR/TTS, hybrid RAG over pgvector, multi-tenant Postgres RLS. Live for bevri.ai and NEXA Lending.",
         "Before teli I spent a year at Lawrence Tech as a research assistant — CrewAI + LangGraph multi-agent orchestration, MCP servers on AWS Fargate/EKS, OpenSearch hybrid retrieval, no-code vs coded agent benchmarking. MS in Computer Science (3.77 GPA).",
-        "Two years before that I was at Infor in Hyderabad — REST integrations for Ferrari, Boeing, Triumph through Infor ION + AWS Lambda/S3 event flows. The Ferrari moment is when software stopped being academic.",
+        "Two years before that I was on the Infor LN CD (Custom Development) team in Hyderabad — building ERP integrations onsite for enterprise clients like Ferrari, Boeing, and Triumph through Infor ION + AWS Lambda/S3 event flows. The Ferrari moment is when software stopped being academic.",
       ],
       resumeUrl: '/Harsha_Yellela_resume.pdf',
     },
@@ -152,7 +152,7 @@ export const NODES: GalaxyNode[] = [
       location: 'Remote, USA',
       current: true,
       bullets: [
-        'Built voice calling AI agents with OpenAI GPT-4o function calling, ElevenLabs voice synthesis, and Retell telephony for mortgage clients (bevri.ai, NEXA Lending).',
+        'Built voice-calling AI agents with function-calling reasoning on Retell + ElevenLabs for mortgage clients (bevri.ai, NEXA Lending) — real-time transcription, summarization, lead auto-qualification live in production.',
         'Shipped SMS agentic workflows with full 10DLC compliance registration — live in production today.',
         'Engineered RAG pipeline ingesting chat/call transcripts into pgvector with LangChain orchestration.',
         'Owned end-to-end deployment on AWS (ECS, EKS, Lambda) with Docker, K8s, GitHub Actions/Jenkins CI/CD at 99%+ uptime.',
@@ -181,16 +181,17 @@ export const NODES: GalaxyNode[] = [
   {
     id: 'exp-infor',
     kind: 'experience',
-    title: 'Infor India',
-    oneLiner: 'SDE-1 (LN Technical Consultant) · Apr 2022 → Dec 2023',
+    title: 'Infor LN CD team',
+    oneLiner: 'Software Engineer · Custom Development · Apr 2022 → Dec 2023',
     tags: ['experience', 'enterprise', 'backend', 'java'],
     detail: {
       kind: 'experience',
-      company: 'Infor India Pvt. Ltd.',
+      company: 'Infor India Pvt. Ltd. — LN CD (Custom Development) team',
       period: 'Apr 2022 → Dec 2023',
-      location: 'Hyderabad, India',
+      location: 'Hyderabad, India · onsite',
       bullets: [
-        'Delivered REST API integrations for Ferrari, Boeing, and Triumph processing 500+ daily transactions via AWS Lambda + API Gateway.',
+        'Worked on ERP integration for enterprise clients like Ferrari, Boeing, and Triumph through the Infor LN CD (Custom Development) team — primarily onsite in Hyderabad with extended onsite stints.',
+        'Delivered REST API integrations processing 500+ daily transactions via AWS Lambda + API Gateway behind Infor ION event flows.',
         'Resolved 15+ critical data pipeline issues across MySQL and distributed ERP systems, reducing failure frequency from weekly to monthly.',
         'Containerized business logic with Docker, cut deployment turnaround by 25% via standardized CI workflows.',
       ],

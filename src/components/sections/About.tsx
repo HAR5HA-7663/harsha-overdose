@@ -103,13 +103,16 @@ export default function About() {
               focused on Agentic AI and multi-agent systems.
             </p>
             <p>
-              Previously rode with <strong>Infor</strong> as a Technical Consultant, developing
-              enterprise tools for global clients including <strong>Ferrari, Boeing, and Triumph</strong>.
+              Previously rode with <strong>Infor India</strong> on the{" "}
+              <strong>LN CD (Custom Development)</strong> team — building enterprise ERP
+              integrations primarily <em>onsite</em> in Hyderabad for clients including{" "}
+              <strong>Ferrari</strong>, <strong>Boeing</strong>, and <strong>Triumph</strong>.
             </p>
             <p>
               <span className="text-[#8B0000] font-display">Currently riding with</span>{" "}
-              <strong>teli.ai</strong>, building voice and SMS AI agents on GPT-4o + Twilio + LangChain RAG
-              for mortgage clients including <strong>bevri.ai</strong> and <strong>NEXA Lending</strong>.
+              <strong>teli.ai</strong>, building voice and SMS AI agents — function-calling
+              reasoning on Retell + ElevenLabs + LangChain RAG over pgvector — for mortgage
+              clients including <strong>bevri.ai</strong> and <strong>NEXA Lending</strong>.
             </p>
           </div>
 
