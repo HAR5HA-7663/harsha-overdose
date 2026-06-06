@@ -35,7 +35,7 @@ export function DetailPanel({ node, onClose }: Props) {
                     {kindLabel(node.kind)}
                   </p>
                 </div>
-                <h2 className="text-[24px] font-medium text-[var(--ink)] leading-[1.2] tracking-[-0.015em]">
+                <h2 className="font-display text-[28px] text-[var(--ink)] leading-[1.1] font-normal" style={{ letterSpacing: '-0.02em', fontVariationSettings: '"SOFT" 100, "opsz" 144' }}>
                   {node.title}
                 </h2>
                 <p className="text-[var(--body)] text-[14px] mt-2 leading-[1.5]">{node.oneLiner}</p>
