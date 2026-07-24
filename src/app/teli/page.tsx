@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { SMSPanel } from '../../components/teli/SMSPanel'
 import { EmailPanel } from '../../components/teli/EmailPanel'
 import { Subtitles } from '../../components/teli/Subtitles'
+import { StepFlow } from '../../components/teli/StepFlow'
 import { EngineerMode } from '../../components/teli/EngineerMode'
 import { SceneErrorBoundary } from '../../components/teli/SceneErrorBoundary'
 import { BEATS, getCurrentBeat, TOTAL_DURATION, type Beat } from '../../components/teli/choreography'
@@ -121,12 +122,18 @@ export default function TeliPage() {
     syncDiscrete(0)
   }, [paintClock, syncDiscrete])
 
+  const seek = useCallback((t: number) => {
+    elapsedRef.current = t
+    paintClock(t % TOTAL_DURATION)
+    syncDiscrete(t)
+  }, [paintClock, syncDiscrete])
+
   return (
     <main
       className="fixed inset-0 flex flex-col overflow-y-auto md:grid md:overflow-hidden"
       style={{
         background: 'var(--canvas)',
-        gridTemplateRows: 'auto minmax(0, 1fr) auto',
+        gridTemplateRows: 'auto auto minmax(0, 1fr) auto',
       }}
     >
       {/* ─────────────── BAND 1: HERO ─────────────── */}
@@ -179,6 +186,9 @@ export default function TeliPage() {
           </p>
         </div>
       </header>
+
+      {/* ─────────────── BAND 1.5: STEP FLOW (persistent, readable pipeline) ─────────────── */}
+      <StepFlow beat={beat} onSeek={seek} />
 
       {/* ─────────────── BAND 2: CINEMA (bounded 3D scene) ─────────────── */}
       {/* On phones the flex layout gives the scene a real, guaranteed height —

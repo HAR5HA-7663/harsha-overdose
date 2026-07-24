@@ -168,7 +168,62 @@ function runForceLayout(
     pos[n.id][1] = Math.max(-extent, Math.min(extent, pos[n.id][1] - cy))
     pos[n.id][2] = Math.max(-extent * 0.55, Math.min(extent * 0.55, pos[n.id][2] - cz))
   }
+
+  // Hard de-overlap pass — springs + clamping can leave same-cluster nodes
+  // interpenetrating (two spheres rendered inside each other). Push every
+  // pair apart until their VISUAL bounds (core radius × glow halo + margin)
+  // no longer intersect. Runs after clamping because the clamp itself can
+  // squash neighbors onto the same boundary plane.
+  const degrees = getDegrees(links)
+  resolveCollisions(nodes, pos, degrees)
+
   return pos
+}
+
+// Mirrors radiusFromDegree in NodeMesh.tsx — collision must use the size the
+// sphere is actually drawn at, not an abstract point.
+function visualRadius(kind: GalaxyNode['kind'], degree: number): number {
+  const base = kind === 'now' ? 0.4 : kind === 'about' ? 0.32 : 0.22
+  return base + Math.min(degree, 12) * 0.018
+}
+
+function resolveCollisions(
+  nodes: GalaxyNode[],
+  pos: Record<string, [number, number, number]>,
+  degrees: Record<string, number>,
+  sweeps = 32,
+): void {
+  const GLOW = 1.9      // halo mesh scales 1.9× the core radius
+  const MARGIN = 0.45   // breathing room so labels don't kiss either
+  for (let s = 0; s < sweeps; s++) {
+    let moved = false
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = pos[nodes[i].id]
+        const b = pos[nodes[j].id]
+        const minSep =
+          (visualRadius(nodes[i].kind, degrees[nodes[i].id] || 0) +
+            visualRadius(nodes[j].kind, degrees[nodes[j].id] || 0)) * GLOW + MARGIN
+        let dx = b[0] - a[0]
+        let dy = b[1] - a[1]
+        let dz = b[2] - a[2]
+        let d = Math.sqrt(dx * dx + dy * dy + dz * dz)
+        if (d >= minSep) continue
+        if (d < 1e-4) {
+          // Coincident — pick a deterministic direction from the pair's ids.
+          const r = seedRand(nodes[i].id + nodes[j].id)
+          dx = r(1); dy = r(2); dz = r(3)
+          d = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1
+        }
+        const push = (minSep - d) / 2
+        const ux = dx / d, uy = dy / d, uz = dz / d
+        a[0] -= ux * push; a[1] -= uy * push; a[2] -= uz * push
+        b[0] += ux * push; b[1] += uy * push; b[2] += uz * push
+        moved = true
+      }
+    }
+    if (!moved) break
+  }
 }
 
 // ───────────────────────── public API ─────────────────────────

@@ -131,7 +131,7 @@ function SceneCamera({ targetPosition }: { targetPosition: [number, number, numb
       targetVec.current.set(x, y, z)
       const len = Math.sqrt(x * x + y * y + z * z) || 1
       const dir = new THREE.Vector3(x / len, y / len, z / len)
-      const dollyDistance = 6
+      const dollyDistance = 7.5
       camTargetVec.current.set(x + dir.x * dollyDistance, y + dir.y * dollyDistance, z + dir.z * dollyDistance)
     }
   }, [targetPosition])
@@ -149,7 +149,7 @@ function SceneCamera({ targetPosition }: { targetPosition: [number, number, numb
       ref={controlsRef}
       enableDamping
       dampingFactor={0.08}
-      minDistance={5}
+      minDistance={6.5}
       maxDistance={35}
       autoRotate={!hasTarget}
       autoRotateSpeed={0.22}
