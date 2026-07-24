@@ -15,6 +15,7 @@ import {
   type Link,
 } from '../../lib/positioning'
 import { NodeMesh } from './NodeMesh'
+import { useAdaptivePerf } from '../../lib/useAdaptivePerf'
 
 type Props = {
   query: string
@@ -163,6 +164,7 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
   const { nodes, links } = useMemo(() => getGraph(), [])
   const neighbors = useMemo(() => getNeighbors(links), [links])
   const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const { tier, dpr } = useAdaptivePerf()
 
   useEffect(() => {
     onNodes(nodes)
@@ -200,7 +202,7 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
       camera={{ position: [0, 0, 16], fov: 52 }}
       style={{ background: '#0e0c0a' }}
-      dpr={[1, 2]}
+      dpr={dpr}
       onPointerMissed={() => { /* click empty space — keep selection */ }}
     >
       <color attach="background" args={['#0e0c0a']} />
@@ -246,14 +248,18 @@ export function LatentSpaceScene({ query, selectedId, onSelect, onNodes }: Props
 
       <SceneCamera targetPosition={targetPosition} />
 
-      <EffectComposer multisampling={0}>
-        <Bloom
-          intensity={0.55}
-          luminanceThreshold={0.3}
-          luminanceSmoothing={0.4}
-          mipmapBlur
-        />
-      </EffectComposer>
+      {/* Bloom is the single biggest GPU cost — additive glow meshes carry the
+          look on their own on phones, so post-processing only runs on desktop. */}
+      {tier === 'high' && (
+        <EffectComposer multisampling={0}>
+          <Bloom
+            intensity={0.55}
+            luminanceThreshold={0.3}
+            luminanceSmoothing={0.4}
+            mipmapBlur
+          />
+        </EffectComposer>
+      )}
     </Canvas>
   )
 }

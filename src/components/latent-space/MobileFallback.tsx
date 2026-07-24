@@ -17,7 +17,7 @@ export function MobileFallback({ force = false, fullScreen = false }: Props) {
   const visibilityClass = force ? '' : 'lg:hidden'
   const layoutClass = fullScreen
     ? 'fixed inset-0 z-20 overflow-y-auto pt-24 pb-12 px-4 pointer-events-auto'
-    : 'fixed bottom-0 inset-x-0 z-20 max-h-[58vh] overflow-y-auto pt-10 pb-6 px-4 pointer-events-auto'
+    : 'fixed bottom-0 inset-x-0 z-20 max-h-[58dvh] overflow-y-auto pt-8 px-4 pointer-events-auto'
   const background = fullScreen
     ? 'var(--canvas)'
     : 'linear-gradient(to top, var(--canvas) 60%, transparent)'
@@ -25,8 +25,19 @@ export function MobileFallback({ force = false, fullScreen = false }: Props) {
   return (
     <section
       className={`${visibilityClass} ${layoutClass}`}
-      style={{ background }}
+      style={{
+        background,
+        paddingBottom: fullScreen ? undefined : 'calc(1.5rem + env(safe-area-inset-bottom))',
+        overscrollBehavior: 'contain',
+      }}
     >
+      {!fullScreen && (
+        <div
+          aria-hidden
+          className="sticky top-0 mx-auto mb-4 w-9 h-1 rounded-full"
+          style={{ background: 'var(--hairline)' }}
+        />
+      )}
       <div className="max-w-md mx-auto space-y-5">
         <div>
           <p className="mono text-[10px] tracking-[0.3em] uppercase text-[var(--mute)] mb-1.5">Now</p>
@@ -38,7 +49,7 @@ export function MobileFallback({ force = false, fullScreen = false }: Props) {
           {teli && (
             <Link
               href="/teli"
-              className="inline-flex items-center gap-2 mt-3 px-3.5 py-2 rounded-[3px] text-[12px] font-medium"
+              className="inline-flex items-center gap-2 mt-3 px-4 py-2.5 min-h-11 rounded-[3px] text-[13px] font-medium"
               style={{ background: '#F59E0B', color: 'var(--on-primary)' }}
             >
               ▶ Watch the call →
@@ -72,17 +83,17 @@ export function MobileFallback({ force = false, fullScreen = false }: Props) {
           </ul>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        <div className="flex flex-wrap items-center gap-2 pt-1">
           <Link
             href="/resume"
-            className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium"
+            className="inline-flex items-center px-4 py-2.5 min-h-11 rounded-[3px] text-[13px] font-medium"
             style={{ background: 'var(--ink)', color: 'var(--on-primary)' }}
           >
             Résumé
           </Link>
           <a
             href="mailto:harsha.yellela@gmail.com"
-            className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body-strong)]"
+            className="inline-flex items-center px-4 py-2.5 min-h-11 rounded-[3px] text-[13px] font-medium text-[var(--body-strong)]"
             style={{ border: '1px solid var(--hairline)' }}
           >
             Email
@@ -91,7 +102,7 @@ export function MobileFallback({ force = false, fullScreen = false }: Props) {
             href="https://github.com/HAR5HA-7663"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body-strong)]"
+            className="inline-flex items-center px-4 py-2.5 min-h-11 rounded-[3px] text-[13px] font-medium text-[var(--body-strong)]"
             style={{ border: '1px solid var(--hairline)' }}
           >
             GitHub
@@ -100,7 +111,7 @@ export function MobileFallback({ force = false, fullScreen = false }: Props) {
             href="https://www.linkedin.com/in/har5ha-7663"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body-strong)]"
+            className="inline-flex items-center px-4 py-2.5 min-h-11 rounded-[3px] text-[13px] font-medium text-[var(--body-strong)]"
             style={{ border: '1px solid var(--hairline)' }}
           >
             LinkedIn

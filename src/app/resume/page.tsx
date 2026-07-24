@@ -37,10 +37,11 @@ export default function ResumePage() {
             href={PDF_PATH}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body-strong)] hover:text-[var(--ink)] hover:bg-[var(--canvas-soft)] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[3px] text-[12px] font-medium text-[var(--body-strong)] hover:text-[var(--ink)] hover:bg-[var(--canvas-soft)] transition-colors"
             style={{ border: '1px solid var(--hairline)' }}
           >
-            Open in new tab ↗
+            <span className="hidden sm:inline">Open in new tab ↗</span>
+            <span className="sm:hidden">Open ↗</span>
           </a>
           <a
             href="mailto:harsha.yellela@gmail.com?subject=teli.ai role"

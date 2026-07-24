@@ -42,7 +42,7 @@ export function DetailPanel({ node, onClose }: Props) {
               </div>
               <button
                 onClick={onClose}
-                className="text-[var(--mute)] hover:text-[var(--ink)] text-[14px] leading-none -mt-1 px-2 py-1.5 rounded-[3px] hover:bg-[var(--canvas-soft)]"
+                className="text-[var(--mute)] hover:text-[var(--ink)] text-[15px] leading-none -mt-1 -mr-2 min-w-11 min-h-11 flex items-center justify-center rounded-[3px] hover:bg-[var(--canvas-soft)]"
                 aria-label="Close"
               >
                 ✕

@@ -145,6 +145,11 @@ samp {
   }
 }
 
+/* Kill the legacy double-tap-to-zoom delay on interactive elements */
+button, a, [role="button"], input, kbd {
+  touch-action: manipulation;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -1,15 +1,14 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { SMSPanel } from '../../components/teli/SMSPanel'
 import { EmailPanel } from '../../components/teli/EmailPanel'
 import { Subtitles } from '../../components/teli/Subtitles'
 import { EngineerMode } from '../../components/teli/EngineerMode'
 import { SceneErrorBoundary } from '../../components/teli/SceneErrorBoundary'
-import { BEATS, getCurrentBeat, TOTAL_DURATION } from '../../components/teli/choreography'
+import { BEATS, getCurrentBeat, TOTAL_DURATION, type Beat } from '../../components/teli/choreography'
 
 const CallScene = dynamic(
   () => import('../../components/teli/CallScene').then(m => m.CallScene),
@@ -67,9 +66,37 @@ function ArchKey() {
 }
 
 export default function TeliPage() {
-  const [elapsed, setElapsed] = useState(0)
   const [paused, setPaused] = useState(false)
   const [engineerOpen, setEngineerOpen] = useState(false)
+
+  // Discrete choreography state — flips ~16 times per 46s loop. The 60fps
+  // clock lives in refs and writes straight to the DOM below, so React only
+  // re-renders on actual beat/panel changes instead of every animation frame.
+  const [beat, setBeat] = useState<Beat>(BEATS[0])
+  const [smsSent, setSmsSent] = useState(false)
+  const [emailSent, setEmailSent] = useState(false)
+  const [smsPhase, setSmsPhase] = useState<'idle' | 'composing' | 'sent'>('idle')
+
+  const elapsedRef = useRef(0)
+  const barRef = useRef<HTMLDivElement>(null)
+  const clockRef = useRef<HTMLSpanElement>(null)
+
+  const syncDiscrete = useCallback((elapsed: number) => {
+    const t = elapsed % TOTAL_DURATION
+    const b = getCurrentBeat(elapsed)
+    setBeat(prev => (prev === b ? prev : b))
+    const sms = BEATS.some(x => x.emit === 'sms-sent' && x.time <= t)
+    const email = BEATS.some(x => x.emit === 'email-sent' && x.time <= t)
+    setSmsSent(prev => (prev === sms ? prev : sms))
+    setEmailSent(prev => (prev === email ? prev : email))
+    const phase: 'idle' | 'composing' | 'sent' = sms ? 'sent' : t >= 22 ? 'composing' : 'idle'
+    setSmsPhase(prev => (prev === phase ? prev : phase))
+  }, [])
+
+  const paintClock = useCallback((t: number) => {
+    if (barRef.current) barRef.current.style.transform = `scaleX(${t / TOTAL_DURATION})`
+    if (clockRef.current) clockRef.current.textContent = `${t.toFixed(1)}s / ${TOTAL_DURATION}s`
+  }, [])
 
   useEffect(() => {
     if (paused) return
@@ -78,24 +105,25 @@ export default function TeliPage() {
     const tick = (now: number) => {
       const dt = (now - last) / 1000
       last = now
-      setElapsed(e => e + dt)
+      elapsedRef.current += dt
+      const t = elapsedRef.current % TOTAL_DURATION
+      paintClock(t)
+      syncDiscrete(elapsedRef.current)
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [paused])
+  }, [paused, paintClock, syncDiscrete])
 
-  const beat = useMemo(() => getCurrentBeat(elapsed), [elapsed])
-  const t = elapsed % TOTAL_DURATION
-  const smsSent = BEATS.some(b => b.emit === 'sms-sent' && b.time <= t)
-  const emailSent = BEATS.some(b => b.emit === 'email-sent' && b.time <= t)
-  const progress = (t / TOTAL_DURATION) * 100
-  const smsPhase: 'idle' | 'composing' | 'sent' =
-    smsSent ? 'sent' : t >= 22 ? 'composing' : 'idle'
+  const replay = useCallback(() => {
+    elapsedRef.current = 0
+    paintClock(0)
+    syncDiscrete(0)
+  }, [paintClock, syncDiscrete])
 
   return (
     <main
-      className="fixed inset-0 overflow-hidden grid"
+      className="fixed inset-0 flex flex-col overflow-y-auto md:grid md:overflow-hidden"
       style={{
         background: 'var(--canvas)',
         gridTemplateRows: 'auto minmax(0, 1fr) auto',
@@ -153,15 +181,17 @@ export default function TeliPage() {
       </header>
 
       {/* ─────────────── BAND 2: CINEMA (bounded 3D scene) ─────────────── */}
-      <section className="relative min-h-0">
+      {/* On phones the flex layout gives the scene a real, guaranteed height —
+          previously the stacked panels in the footer squeezed it to a sliver. */}
+      <section className="relative h-[44dvh] shrink-0 md:h-auto md:shrink md:min-h-0">
         <div className="absolute inset-0">
           <SceneErrorBoundary fallback={<SceneFallback />}>
-            <CallScene beat={beat} elapsed={elapsed} />
+            <CallScene beat={beat} />
           </SceneErrorBoundary>
         </div>
 
         {/* Subtitles float at the bottom-edge of the scene band, never near the hero */}
-        <Subtitles beat={beat} elapsed={elapsed} />
+        <Subtitles beat={beat} />
 
         {/* Architecture key — top-left corner of the scene */}
         <div className="absolute top-4 left-4 z-10 pointer-events-auto hidden md:block">
@@ -179,50 +209,52 @@ export default function TeliPage() {
 
       {/* ─────────────── BAND 3: CONTROLS + STACKED PANELS ─────────────── */}
       <footer
-        className="relative z-30 px-4 sm:px-5 pt-3 pb-3"
+        className="relative z-30 px-4 sm:px-5 pt-3"
         style={{
           background: 'linear-gradient(to top, var(--canvas) 0%, var(--canvas) 70%, rgba(14, 12, 10, 0.6) 100%)',
           borderTop: '1px solid var(--hairline)',
+          paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))',
         }}
       >
-        {/* Side panels stacked at narrow widths */}
-        <div className="xl:hidden mb-3 max-w-3xl mx-auto pointer-events-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <SMSPanel smsSent={smsSent} phase={smsPhase} />
-            <EmailPanel emailSent={emailSent} />
-          </div>
-        </div>
-
-        {/* Progress + controls */}
+        {/* Progress + controls — first on phones so they sit right under the scene */}
         <div className="max-w-4xl mx-auto pointer-events-auto">
           <div
-            className="rounded-[4px] px-4 py-2.5 flex items-center gap-4"
+            className="rounded-[4px] px-4 py-2.5 flex items-center gap-3 sm:gap-4"
             style={{ background: 'var(--canvas-soft)', border: '1px solid var(--hairline)' }}
           >
             <button
               onClick={() => setPaused(p => !p)}
-              className="text-[var(--ink)] hover:text-[#F59E0B] text-[14px] w-6 h-6 flex items-center justify-center transition-colors"
+              className="text-[var(--ink)] hover:text-[#F59E0B] text-[14px] min-w-11 min-h-11 sm:min-w-6 sm:min-h-6 w-6 h-6 flex items-center justify-center transition-colors"
               aria-label={paused ? 'Play' : 'Pause'}
             >
               {paused ? '▶' : '❚❚'}
             </button>
             <button
-              onClick={() => setElapsed(0)}
-              className="text-[var(--body)] hover:text-[var(--ink)] mono text-[11px] tracking-[0.15em] uppercase transition-colors"
+              onClick={replay}
+              className="text-[var(--body)] hover:text-[var(--ink)] mono text-[11px] tracking-[0.15em] uppercase transition-colors min-h-11 sm:min-h-6 flex items-center"
             >
               ↻ replay
             </button>
             <div className="flex-1 h-0.5 rounded-full overflow-hidden" style={{ background: 'var(--hairline)' }}>
-              <motion.div
-                className="h-full"
-                style={{ background: '#F59E0B' }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.1 }}
+              {/* Driven directly from the rAF loop via ref — scaleX transform,
+                  no React re-render and no layout-triggering width animation. */}
+              <div
+                ref={barRef}
+                className="h-full w-full"
+                style={{ background: '#F59E0B', transform: 'scaleX(0)', transformOrigin: 'left' }}
               />
             </div>
-            <span className="mono text-[var(--mute)] text-[10px] tabular-nums">
-              {t.toFixed(1)}s / {TOTAL_DURATION}s
+            <span ref={clockRef} className="mono text-[var(--mute)] text-[10px] tabular-nums">
+              0.0s / {TOTAL_DURATION}s
             </span>
+          </div>
+        </div>
+
+        {/* Side panels stacked at narrow widths */}
+        <div className="xl:hidden mt-3 max-w-3xl mx-auto pointer-events-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <SMSPanel smsSent={smsSent} phase={smsPhase} />
+            <EmailPanel emailSent={emailSent} />
           </div>
         </div>
       </footer>

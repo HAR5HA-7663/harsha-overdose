@@ -60,7 +60,7 @@ export function SearchOverlay({ query, onQueryChange, matchCount }: Props) {
             value={query}
             onChange={e => onQueryChange(e.target.value)}
             placeholder={`Search the graph · try "${SUGGESTIONS[placeholderIdx]}"`}
-            className="bg-transparent flex-1 text-[var(--ink)] text-[13px] placeholder:text-[var(--mute)] focus:outline-none"
+            className="bg-transparent flex-1 min-w-0 text-[var(--ink)] text-[16px] sm:text-[13px] placeholder:text-[var(--mute)] focus:outline-none"
             autoComplete="off"
             spellCheck={false}
             aria-label="Search the knowledge graph"
@@ -79,7 +79,7 @@ export function SearchOverlay({ query, onQueryChange, matchCount }: Props) {
             </>
           ) : (
             <kbd
-              className="mono text-[10px] px-1.5 py-0.5 rounded-[3px] text-[var(--body)] select-none"
+              className="mono hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded-[3px] text-[var(--body)] select-none"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--hairline)' }}
             >
               ⌘K
@@ -87,8 +87,11 @@ export function SearchOverlay({ query, onQueryChange, matchCount }: Props) {
           )}
         </div>
       </div>
-      <p className="mono text-center text-[var(--mute)] text-[10px] tracking-[0.3em] mt-2 select-none uppercase">
+      <p className="mono hidden sm:block text-center text-[var(--mute)] text-[10px] tracking-[0.3em] mt-2 select-none uppercase">
         cosine similarity · client-side · press <span className="text-[var(--body)]">/</span> or <span className="text-[var(--body)]">⌘K</span>
+      </p>
+      <p className="mono sm:hidden text-center text-[var(--mute)] text-[10px] tracking-[0.3em] mt-2 select-none uppercase">
+        cosine similarity · client-side
       </p>
     </div>
   )

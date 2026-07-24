@@ -6,11 +6,15 @@ import { OrbitControls, Float, Billboard, Text } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import type { Beat } from './choreography'
+import { useAdaptivePerf } from '../../lib/useAdaptivePerf'
 
 type Props = {
   beat: Beat
-  elapsed: number
 }
+
+// Scratch vector shared across orbs — avoids two Vector3 allocations per orb
+// per frame (useFrame callbacks run sequentially, so reuse is safe).
+const ORB_SCRATCH = new THREE.Vector3()
 
 // A floating glowing sphere with optional pulsing.
 function Orb({
@@ -34,8 +38,8 @@ function Orb({
     const base = active ? 1.18 : 1.0
     const wobble = active ? 1 + Math.sin(t * 4 * pulse) * 0.05 : 1
     const finalScale = size * base * wobble
-    ref.current.scale.lerp(new THREE.Vector3(finalScale, finalScale, finalScale), 0.12)
-    glowRef.current.scale.lerp(new THREE.Vector3(finalScale * 2.4, finalScale * 2.4, finalScale * 2.4), 0.12)
+    ref.current.scale.lerp(ORB_SCRATCH.set(finalScale, finalScale, finalScale), 0.12)
+    glowRef.current.scale.lerp(ORB_SCRATCH.set(finalScale * 2.4, finalScale * 2.4, finalScale * 2.4), 0.12)
   })
 
   return (
@@ -45,7 +49,7 @@ function Orb({
         <meshBasicMaterial color={color} transparent opacity={active ? 0.28 : 0.08} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
       <mesh ref={ref}>
-        <sphereGeometry args={[1, 32, 32]} />
+        <sphereGeometry args={[1, 24, 24]} />
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={active ? 1.8 : 0.7} roughness={0.3} metalness={0.3} />
       </mesh>
       {/* In-scene Text labels intentionally removed — the static ArchKey
@@ -164,7 +168,8 @@ function CameraRig() {
   return null
 }
 
-export function CallScene({ beat, elapsed }: Props) {
+export function CallScene({ beat }: Props) {
+  const { tier, dpr } = useAdaptivePerf()
   const isRinging = beat.phase === 'ringing'
   const isThinking = beat.phase === 'thinking'
   const isTool = beat.phase === 'tool-call'
@@ -183,7 +188,7 @@ export function CallScene({ beat, elapsed }: Props) {
       gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
       camera={{ position: [0, 0.6, 16], fov: 48 }}
       style={{ background: '#06080F' }}
-      dpr={[1, 2]}
+      dpr={dpr}
     >
       <color attach="background" args={['#06080F']} />
       <fog attach="fog" args={['#06080F', 14, 42]} />
@@ -234,9 +239,13 @@ export function CallScene({ beat, elapsed }: Props) {
         autoRotate={false}
       />
 
-      <EffectComposer multisampling={0}>
-        <Bloom intensity={0.55} luminanceThreshold={0.35} luminanceSmoothing={0.5} mipmapBlur />
-      </EffectComposer>
+      {/* Bloom only on desktop — the additive-blend glow meshes keep the look
+          on phones at a fraction of the GPU cost. */}
+      {tier === 'high' && (
+        <EffectComposer multisampling={0}>
+          <Bloom intensity={0.55} luminanceThreshold={0.35} luminanceSmoothing={0.5} mipmapBlur />
+        </EffectComposer>
+      )}
     </Canvas>
   )
 }

@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Beat } from './choreography'
 
-type Props = { beat: Beat; elapsed: number }
+type Props = { beat: Beat }
 
 const SPEAKER_LABEL: Record<NonNullable<Beat['speaker']>, { name: string; color: string }> = {
   sarah: { name: 'Sarah Chen', color: '#67E8F9' },
@@ -37,7 +37,7 @@ export function Subtitles({ beat }: Props) {
   const isCode = beat.phase === 'thinking' || beat.phase === 'tool-call' || beat.phase === 'rag'
 
   return (
-    <div className="absolute inset-x-0 bottom-28 z-10 px-6 pointer-events-none">
+    <div className="absolute inset-x-0 bottom-2 md:bottom-28 z-10 px-3 md:px-6 pointer-events-none">
       <div className="max-w-3xl mx-auto text-center">
         <AnimatePresence mode="wait">
           <motion.div
@@ -65,11 +65,11 @@ export function Subtitles({ beat }: Props) {
               )}
             </div>
             {isCode ? (
-              <p className="mono text-[13px] text-[var(--body-strong)] leading-snug" style={{ textShadow: '0 0 18px rgba(0,0,0,0.85)' }}>
+              <p className="mono text-[11px] md:text-[13px] text-[var(--body-strong)] leading-snug break-words" style={{ textShadow: '0 0 18px rgba(0,0,0,0.85)' }}>
                 {beat.caption}
               </p>
             ) : (
-              <p className="text-[var(--ink)] text-[16px] md:text-[18px] leading-snug" style={{ textShadow: '0 0 22px rgba(0,0,0,0.9)', letterSpacing: '-0.01em' }}>
+              <p className="text-[var(--ink)] text-[14px] md:text-[18px] leading-snug" style={{ textShadow: '0 0 22px rgba(0,0,0,0.9)', letterSpacing: '-0.01em' }}>
                 {beat.caption}
               </p>
             )}

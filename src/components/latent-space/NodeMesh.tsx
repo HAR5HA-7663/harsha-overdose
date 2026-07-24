@@ -25,6 +25,10 @@ function radiusFromDegree(degree: number, kind: PositionedNode['kind']): number 
   return base + bump
 }
 
+// Shared scratch vector — lerp targets are computed fresh each frame anyway,
+// so allocating a Vector3 per node per frame just feeds the GC.
+const SCRATCH = new THREE.Vector3()
+
 export function NodeMesh({
   node, color, score, isSelected, isHighlighted, isFocused, isDimmed,
   onSelect, onHover,
@@ -43,8 +47,8 @@ export function NodeMesh({
     const focus = isFocused || hovered ? 1.4 : isSelected ? 1.2 : 1.0
     const dim = isDimmed ? 0.55 : 1
     const target = baseR * pulse * focus * dim
-    meshRef.current.scale.lerp(new THREE.Vector3(target, target, target), 0.18)
-    glowRef.current.scale.lerp(new THREE.Vector3(target * 1.9, target * 1.9, target * 1.9), 0.18)
+    meshRef.current.scale.lerp(SCRATCH.set(target, target, target), 0.18)
+    glowRef.current.scale.lerp(SCRATCH.set(target * 1.9, target * 1.9, target * 1.9), 0.18)
   })
 
   // Color decisions — Obsidian uses muted color groups; highlight = brighter
@@ -57,7 +61,7 @@ export function NodeMesh({
     <group position={node.position}>
       {/* Soft halo — quietly lit; brightens only on interaction */}
       <mesh ref={glowRef}>
-        <sphereGeometry args={[1, 14, 14]} />
+        <sphereGeometry args={[1, 12, 12]} />
         <meshBasicMaterial
           color={renderColor}
           transparent
@@ -84,7 +88,7 @@ export function NodeMesh({
           if (typeof document !== 'undefined') document.body.style.cursor = 'default'
         }}
       >
-        <sphereGeometry args={[1, 20, 20]} />
+        <sphereGeometry args={[1, 18, 18]} />
         <meshStandardMaterial
           color={renderColor}
           emissive={renderColor}
