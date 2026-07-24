@@ -189,7 +189,7 @@ export default function RecruiterProjectsPage() {
           <h3 className="text-[var(--ink)] text-[22px] font-medium tracking-[-0.015em]">Talk to me directly</h3>
           <p className="text-[var(--body)] text-[14px] mt-2 max-w-xl leading-[1.55]">
             On F-1 OPT, authorized to work in the US, H-1B sponsorship needed long-term. Remote or
-            relocate, two weeks' notice.
+            relocate, two weeks&apos; notice.
           </p>
           <div className="flex flex-wrap gap-1.5 mt-4">
             <a

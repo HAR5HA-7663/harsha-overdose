@@ -80,6 +80,7 @@ export const TAG_ANCHORS: Record<string, [number, number, number]> = {
   telephony:        [ 1.0,  0.5,  5.5],
   elevenlabs:    [-0.5,  2.0,  5.0],
   openai:        [ 0.5,  2.0,  5.0],
+  crm:           [-1.8,  0.5,  4.6],
 }
 
 // Color palette — Obsidian-style muted groups on warm-dark canvas.
@@ -131,7 +132,7 @@ export const NODES: GalaxyNode[] = [
     kind: 'now',
     title: 'Now → teli.ai',
     oneLiner: 'Agentic voice + SMS for mortgage LOs. Click to enter the call.',
-    tags: ['current', 'voice-agent', 'mortgage', 'rag', 'agentic', 'telephony', 'elevenlabs', 'openai'],
+    tags: ['current', 'voice-agent', 'mortgage', 'rag', 'agentic', 'telephony', 'elevenlabs', 'openai', 'crm'],
     detail: {
       kind: 'now',
       description:
@@ -166,6 +167,7 @@ export const NODES: GalaxyNode[] = [
       current: true,
       bullets: [
         'Built voice-calling AI agents with function-calling reasoning + streaming TTS over a telephony layer for mortgage clients (bevri.ai, NEXA Lending) — real-time transcription, summarization, lead auto-qualification live in production.',
+        'Own the bevri.ai agentic-CRM integration end-to-end: pipeline-stage → agent-action automations, Stripe subscription + usage billing, and org-level RBAC across a three-repo platform (Next.js web, Node API, Prisma schema).',
         'Shipped SMS agentic workflows with full 10DLC compliance registration — live in production today.',
         'Engineered RAG pipeline ingesting chat/call transcripts into pgvector with LangChain orchestration.',
         'Owned end-to-end deployment on AWS (ECS, EKS, Lambda) with Docker, K8s, GitHub Actions/Jenkins CI/CD at 99%+ uptime.',
@@ -212,6 +214,49 @@ export const NODES: GalaxyNode[] = [
   },
 
   // ===== PROJECTS =====
+  {
+    id: 'prj-bevri',
+    kind: 'project',
+    title: 'bevri.ai — Agentic CRM',
+    oneLiner: 'Mortgage CRM where pipeline stages fire agent actions. My daily client work at teli.ai.',
+    tags: ['current', 'mortgage', 'agentic', 'crm', 'backend', 'nextjs', 'node', 'api'],
+    detail: {
+      kind: 'project',
+      description:
+        "The mortgage industry's purpose-built agentic CRM, live for loan officers at NEXA Lending and beyond. I integrate teli.ai's voice + SMS agents into the platform: the CRM is the brain, not the database — a pipeline-stage change is an instruction that fires calls, texts, and emails, not a label.",
+      tech: ['Next.js', 'Node.js', 'Prisma', 'PostgreSQL', 'Stripe', 'teli.ai voice + SMS APIs', 'GCP Cloud Run'],
+      live: 'https://bevri.ai',
+      impact: 'Shipping to production daily',
+      caseStudy: {
+        problem:
+          'Mortgage CRMs record what happened. Loan officers still do the chasing — the calls, texts, and follow-ups — by hand, in tools built for generic sales teams. Bevri inverts it: the CRM decides and acts on what happens next.',
+        approach: [
+          {
+            title: 'Pipeline stages as instructions',
+            body: 'Stage transitions trigger agent actions — AI voice calls, 10DLC-compliant SMS drips, email follow-ups — scoped per loan officer with strict multi-tenant isolation.',
+          },
+          {
+            title: 'Voice + SMS agent integration',
+            body: 'teli.ai agents wired in over REST: agent creation, campaign enrollment, and live call/SMS state synced back into CRM timelines.',
+          },
+          {
+            title: 'Subscription + usage billing',
+            body: 'Stripe subscriptions with enterprise group-buy seats, usage-metered SMS segments, wallet balances, and auto-reload — money paths hardened against double-charges and race conditions.',
+          },
+          {
+            title: 'Org-level RBAC unification',
+            body: 'One canonical role system across web, API, and schema packages — role-tier helpers replacing ~90 files of hardcoded role checks.',
+          },
+        ],
+        metrics: [
+          { value: '3 repos', label: 'web · api · schema' },
+          { value: '10DLC', label: 'compliant SMS' },
+          { value: 'Daily', label: 'prod ships' },
+        ],
+        receipt: 'bevri.ai — live product',
+      },
+    },
+  },
   {
     id: 'prj-resume-optimizer',
     kind: 'project',
@@ -376,6 +421,8 @@ export const NODES: GalaxyNode[] = [
   mkSkill('pytorch', 'PyTorch', 'AI/ML', ['ai-ml', 'finetune', 'llm']),
   mkSkill('qlora', 'QLoRA Fine-tuning', 'AI/ML', ['ai-ml', 'finetune', 'llm']),
   mkSkill('pgvector', 'pgvector', 'AI/ML', ['ai-ml', 'rag']),
+  mkSkill('postgres', 'PostgreSQL', 'Backend', ['backend', 'crm', 'rag']),
+  mkSkill('stripe', 'Stripe', 'Backend', ['backend', 'api', 'crm']),
 
   // ===== CONTACT =====
   {

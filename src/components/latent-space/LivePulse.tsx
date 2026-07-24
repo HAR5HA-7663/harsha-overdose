@@ -27,22 +27,29 @@ function formatAgo(iso: string): string {
   return `${mo}mo ago`
 }
 
+function readFreshCache(): Commit | null {
+  if (typeof window === 'undefined') return null
+  const cached = window.localStorage.getItem(CACHE_KEY)
+  if (!cached) return null
+  try {
+    const { commit: c, at } = JSON.parse(cached) as { commit: Commit; at: number }
+    if (Date.now() - at < CACHE_TTL_MS) return c
+  } catch {
+    // ignore corrupt cache
+  }
+  return null
+}
+
 export function LivePulse() {
   const [commit, setCommit] = useState<Commit | null>(null)
   const [, setTick] = useState(0)
 
   useEffect(() => {
-    const cached = typeof window !== 'undefined' ? window.localStorage.getItem(CACHE_KEY) : null
+    const cached = readFreshCache()
     if (cached) {
-      try {
-        const { commit: c, at } = JSON.parse(cached) as { commit: Commit; at: number }
-        if (Date.now() - at < CACHE_TTL_MS) {
-          setCommit(c)
-          return
-        }
-      } catch {
-        // ignore corrupt cache
-      }
+      // Deferred so the effect body itself stays setState-free on the sync path.
+      const raf = requestAnimationFrame(() => setCommit(cached))
+      return () => cancelAnimationFrame(raf)
     }
     const controller = new AbortController()
     fetch(`https://api.github.com/repos/${REPO}/commits/main`, {

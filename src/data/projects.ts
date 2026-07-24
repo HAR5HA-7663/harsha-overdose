@@ -387,6 +387,20 @@ export const projects: Project[] = [
     category: "ML/AI",
     featured: true,
   },
+  {
+    id: 31,
+    name: "BEVRI AGENTIC CRM",
+    subtitle: "Client work @ teli.ai",
+    description:
+      "The mortgage industry's purpose-built agentic CRM, live for loan officers at NEXA Lending. Pipeline stages fire agent actions — AI voice calls, 10DLC SMS drips, email follow-ups — instead of sitting as labels. I own the teli.ai voice + SMS integration, Stripe subscription + usage billing (seats, metered SMS segments, auto-reload), and org-level RBAC across the three-repo platform.",
+    tech: ["Next.js", "Node.js", "Prisma", "PostgreSQL", "Stripe", "teli.ai APIs", "GCP Cloud Run"],
+    live: "https://bevri.ai",
+    locoMove: "PIPELINE PLAY",
+    damage: "Stages → Actions, Daily Ships",
+    icon: "🏦",
+    category: "Full Stack",
+    featured: true,
+  },
 ];
 
 export const featuredProjects = projects.filter(p => p.featured);

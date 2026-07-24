@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef, useState, useEffect } from 'react'
+import { useMemo, useRef, useState, useEffect, type ComponentRef } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
@@ -119,11 +119,11 @@ function GraphLinks({
 }
 
 function SceneCamera({ targetPosition }: { targetPosition: [number, number, number] | null }) {
-  const controlsRef = useRef<any>(null)
+  const controlsRef = useRef<ComponentRef<typeof OrbitControls> | null>(null)
   const { camera } = useThree()
   const targetVec = useRef(new THREE.Vector3())
   const camTargetVec = useRef(new THREE.Vector3())
-  const hasTarget = useRef(false)
+  const hasTarget = !!targetPosition
 
   useEffect(() => {
     if (targetPosition) {
@@ -133,14 +133,11 @@ function SceneCamera({ targetPosition }: { targetPosition: [number, number, numb
       const dir = new THREE.Vector3(x / len, y / len, z / len)
       const dollyDistance = 6
       camTargetVec.current.set(x + dir.x * dollyDistance, y + dir.y * dollyDistance, z + dir.z * dollyDistance)
-      hasTarget.current = true
-    } else {
-      hasTarget.current = false
     }
   }, [targetPosition])
 
   useFrame(() => {
-    if (hasTarget.current && controlsRef.current) {
+    if (hasTarget && controlsRef.current) {
       controlsRef.current.target.lerp(targetVec.current, 0.07)
       camera.position.lerp(camTargetVec.current, 0.05)
       controlsRef.current.update()
@@ -154,7 +151,7 @@ function SceneCamera({ targetPosition }: { targetPosition: [number, number, numb
       dampingFactor={0.08}
       minDistance={5}
       maxDistance={35}
-      autoRotate={!hasTarget.current}
+      autoRotate={!hasTarget}
       autoRotateSpeed={0.22}
     />
   )

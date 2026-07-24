@@ -29,7 +29,7 @@ export default function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[var(--ink)] text-[22px] font-medium mb-3 tracking-[-0.015em]">3. What you can't do</h2>
+        <h2 className="text-[var(--ink)] text-[22px] font-medium mb-3 tracking-[-0.015em]">3. What you can&apos;t do</h2>
         <ul className="list-disc pl-6 space-y-1.5 text-[var(--body-strong)]">
           <li>Scrape the site at a rate that costs me money or degrades the experience for other visitors.</li>
           <li>Attempt to bypass rate limits, abuse the embedded demos, or use the site as part of an attack on third-party infrastructure.</li>
@@ -42,7 +42,7 @@ export default function TermsPage() {
         <p>
           The source code of the site is open at{' '}
           <a href="https://github.com/HAR5HA-7663/harsha-overdose" className="text-[#67E8F9] underline underline-offset-2" target="_blank" rel="noopener noreferrer">github.com/HAR5HA-7663/harsha-overdose ↗</a>{' '}
-          and licensed under that repository's LICENSE. Words, photography, voice samples, and the
+          and licensed under that repository&apos;s LICENSE. Words, photography, voice samples, and the
           choreographed <code className="mono">/teli</code> cinematic remain my copyright unless otherwise marked.
           You may quote excerpts with attribution and a link back to the source page.
         </p>

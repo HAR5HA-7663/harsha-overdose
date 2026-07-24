@@ -12,7 +12,7 @@ Instead of a scrolling resume page, the homepage is a **walkable 3D knowledge gr
 |---|---|
 | `/` | Interactive 3D knowledge graph (React Three Fiber). Drag/scroll/click nodes, or search — queries are embedded client-side and matched by cosine similarity, lighting up relevant nodes. Phones get a native bottom-sheet summary over the graph. |
 | `/teli` | A 46-second cinematic replay of what I ship at teli.ai: a mortgage lead qualified in real time — telephony, function-calling reasoning, hybrid RAG over pgvector, streaming TTS, then 10DLC SMS + email follow-up. Includes an Engineer Mode panel with the real architecture. |
-| `/projects` | Flat list of 30 shipped projects with category filters and GitHub links. |
+| `/projects` | Flat list of 31 shipped projects with category filters and GitHub links. |
 | `/resume` | Inline PDF viewer with download link. |
 | `/privacy`, `/terms` | Legal pages. |
 

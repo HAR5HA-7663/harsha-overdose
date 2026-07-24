@@ -40,7 +40,7 @@ export default function ProjectsPage() {
       <section className="max-w-6xl mx-auto px-6 pt-10 pb-6">
         <p className="mono text-[11px] uppercase tracking-[0.32em] text-[var(--mute)]">Projects</p>
         <h1 className="text-[var(--ink)] text-[36px] md:text-[44px] font-normal mt-2.5" style={{ letterSpacing: '-0.025em', lineHeight: 1.05 }}>
-          {allProjects.length} things <span className="serif-italic text-[var(--body-strong)]">I've shipped</span>
+          {allProjects.length} things <span className="serif-italic text-[var(--body-strong)]">I&apos;ve shipped</span>
         </h1>
         <p className="text-[var(--body)] text-[14px] mt-3 max-w-2xl leading-[1.55]">
           A flat list, sorted by category. The interactive graph view at{' '}

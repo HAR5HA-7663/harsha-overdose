@@ -47,7 +47,7 @@ export function EmailPanel({ emailSent }: Props) {
             </div>
             <div className="px-3 py-2" style={{ borderBottom: '1px solid var(--hairline)' }}>
               <span className="mono text-[10px] uppercase tracking-[0.2em] text-[var(--mute)]">Subject</span>
-              <p className="text-[var(--ink)] text-[12.5px] mt-1">Your refinance options — let's chat tomorrow?</p>
+              <p className="text-[var(--ink)] text-[12.5px] mt-1">Your refinance options — let&apos;s chat tomorrow?</p>
             </div>
             <div className="px-3 py-3 text-[11.5px] text-[var(--body-strong)] leading-[1.55]">
               <p>Hi Sarah,</p>
@@ -57,7 +57,7 @@ export function EmailPanel({ emailSent }: Props) {
                 <strong className="text-[#F59E0B]">$84,000</strong> over the life of the loan.
               </p>
               <p className="mt-2">
-                I've blocked off 30 minutes tomorrow at 2pm ET if you'd like to walk through the numbers.
+                I&apos;ve blocked off 30 minutes tomorrow at 2pm ET if you&apos;d like to walk through the numbers.
               </p>
               <p className="mt-2 text-[var(--mute)] serif-italic">— Jonathan · NEXA Lending · NMLS #482718</p>
             </div>
