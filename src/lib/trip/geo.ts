@@ -13,8 +13,10 @@ export function distanceM(a: LatLng, b: LatLng): number {
 
 /** Rough driving minutes when no live route is available. */
 export function estimateDriveMin(meters: number): number {
-  const road = meters * 1.3;
-  const kmh = meters < 5000 ? 30 : meters < 50000 ? 65 : 95;
+  // Conservative on purpose: better to be told to leave early than late.
+  const long = meters >= 50000;
+  const road = meters * (long ? 1.25 : 1.4);
+  const kmh = meters < 5000 ? 30 : long ? 85 : 55;
   return Math.max(2, Math.round(road / 1000 / (kmh / 60)));
 }
 

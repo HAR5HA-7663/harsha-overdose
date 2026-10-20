@@ -65,6 +65,12 @@ export function targetStop(t: number): Stop | undefined {
   return STOPS.find((s) => ms(s.start) >= (cur ? ms(cur.end) : t) && s.kind !== "drive");
 }
 
+/** Inside the stop's own radius (so the dock counts as "in town" for lunch). */
+function atStop(stop: Stop, pos: LatLng | null, place?: Place): boolean {
+  if (!pos) return false;
+  return samePlace(stop, place) || distanceM(pos, stop.place.pos) <= stop.place.radius;
+}
+
 function samePlace(stop: Stop, place?: Place): boolean {
   if (!place) return false;
   if (stop.place.id === place.id) return true;
@@ -129,11 +135,18 @@ export function guide(t: number, pos: LatLng | null, live: RouteInfo): Guidance 
     };
   }
 
-  const target = targetStop(t) ?? STOPS[STOPS.length - 1];
+  let target = targetStop(t) ?? STOPS[STOPS.length - 1];
+  // Already at the next stop while a soft one is still running? You're early there.
+  // (Also when both match, if the next stop is the more specific spot, e.g. the dock inside town.)
+  if (pos && !target.hard) {
+    const spot = placeAt(pos);
+    const following = STOPS.find((s) => ms(s.start) >= ms(target.end) && s.kind !== "drive");
+    if (following && atStop(following, pos, spot) && (!atStop(target, pos, spot) || following.place.radius < target.place.radius)) target = following;
+  }
   const cur = STOPS.find((s) => t >= ms(s.start) && t < ms(s.end));
   const driving = cur?.kind === "drive";
   const here = pos ? placeAt(pos) : undefined;
-  const hereStops = here && !samePlace(target, here) ? STOPS.filter((s) => samePlace(s, here)) : [];
+  const hereStops = here && !atStop(target, pos, here) ? STOPS.filter((s) => samePlace(s, here)) : [];
   const base = {
     phase: "during" as const,
     target,
@@ -157,7 +170,7 @@ export function guide(t: number, pos: LatLng | null, live: RouteInfo): Guidance 
   }
 
   // At the planned place: Navigate points at what comes after.
-  if (samePlace(target, here)) {
+  if (atStop(target, pos, here)) {
     const after = STOPS.find((s) => ms(s.start) >= ms(target.end) && s.kind !== "drive" && !samePlace(s, here));
     const leftMin = (ms(target.end) - t) / 60000;
     const started = t >= ms(target.start);
@@ -205,7 +218,7 @@ export function guide(t: number, pos: LatLng | null, live: RouteInfo): Guidance 
     skipped.push(goal);
     goal = after;
     ({ meters, minutes: travelMin } = travel(goal.place));
-    if (samePlace(goal, here)) break;
+    if (atStop(goal, pos, here)) break;
   }
 
   const skipNote = skipped.length ? `Skip ${skipped.map((s) => s.title.toLowerCase()).join(", ")}. ` : "";
@@ -216,12 +229,12 @@ export function guide(t: number, pos: LatLng | null, live: RouteInfo): Guidance 
     todo: goal.todo,
     todoKey: goal.id,
     backup: goal.backup,
-    hereStops: here && !samePlace(goal, here) ? STOPS.filter((s) => samePlace(s, here)) : [],
+    hereStops: here && !atStop(goal, pos, here) ? STOPS.filter((s) => samePlace(s, here)) : [],
     travelMin,
     distanceM: meters,
   };
 
-  if (samePlace(goal, here)) {
+  if (atStop(goal, pos, here)) {
     return { ...withTravel, travelMin: undefined, tone: "warn", pill: "Behind schedule", headline: goal.title, detail: `${skipNote}You're already here.` };
   }
 
@@ -238,12 +251,13 @@ export function guide(t: number, pos: LatLng | null, live: RouteInfo): Guidance 
     if (arrival > deadline) {
       return { ...withTravel, tone: "warn", pill: "Go now", headline: `Cutting it close: ${goal.title}`, detail: `${skipNote}${away} · boarding ${fmtTime(deadline)}` };
     }
-  } else if (slackMin < 0) {
+  } else if (slackMin < -10) {
     return { ...withTravel, tone: "warn", pill: `${formatDuration(-slackMin)} behind`, headline: `Head to ${goal.title}`, detail: `${skipNote}${away} · ${formatDuration((ms(goal.end) - arrival) / 60000)} there when you arrive` };
   }
 
   const leaveBy = deadline - travelMin * 60000;
-  const soon = slackMin < 15;
+  // On the road, being a few minutes off the plan is noise.
+  const soon = !driving && slackMin < 15;
   return {
     ...withTravel,
     tone: skipped.length || soon ? "warn" : "good",

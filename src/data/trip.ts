@@ -30,6 +30,8 @@ export type Stop = {
   todo: string[];
   tips?: string[];
   backup?: string;
+  /** Shown as a badge once something is paid for. */
+  booked?: string;
   checkpoints?: Checkpoint[];
 };
 
@@ -94,8 +96,16 @@ export const STOPS: Stop[] = [
     id: "cruise", day: "sat", kind: "cruise", title: "Spray Falls boat cruise", place: P.dock,
     start: "2026-10-24T15:00:00-04:00", end: "2026-10-24T17:00:00-04:00",
     arriveBy: "2026-10-24T14:30:00-04:00", hard: true,
-    todo: ["Tickets on phone (3 × $56)", "Grab an upper-deck spot early", "Wear the warmest layer, the wind on Lake Superior is cold", "Watch for Spray Falls dropping straight into the lake"],
-    backup: "If the 3 PM sailing is missed or cancelled for weather, take the Sunday 12 PM cruise and hike Chapel after lunch.",
+    booked: "Booked · 3 adults · $168 paid",
+    todo: [
+      "Ticket QR is in the Order Confirmation email, screenshot it before you lose signal",
+      "Whole group together, scan the QR at the gift shop entrance",
+      "Line opens 2:00, boarding starts 2:45, seats are first come",
+      "Wear the warmest layer, the lake is 10 to 15 degrees colder",
+      "Watch for Spray Falls dropping 70 ft straight into the lake",
+    ],
+    tips: ["Running late? Call the ticket office at 906-387-2379 before 3 PM. No refund once the boat leaves."],
+    backup: "If they cancel for weather you get a full refund. Backup: the Sunday 12 PM cruise, then hike Chapel after lunch.",
   },
   {
     id: "checkin", day: "sat", kind: "stay", title: "Check in at the house", place: P.house,
@@ -197,7 +207,7 @@ export const TRIP_START = STOPS[0].start;
 export const TRIP_END = "2026-10-26T23:59:00-04:00";
 
 export const PREP_TODO = [
-  "Book the Sat 3 PM Spray Falls cruise (picturedrocks.com)",
+  "Screenshot the cruise ticket QR from the Order Confirmation email",
   "Confirm check-in details with William",
   "Michigan Recreation Passport for Kitch-iti-kipi + Tahquamenon",
   "Cook + pack the food, cooler + ice",
