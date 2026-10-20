@@ -1,0 +1,182 @@
+/* Trip companion: design tokens + motion. The only file in the feature allowed raw colours. */
+
+.trip-root {
+  /* Surfaces (warm dark, matches the site canvas) */
+  --t-bg: var(--canvas);
+  --t-surface-1: #15120f;
+  --t-surface-2: var(--canvas-band);
+  --t-surface-3: var(--canvas-soft);
+  --t-border: #2c2723;
+  --t-border-strong: var(--hairline);
+
+  /* Text */
+  --t-ink: var(--ink);
+  --t-muted: var(--body);
+  --t-faint: var(--mute);
+
+  /* Wayfinding + sentiment */
+  --t-accent: #5eead4; /* Lake Superior teal */
+  --t-accent-ink: #062621;
+  --t-sand: #f2a65a; /* sandstone cliffs */
+  --t-user: #60a5fa;
+  --t-pos: #4ade80;
+  --t-warn: #fbbf24;
+  --t-neg: #fb7185;
+
+  /* Motion: site tokens, mapped to the companion's roles */
+  --m-control: var(--duration-fast);
+  --m-surface: var(--duration-base);
+  --m-collapse: var(--duration-base);
+  --m-draw: var(--duration-cinema);
+  --m-ease-in: cubic-bezier(0.2, 0, 0, 1);
+  --m-ease-out: cubic-bezier(0.4, 0, 0.6, 1);
+  --m-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --z-map-ui: 500;
+  --z-sheet: 600;
+
+  background: var(--t-bg);
+  color: var(--t-ink);
+}
+
+/* ---------- Scene swap (keyed content crossfade) ---------- */
+
+.trip-scene { display: grid; }
+.trip-scene > [data-scene] { grid-area: 1 / 1; min-width: 0; }
+.trip-scene > [data-scene="in"] { animation: trip-rise var(--m-surface) var(--m-ease-in) both; }
+.trip-scene > [data-scene="out"] { animation: trip-fade-out var(--m-control) var(--m-ease-out) both; pointer-events: none; }
+
+@keyframes trip-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes trip-fade-out { from { opacity: 1; } to { opacity: 0; transform: translateY(-4px); } }
+
+/* ---------- Collapse (grid rows 0fr <-> 1fr) ---------- */
+
+.trip-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition-property: grid-template-rows, opacity;
+  transition-duration: var(--m-collapse);
+  transition-timing-function: var(--m-ease-out);
+}
+.trip-collapse[data-state="open"] { grid-template-rows: 1fr; opacity: 1; transition-timing-function: var(--m-ease-in); }
+.trip-collapse > div { min-height: 0; overflow: hidden; }
+.trip-collapse[data-state="closed"] > div { visibility: hidden; }
+
+/* ---------- Map ---------- */
+
+.trip-map.leaflet-container, .trip-map .leaflet-container { background: var(--t-bg); font-family: inherit; }
+.trip-map .leaflet-control-attribution {
+  background: color-mix(in oklab, var(--t-bg) 70%, transparent);
+  color: var(--t-faint);
+  font-size: 10px;
+}
+.trip-map .leaflet-control-attribution a { color: var(--t-muted); }
+.trip-map[data-style="satellite"] .leaflet-tile-pane { filter: saturate(0.85) brightness(0.8) contrast(1.05); }
+
+.trip-route-dim { stroke: var(--t-faint); stroke-opacity: 0.35; }
+.trip-route-day { stroke: var(--t-accent); }
+.trip-route-draw {
+  stroke-dasharray: var(--len, 4000);
+  stroke-dashoffset: var(--len, 4000);
+  animation: trip-draw calc(var(--m-draw) * 2) var(--m-ease-in) forwards;
+}
+.trip-route-flow {
+  stroke: var(--t-ink);
+  stroke-opacity: 0.55;
+  stroke-dasharray: 1 14;
+  animation: trip-flow 1.6s linear infinite;
+}
+.trip-route-hike { stroke: var(--t-sand); stroke-dasharray: 2 8; }
+.trip-beam {
+  stroke: var(--t-user);
+  stroke-dasharray: 6 8;
+  animation: trip-flow 1.2s linear infinite reverse;
+}
+
+@keyframes trip-draw { to { stroke-dashoffset: 0; } }
+@keyframes trip-flow { to { stroke-dashoffset: -30; } }
+
+/* Stop pins */
+.trip-pin { background: none; border: 0; }
+.trip-pin-dot {
+  --pin: var(--t-accent);
+  position: relative;
+  width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center;
+  font: 600 11px/1 var(--font-mono-code), ui-monospace, monospace;
+  color: var(--t-accent-ink);
+  background: var(--pin);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--pin) 25%, transparent), 0 4px 12px rgb(0 0 0 / 0.5);
+  transition-property: transform, opacity;
+  transition-duration: var(--m-control);
+  transition-timing-function: var(--m-ease-in);
+  animation: trip-pop var(--m-surface) var(--m-ease-in) both;
+}
+.trip-pin-dot[data-kind="hike"] { --pin: var(--t-sand); }
+.trip-pin-dot[data-kind="cruise"] { --pin: var(--t-user); }
+.trip-pin-dot[data-kind="stay"], .trip-pin-dot[data-kind="home"] { --pin: var(--t-ink); }
+.trip-pin-dot[data-kind="food"] { --pin: var(--t-muted); }
+.trip-pin-dot[data-state="done"] { opacity: 0.45; }
+.trip-pin-dot[data-target="true"] { transform: scale(1.18); }
+.trip-pin-dot[data-target="true"]::after {
+  content: ""; position: absolute; width: 26px; height: 26px; border-radius: 50%;
+  border: 2px solid var(--pin);
+  animation: trip-ping 2s var(--m-ease-out) infinite;
+}
+.trip-pin-cp {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--t-bg); border: 2px solid var(--t-sand);
+}
+
+@keyframes trip-pop { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: scale(1); } }
+@keyframes trip-ping { from { transform: scale(1); opacity: 0.9; } to { transform: scale(2.4); opacity: 0; } }
+
+/* You */
+.trip-you { position: relative; width: 22px; height: 22px; }
+.trip-you-core {
+  position: absolute; inset: 3px; border-radius: 50%;
+  background: var(--t-user); border: 3px solid var(--t-ink);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.6);
+}
+.trip-you-pulse {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: var(--t-user);
+  animation: trip-ping 2.2s var(--m-ease-out) infinite;
+}
+.trip-you-cone {
+  position: absolute; left: 50%; top: 50%;
+  width: 0; height: 0;
+  border-left: 14px solid transparent; border-right: 14px solid transparent;
+  border-bottom: 34px solid color-mix(in oklab, var(--t-user) 35%, transparent);
+  transform-origin: 50% 100%;
+  translate: -50% -100%;
+  rotate: var(--heading, 0deg);
+  transition-property: rotate;
+  transition-duration: var(--m-surface);
+}
+.trip-accuracy { fill: var(--t-user); fill-opacity: 0.08; stroke: var(--t-user); stroke-opacity: 0.3; }
+
+/* ---------- Bits ---------- */
+
+.trip-skeleton {
+  background: linear-gradient(90deg, var(--t-surface-2) 0%, var(--t-surface-3) 50%, var(--t-surface-2) 100%);
+  background-size: 200% 100%;
+  animation: trip-shimmer 1.4s linear infinite;
+  border-radius: 6px;
+}
+@keyframes trip-shimmer { to { background-position: -200% 0; } }
+
+.trip-live-dot { animation: trip-blink 1.6s var(--m-ease-out) infinite; }
+@keyframes trip-blink { 50% { opacity: 0.35; } }
+
+.trip-scroll { scrollbar-width: thin; scrollbar-color: var(--t-border-strong) transparent; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+
+@media (prefers-reduced-motion: reduce) {
+  .trip-root *, .trip-root *::before, .trip-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .trip-route-draw { stroke-dashoffset: 0; }
+}
