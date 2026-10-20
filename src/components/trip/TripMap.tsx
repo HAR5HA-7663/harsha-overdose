@@ -19,19 +19,27 @@ const HIKE_PATH: LatLng[] = hike?.checkpoints?.map((c) => c.pos) ?? [];
 
 export type MapStyle = "satellite" | "dark";
 
+// Canvas strokes can't read CSS variables; read the tokens once from the page.
+const token = (name: string, fallback: string) =>
+  typeof document === "undefined" ? fallback : getComputedStyle(document.querySelector(".trip-root") ?? document.documentElement).getPropertyValue(name).trim() || fallback;
+let DIM = "";
+let USER = "";
+
 const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services";
 const ESRI_ATTR = 'Imagery &copy; <a href="https://www.esri.com">Esri</a>, Maxar, Earthstar Geographics';
+
+/** Fewer tile requests: load when panning stops, keep a small buffer, standard-res tiles only. */
+const LIGHT_TILES: L.TileLayerOptions = { maxZoom: 18, maxNativeZoom: 16, updateWhenIdle: true, updateWhenZooming: false, keepBuffer: 1, detectRetina: false };
 
 function tileLayers(style: MapStyle): L.TileLayer[] {
   if (style === "satellite") {
     return [
-      L.tileLayer(`${ESRI}/World_Imagery/MapServer/tile/{z}/{y}/{x}`, { maxZoom: 19, maxNativeZoom: 18, attribution: ESRI_ATTR }),
-      L.tileLayer(`${ESRI}/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}`, { maxZoom: 19, maxNativeZoom: 18, opacity: 0.85 }),
+      L.tileLayer(`${ESRI}/World_Imagery/MapServer/tile/{z}/{y}/{x}`, { ...LIGHT_TILES, maxNativeZoom: 18, attribution: ESRI_ATTR }),
     ];
   }
   return [
-    L.tileLayer(`${ESRI}/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}`, { maxZoom: 19, maxNativeZoom: 16, attribution: '&copy; <a href="https://www.esri.com">Esri</a>, HERE, Garmin, OpenStreetMap contributors' }),
-    L.tileLayer(`${ESRI}/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}`, { maxZoom: 19, maxNativeZoom: 16 }),
+    L.tileLayer(`${ESRI}/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}`, { ...LIGHT_TILES, attribution: '&copy; <a href="https://www.esri.com">Esri</a>, HERE, Garmin, OpenStreetMap contributors' }),
+    L.tileLayer(`${ESRI}/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}`, LIGHT_TILES),
   ];
 }
 
@@ -71,6 +79,7 @@ export default function TripMap({ day, stops, targetId, doneIds, user, beam, foc
   const map = useRef<L.Map | null>(null);
   const routeLayer = useRef<L.LayerGroup | null>(null);
   const tiles = useRef<L.LayerGroup | null>(null);
+  const svgRenderer = useRef<L.Renderer | null>(null);
   const pinLayer = useRef<L.LayerGroup | null>(null);
   const youMarker = useRef<L.Marker | null>(null);
   const youAcc = useRef<L.Circle | null>(null);
@@ -87,7 +96,9 @@ export default function TripMap({ day, stops, targetId, doneIds, user, beam, foc
   // Create the map once.
   useEffect(() => {
     if (!host.current || map.current) return;
-    const m = L.map(host.current, { zoomControl: false, attributionControl: true, zoomSnap: 0.25, tap: true } as L.MapOptions);
+    DIM = token("--t-faint", "gray");
+    USER = token("--t-user", "dodgerblue");
+    const m = L.map(host.current, { zoomControl: false, attributionControl: true, zoomSnap: 0.5, fadeAnimation: false, preferCanvas: true });
     tiles.current = L.layerGroup().addTo(m);
     m.attributionControl.setPrefix(false);
     // A starting view over the whole route; the day fit flies in from here.
@@ -121,15 +132,16 @@ export default function TripMap({ day, stops, targetId, doneIds, user, beam, foc
     layer.clearLayers();
     for (const d of DAYS) {
       if (d.id === day) continue;
-      for (const k of DAY_LEGS[d.id]) L.polyline(routes[k] as LatLng[], { className: "trip-route-dim", weight: 3, interactive: false }).addTo(layer);
+      for (const k of DAY_LEGS[d.id]) L.polyline(routes[k] as LatLng[], { color: DIM, opacity: 0.35, weight: 3, interactive: false }).addTo(layer);
     }
+    // Day routes stay SVG for the one-time draw-in; everything else goes on the canvas.
+    const svg = svgRenderer.current ?? (svgRenderer.current = L.svg());
     const drawn: L.Polyline[] = [];
     for (const k of DAY_LEGS[day]) {
       const line = routes[k] as LatLng[];
-      drawn.push(L.polyline(line, { className: "trip-route-day", weight: 5, lineCap: "round", interactive: false }).addTo(layer));
-      L.polyline(line, { className: "trip-route-flow", weight: 3, interactive: false }).addTo(layer);
+      drawn.push(L.polyline(line, { className: "trip-route-day", weight: 5, lineCap: "round", interactive: false, renderer: svg }).addTo(layer));
     }
-    if (day === "sun") drawn.push(L.polyline(HIKE_PATH, { className: "trip-route-hike", weight: 4, interactive: false }).addTo(layer));
+    if (day === "sun") drawn.push(L.polyline(HIKE_PATH, { className: "trip-route-hike", weight: 4, interactive: false, renderer: svg }).addTo(layer));
     if (!reducedMotion) drawn.forEach(drawIn);
   }, [day, reducedMotion]);
 
@@ -190,7 +202,7 @@ export default function TripMap({ day, stops, targetId, doneIds, user, beam, foc
         interactive: false,
         keyboard: false,
       }).addTo(m);
-      youAcc.current = L.circle(user.pos, { radius: user.accuracy, className: "trip-accuracy", interactive: false }).addTo(m);
+      youAcc.current = L.circle(user.pos, { radius: user.accuracy, color: USER, weight: 1, opacity: 0.3, fillColor: USER, fillOpacity: 0.08, interactive: false }).addTo(m);
     } else {
       youMarker.current.setLatLng(user.pos);
       youAcc.current?.setLatLng(user.pos).setRadius(user.accuracy);
@@ -211,7 +223,7 @@ export default function TripMap({ day, stops, targetId, doneIds, user, beam, foc
       beamLine.current = null;
       return;
     }
-    if (!beamLine.current) beamLine.current = L.polyline(beam, { className: "trip-beam", weight: 4, interactive: false }).addTo(m);
+    if (!beamLine.current) beamLine.current = L.polyline(beam, { color: USER, weight: 4, dashArray: "6 8", interactive: false }).addTo(m);
     else beamLine.current.setLatLngs(beam);
   }, [beam]);
 

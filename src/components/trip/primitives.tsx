@@ -166,8 +166,8 @@ export function MapButton({ label, icon, active, onClick }: { label: string; ico
       title={label}
       aria-pressed={active}
       onClick={onClick}
-      className={`grid size-11 place-items-center rounded-full border shadow-lg backdrop-blur transition-[background-color,color,border-color] duration-(--m-control) ease-(--m-ease-in) active:scale-95 ${
-        active ? "border-(--t-user)/60 bg-(--t-user)/20 text-(--t-user)" : "border-(--t-border-strong) bg-(--t-surface-1)/85 text-(--t-ink)"
+      className={`grid size-11 place-items-center rounded-full border shadow-lg transition-[background-color,color,border-color] duration-(--m-control) ease-(--m-ease-in) active:scale-95 ${
+        active ? "border-(--t-user)/60 bg-(--t-user)/20 text-(--t-user)" : "border-(--t-border-strong) bg-(--t-surface-1) text-(--t-ink)"
       }`}
     >
       <Icon name={icon} size={20} />

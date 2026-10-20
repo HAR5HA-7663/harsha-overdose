@@ -20,15 +20,15 @@ const HOUSE: LatLng = PLACES.find((p) => p.id === "house")!.pos;
 const TRIP_START_MS = new Date(STOPS[0].start).getTime();
 const TRIP_END_MS = new Date(TRIP_END).getTime();
 
-/* ---------- Map style pref (per device, default satellite) ---------- */
+/* ---------- Map style pref (per device, default simple dark map) ---------- */
 
-const STYLE_KEY = "trip-pr-2026:map";
+const STYLE_KEY = "trip-pr-2026:map-v2";
 const styleListeners = new Set<() => void>();
 function readStyle(): MapStyle {
   try {
-    return localStorage.getItem(STYLE_KEY) === "dark" ? "dark" : "satellite";
+    return localStorage.getItem(STYLE_KEY) === "satellite" ? "satellite" : "dark";
   } catch {
-    return "satellite";
+    return "dark";
   }
 }
 function useMapStyle(): [MapStyle, (s: MapStyle) => void] {
@@ -38,7 +38,7 @@ function useMapStyle(): [MapStyle, (s: MapStyle) => void] {
       return () => styleListeners.delete(cb);
     },
     readStyle,
-    () => "satellite" as MapStyle,
+    () => "dark" as MapStyle,
   );
   const set = useCallback((s: MapStyle) => {
     try {
@@ -170,16 +170,16 @@ export default function TripApp() {
 function MapChrome({ now, weather, sunset }: { now: number; weather: ReturnType<typeof useWeather>; sunset: Date }) {
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-(--z-map-ui) flex items-start justify-between gap-2 p-3 pt-[max(12px,env(safe-area-inset-top))]">
-      <div className="pointer-events-auto rounded-2xl border border-(--t-border) bg-(--t-surface-1)/85 px-3.5 py-2 shadow-lg backdrop-blur">
+      <div className="pointer-events-auto rounded-2xl border border-(--t-border) bg-(--t-surface-1) px-3.5 py-2 shadow-lg">
         <p className="text-[11px] font-medium tracking-[0.14em] text-(--t-accent) uppercase">Pictured Rocks</p>
         <p className="font-display text-[17px] leading-tight">Oct 24 to 26</p>
       </div>
       <div className="pointer-events-auto flex flex-col items-end gap-1.5">
-        <div className="flex h-9 items-center gap-1.5 rounded-full border border-(--t-border) bg-(--t-surface-1)/85 px-3 text-[13px] font-medium tabular-nums shadow-lg backdrop-blur">
+        <div className="flex h-9 items-center gap-1.5 rounded-full border border-(--t-border) bg-(--t-surface-1) px-3 text-[13px] font-medium tabular-nums shadow-lg">
           <Icon name="clock" size={14} className="text-(--t-faint)" />
           {fmtDay(now)} {fmtTime(now)}
         </div>
-        <div className="flex h-9 items-center gap-1.5 rounded-full border border-(--t-border) bg-(--t-surface-1)/85 px-3 text-[13px] shadow-lg backdrop-blur">
+        <div className="flex h-9 items-center gap-1.5 rounded-full border border-(--t-border) bg-(--t-surface-1) px-3 text-[13px] shadow-lg">
           <Icon name={weather.data && /sun|clear/i.test(weather.data.short) ? "sun" : "cloud"} size={14} className="text-(--t-faint)" />
           <SceneSwap sceneKey={weather.data ? "w" : weather.failed ? "f" : "l"}>
             {weather.data ? (
@@ -377,7 +377,7 @@ function PaceMeter({ g }: { g: Guidance }) {
 function DayTabs({ day, onPick }: { day: DayId; onPick: (d: DayId) => void }) {
   const idx = DAYS.findIndex((d) => d.id === day);
   return (
-    <div className="sticky top-0 z-10 border-y border-(--t-border) bg-(--t-surface-1)/95 px-4 py-2.5 backdrop-blur lg:px-6">
+    <div className="sticky top-0 z-10 border-y border-(--t-border) bg-(--t-surface-1)/95 px-4 py-2.5 lg:px-6">
       <div role="tablist" aria-label="Trip days" className="relative grid grid-cols-3 rounded-xl bg-(--t-surface-2) p-1">
         <span
           aria-hidden
