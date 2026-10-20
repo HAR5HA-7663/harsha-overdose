@@ -32,10 +32,29 @@ export type Stop = {
   backup?: string;
   /** Shown as a badge once something is paid for. */
   booked?: string;
+  /** How the live re-plan may move this stop. Stops without it (drives) are just travel. */
+  flex?: Flex;
   checkpoints?: Checkpoint[];
 };
 
 export type DayId = "sat" | "sun" | "mon";
+
+export type Flex = {
+  /** Fewest minutes worth stopping for; 0 means it can be skipped. */
+  min: number;
+  /** What gives way first when time runs short: optional, then nice, then must. */
+  priority: "must" | "nice" | "optional";
+  /** Can't start earlier than this (check-in time, first light). */
+  notBefore?: string;
+  /** Has to end by this time no matter what (checkout). */
+  deadline?: string;
+  /** Outdoor stop: has to wrap up by sunset. */
+  daylight?: boolean;
+  /** Runs until its planned end however early you arrive (evenings, home). */
+  open?: boolean;
+  /** What "shortened" means for this stop. */
+  shortNote?: string;
+};
 
 export const DAYS: { id: DayId; label: string; date: string; theme: string }[] = [
   { id: "sat", label: "Sat", date: "2026-10-24", theme: "Drive up · Kitch-iti-kipi · Boat tour" },
@@ -67,6 +86,7 @@ export const STOPS: Stop[] = [
   {
     id: "depart", day: "sat", kind: "home", title: "Roll out", place: P.home,
     start: "2026-10-24T05:30:00-04:00", end: "2026-10-24T06:00:00-04:00",
+    flex: { min: 0, priority: "must", notBefore: "2026-10-24T05:30:00-04:00" },
     todo: ["Cooler with the cooked food + rice/dal/spices", "Rain jackets, warm layers, hiking shoes", "Headlamps + power bank", "Recreation Passport on the plate (or buy at the gate)", "Full tank before I-75"],
     tips: ["Leave by 6:00 or the 3 PM cruise gets tight."],
   },
@@ -78,6 +98,7 @@ export const STOPS: Stop[] = [
   {
     id: "kitch", day: "sat", kind: "visit", title: "Kitch-iti-kipi", place: P.kitch,
     start: "2026-10-24T11:45:00-04:00", end: "2026-10-24T12:30:00-04:00",
+    flex: { min: 20, priority: "nice", daylight: true, shortNote: "Raft ride only" },
     todo: ["Ride the self-pull raft across the spring", "Look straight down: 40 ft of crystal-clear water and giant trout", "Quick photos, back on the road by 12:30"],
     tips: ["State park: needs the Recreation Passport."],
   },
@@ -89,6 +110,7 @@ export const STOPS: Stop[] = [
   {
     id: "lunch-sat", day: "sat", kind: "food", title: "Quick lunch in town", place: P.town,
     start: "2026-10-24T13:45:00-04:00", end: "2026-10-24T14:30:00-04:00",
+    flex: { min: 15, priority: "optional", shortNote: "Grab food to go" },
     todo: ["Eat fast, boarding is at 2:30", "Grab coffee / snacks for the boat"],
     tips: ["Running late? Eat in the car and go straight to the dock."],
   },
@@ -110,16 +132,19 @@ export const STOPS: Stop[] = [
   {
     id: "checkin", day: "sat", kind: "stay", title: "Check in at the house", place: P.house,
     start: "2026-10-24T17:10:00-04:00", end: "2026-10-24T18:00:00-04:00",
+    flex: { min: 15, priority: "must", notBefore: "2026-10-24T15:00:00-04:00" },
     todo: ["Check-in per William's message (lockbox/code)", "Food into the fridge", "Pack tomorrow's hike bag"],
   },
   {
     id: "sunset-sat", day: "sat", kind: "visit", title: "Sunset by the lake", place: P.bay,
     start: "2026-10-24T18:00:00-04:00", end: "2026-10-24T19:00:00-04:00",
+    flex: { min: 20, priority: "optional", daylight: true },
     todo: ["Chairs in the Sunset Motel front yard, the host said it is fine", "Sunset over Munising Bay + Grand Island"],
   },
   {
     id: "dinner-sat", day: "sat", kind: "stay", title: "Dinner at home base", place: P.house,
     start: "2026-10-24T19:00:00-04:00", end: "2026-10-24T23:30:00-04:00",
+    flex: { min: 0, priority: "must", open: true },
     todo: ["Heat up dinner", "Charge phones + power banks", "Alarm for 7:00"],
   },
 
@@ -127,6 +152,7 @@ export const STOPS: Stop[] = [
   {
     id: "breakfast-sun", day: "sun", kind: "stay", title: "Breakfast + pack the hike bag", place: P.house,
     start: "2026-10-25T07:00:00-04:00", end: "2026-10-25T07:45:00-04:00",
+    flex: { min: 20, priority: "must", notBefore: "2026-10-25T07:00:00-04:00" },
     todo: ["2 L water each", "Lunch + snacks for Mosquito Beach", "Rain jacket, layers, headlamp", "Download the offline map, there is no signal on the trail"],
   },
   {
@@ -137,6 +163,7 @@ export const STOPS: Stop[] = [
   {
     id: "chapel", day: "sun", kind: "hike", title: "Chapel Loop · 10 mi", place: P.chapelLoop,
     start: "2026-10-25T08:30:00-04:00", end: "2026-10-25T13:15:00-04:00",
+    flex: { min: 180, priority: "must", notBefore: "2026-10-25T08:00:00-04:00", daylight: true, shortNote: "Out and back to Chapel Rock (6.4 mi)" },
     todo: ["Loop order: Chapel Falls, Chapel Rock, the cliffs, Mosquito Beach, Mosquito Falls", "Lunch break at Mosquito Beach", "Stay back from cliff edges, they are undercut"],
     tips: ["Behind pace? Turn back at Chapel Rock for a 6.4 mi out-and-back."],
     checkpoints: [
@@ -151,26 +178,31 @@ export const STOPS: Stop[] = [
   {
     id: "miners-falls", day: "sun", kind: "visit", title: "Miners Falls", place: P.minersFalls,
     start: "2026-10-25T13:55:00-04:00", end: "2026-10-25T14:40:00-04:00",
+    flex: { min: 25, priority: "nice", daylight: true },
     todo: ["1.2 mi round trip through the forest", "Stairs down to the viewing deck"],
   },
   {
     id: "miners-castle", day: "sun", kind: "visit", title: "Miners Castle overlook", place: P.minersCastle,
     start: "2026-10-25T14:50:00-04:00", end: "2026-10-25T15:45:00-04:00",
+    flex: { min: 20, priority: "nice", daylight: true },
     todo: ["Lower overlook for the classic castle shot", "Walk down to Miners Beach if legs allow"],
   },
   {
     id: "munising-falls", day: "sun", kind: "visit", title: "Munising Falls", place: P.munisingFalls,
     start: "2026-10-25T16:10:00-04:00", end: "2026-10-25T16:45:00-04:00",
+    flex: { min: 15, priority: "nice", daylight: true },
     todo: ["Easy 0.4 mi paved walk", "50 ft falls in a sandstone bowl"],
   },
   {
     id: "sand-point", day: "sun", kind: "visit", title: "Sand Point Beach", place: P.sandPoint,
     start: "2026-10-25T16:55:00-04:00", end: "2026-10-25T17:50:00-04:00",
+    flex: { min: 0, priority: "optional", daylight: true },
     todo: ["Chill on the beach, views of the cliffs across the bay", "Skip stones, rest the legs"],
   },
   {
     id: "dinner-sun", day: "sun", kind: "stay", title: "Dinner + laundry at the house", place: P.house,
     start: "2026-10-25T18:00:00-04:00", end: "2026-10-25T23:30:00-04:00",
+    flex: { min: 0, priority: "must", open: true },
     todo: ["Cook dinner", "Washer for muddy clothes", "Pack most bags tonight"],
   },
 
@@ -178,6 +210,7 @@ export const STOPS: Stop[] = [
   {
     id: "checkout", day: "mon", kind: "stay", title: "Pack + check out", place: P.house,
     start: "2026-10-26T07:30:00-04:00", end: "2026-10-26T09:00:00-04:00",
+    flex: { min: 30, priority: "must", notBefore: "2026-10-26T07:30:00-04:00", deadline: "2026-10-26T11:00:00-04:00" },
     todo: ["Dishes done, trash out", "Sweep for chargers + jackets", "Lock up per William's instructions (checkout by 11)"],
   },
   {
@@ -188,6 +221,7 @@ export const STOPS: Stop[] = [
   {
     id: "tahq", day: "mon", kind: "visit", title: "Upper Tahquamenon Falls + lunch", place: P.tahq,
     start: "2026-10-26T10:45:00-04:00", end: "2026-10-26T12:45:00-04:00",
+    flex: { min: 45, priority: "nice", daylight: true, shortNote: "Upper Falls only, eat on the road" },
     todo: ["Brink-of-the-falls viewing stairs", "Root-beer-colored water (tannins, not dirt)", "Lunch at Tahquamenon Falls Brewery next to the lot"],
     tips: ["State park: same Recreation Passport."],
   },
@@ -199,6 +233,7 @@ export const STOPS: Stop[] = [
   {
     id: "home", day: "mon", kind: "home", title: "Home", place: P.home,
     start: "2026-10-26T18:00:00-04:00", end: "2026-10-26T23:59:00-04:00",
+    flex: { min: 0, priority: "must", open: true },
     todo: ["Unload, rest, show everyone the pictures"],
   },
 ];

@@ -1,5 +1,6 @@
 import { DAYS, PLACES, PREP_TODO, STOPS, TRIP_END, type Checkpoint, type DayId, type LatLng, type Place, type Stop } from "@/data/trip";
-import { distanceM, estimateDriveMin, fmtDay, fmtTime, formatDistance, formatDuration, dateKey } from "./geo";
+import { distanceM, fmtDay, fmtTime, formatDuration, dateKey } from "./geo";
+import { replan, type Plan, type PlanItem } from "./replan";
 
 export type Tone = "good" | "warn" | "bad" | "info";
 
@@ -30,6 +31,10 @@ export type Guidance = {
   distanceM?: number;
   backup?: string;
   pace?: Pace;
+  /** Live re-plan of everything ahead. */
+  plan: Plan;
+  /** Today's adjustments worth telling you about. */
+  changes: PlanItem[];
 };
 
 const ms = (iso: string) => new Date(iso).getTime();
@@ -103,14 +108,45 @@ function hikePace(stop: Stop, pos: LatLng, t: number): Pace | undefined {
 /** Road route to a place (`toId`), used only when it matches the place being judged. */
 export type RouteInfo = { minutes: number; meters: number; toId: string } | null;
 
+/** Which stop you're standing at: today's stop at this spot whose time is closest to now. */
+function stopYouAreAt(t: number, pos: LatLng): Stop | undefined {
+  const spot = placeAt(pos);
+  const day = dayForTime(t);
+  let best: Stop | undefined;
+  let bestGap = Infinity;
+  // The exact spot (the dock) wins over the wider area it sits in (town).
+  const exact = STOPS.some((s) => s.day === day && s.kind !== "drive" && spot && s.place.id === spot.id);
+  for (const s of STOPS) {
+    if (s.day !== day || s.kind === "drive" || !atStop(s, pos, spot)) continue;
+    if (exact && spot && !samePlace(s, spot)) continue;
+    const gap = t < ms(s.start) ? ms(s.start) - t : t > ms(s.end) ? t - ms(s.end) : 0;
+    if (gap < bestGap) {
+      bestGap = gap;
+      best = s;
+    }
+  }
+  // Only count it if it's today's business (within 3 hours of its slot).
+  return bestGap <= 3 * 3600000 ? best : undefined;
+}
+
+const live2 = (live: RouteInfo) => (live ? { toId: live.toId, minutes: live.minutes } : undefined);
+
+function changesOf(plan: Plan, t: number): PlanItem[] {
+  const today = dayForTime(t);
+  // Earlier-than-planned is good news, and a missed fixed stop has its own banner.
+  return plan.items.filter((i) => i.stop.day === today && !i.inProgress && (i.status === "dropped" || i.status === "shortened" || (i.status === "moved" && i.shiftMin > 0)));
+}
+
 export function guide(t: number, pos: LatLng | null, live: RouteInfo): Guidance {
   if (t < tripStart) {
     const first = STOPS[0];
+    const plan = replan(t, null, null);
     const days = Math.floor((tripStart - t) / 86400000);
     const hours = Math.floor(((tripStart - t) % 86400000) / 3600000);
+    const a = plan.anchor;
     return {
       phase: "before",
-      tone: "info",
+      tone: a && (a.status === "tight" || a.status === "missed") ? "warn" : "info",
       pill: "Getting ready",
       headline: days > 0 ? `Trip starts in ${days}d ${hours}h` : `Roll out in ${formatDuration((tripStart - t) / 60000)}`,
       detail: `${fmtDay(tripStart)} ${fmtTime(tripStart)} from ${first.place.name}`,
@@ -119,66 +155,85 @@ export function guide(t: number, pos: LatLng | null, live: RouteInfo): Guidance 
       hereStops: [],
       todo: [...PREP_TODO, ...first.todo],
       todoKey: "prep",
+      plan,
+      changes: plan.items.filter((i) => i.stop.day === "sat" && (i.status === "dropped" || i.status === "shortened" || (i.status === "moved" && i.shiftMin > 0))),
     };
   }
 
   if (t > tripEnd) {
-    return {
-      phase: "after",
-      tone: "good",
-      pill: "Trip done",
-      headline: "Welcome back",
-      detail: "Pictured Rocks, Oct 24 to 26",
-      hereStops: [],
-      todo: [],
-      todoKey: "after",
-    };
+    return { phase: "after", tone: "good", pill: "Trip done", headline: "Welcome back", detail: "Pictured Rocks, Oct 24 to 26", hereStops: [], todo: [], todoKey: "after", plan: { items: [] }, changes: [] };
   }
 
-  let target = targetStop(t) ?? STOPS[STOPS.length - 1];
-  // Already at the next stop while a soft one is still running? You're early there.
-  // (Also when both match, if the next stop is the more specific spot, e.g. the dock inside town.)
-  if (pos && !target.hard) {
-    const spot = placeAt(pos);
-    const following = STOPS.find((s) => ms(s.start) >= ms(target.end) && s.kind !== "drive");
-    if (following && atStop(following, pos, spot) && (!atStop(target, pos, spot) || following.place.radius < target.place.radius)) target = following;
-  }
-  const cur = STOPS.find((s) => t >= ms(s.start) && t < ms(s.end));
-  const driving = cur?.kind === "drive";
-  const here = pos ? placeAt(pos) : undefined;
-  const hereStops = here && !atStop(target, pos, here) ? STOPS.filter((s) => samePlace(s, here)) : [];
-  const base = {
-    phase: "during" as const,
-    target,
-    here,
-    hereStops,
-    todo: driving && cur ? [...cur.todo, ...target.todo] : target.todo,
-    todoKey: driving && cur ? cur.id : target.id,
-    backup: target.backup,
-  };
-
-  // No GPS: follow the clock.
+  // No GPS: follow the clock and assume you're on schedule.
   if (!pos) {
+    const target = targetStop(t) ?? STOPS[STOPS.length - 1];
+    const cur = STOPS.find((s) => t >= ms(s.start) && t < ms(s.end));
+    const driving = cur?.kind === "drive";
+    const plan = replan(t, null, null);
     return {
-      ...base,
-      nav: target,
+      phase: "during",
       tone: "info",
       pill: "By the clock",
       headline: driving ? `On the road to ${target.title}` : target.title,
       detail: `${fmtTime(ms(target.start))} to ${fmtTime(ms(target.end))} · ${target.place.name}`,
+      target,
+      nav: target,
+      hereStops: [],
+      todo: driving && cur ? [...cur.todo, ...target.todo] : target.todo,
+      todoKey: driving && cur ? cur.id : target.id,
+      backup: target.backup,
+      plan,
+      changes: [],
     };
   }
 
-  // At the planned place: Navigate points at what comes after.
-  if (atStop(target, pos, here)) {
-    const after = STOPS.find((s) => ms(s.start) >= ms(target.end) && s.kind !== "drive" && !samePlace(s, here));
-    const leftMin = (ms(target.end) - t) / 60000;
-    const started = t >= ms(target.start);
-    const pace = target.kind === "hike" ? hikePace(target, pos, t) : undefined;
+  const here = placeAt(pos);
+  const at = stopYouAreAt(t, pos);
+  const plan = replan(t, pos, at?.id ?? null, live2(live));
+  const changes = changesOf(plan, t);
+  const live0 = plan.items.filter((i) => i.status !== "dropped" && i.status !== "missed");
+  const first = live0[0];
+  if (!first) {
+    return { phase: "during", tone: "good", pill: "All done", headline: "Nothing left today", detail: "", hereStops: [], todo: [], todoKey: "none", plan, changes };
+  }
+  const next = live0[1];
+  const anchor = plan.anchor;
+  const missed = plan.items.find((i) => i.status === "missed" && i.stop.day === dayForTime(t));
+  const base = {
+    phase: "during" as const,
+    target: first.stop,
+    here,
+    hereStops: here && !atStop(first.stop, pos, here) ? STOPS.filter((s) => samePlace(s, here)) : [],
+    todo: first.stop.todo,
+    todoKey: first.stop.id,
+    backup: missed?.stop.backup ?? (anchor && anchor.status === "tight" ? anchor.stop.backup : first.stop.backup),
+    plan,
+    changes,
+  };
+  const skipped = changes.filter((c) => c.status === "dropped" && c.start <= first.start);
+  const skipNote = skipped.length ? `Skip ${skipped.map((c) => c.stop.title.toLowerCase()).join(", ")}. ` : "";
+
+  // A fixed stop is already lost: say so first.
+  if (missed && (!first.stop.hard || first.stop.id !== missed.stop.id)) {
+    return {
+      ...base,
+      nav: first.inProgress ? next?.stop : first.stop,
+      tone: "bad",
+      pill: "You'll miss it",
+      headline: `${missed.stop.title} leaves at ${fmtTime(missed.start)}`,
+      detail: `From here you'd arrive ${missed.note ?? "late"}. Use the backup below.`,
+    };
+  }
+
+  // You're at the stop.
+  if (first.inProgress) {
+    const pace = first.stop.kind === "hike" ? hikePace(first.stop, pos, t) : undefined;
+    const leaveNow = first.end - t < 60000;
+    const tight = anchor && anchor.status === "tight";
     if (pace && pace.behindMin >= 20) {
       return {
         ...base,
-        nav: after,
+        nav: next?.stop,
         pace,
         tone: "warn",
         pill: `${formatDuration(pace.behindMin)} behind`,
@@ -188,82 +243,48 @@ export function guide(t: number, pos: LatLng | null, live: RouteInfo): Guidance 
     }
     return {
       ...base,
-      nav: after,
+      nav: next?.stop,
       pace,
-      tone: "good",
-      pill: started ? "You're here" : "Early",
-      headline: target.title,
+      tone: leaveNow || tight ? "warn" : "good",
+      pill: leaveNow ? "Leave now" : t < ms(first.stop.start) ? "Early" : "You're here",
+      headline: first.stop.title,
       detail: pace
         ? `${pace.next ? `Next: ${pace.next.name} by ${fmtTime(ms(pace.next.at))}` : "Last stretch"} · ${pace.milesLeft.toFixed(1)} mi to go`
-        : started
-          ? `${formatDuration(leftMin)} left · wrap up by ${fmtTime(ms(target.end))}`
-          : `Starts ${fmtTime(ms(target.start))}`,
+        : first.stop.hard
+          ? t < first.start
+            ? `Boarding ${fmtTime(ms(first.stop.arriveBy ?? first.stop.start))}, departs ${fmtTime(first.start)}. Get in line early.`
+            : `Back at ${fmtTime(first.end)}`
+          : `${skipNote}${leaveNow ? "Time to go" : `Leave by ${fmtTime(first.end)}`}${next ? ` · next: ${next.stop.title} ${fmtTime(next.start)}` : ""}`,
     };
   }
 
-  // Somewhere else: can you still make it? Soft stops you can't reach are skipped for the next one.
-  let goal = target;
-  const skipped: Stop[] = [];
-  const travel = (to: Place) => {
-    if (live && live.toId === to.id) return { meters: live.meters, minutes: live.minutes };
-    const m = distanceM(pos, to.pos);
-    return { meters: m, minutes: estimateDriveMin(m) };
-  };
-  let { meters, minutes: travelMin } = travel(goal.place);
-  for (;;) {
-    const arrive = t + travelMin * 60000;
-    if (goal.hard || arrive < ms(goal.end)) break;
-    const after = STOPS.find((s) => ms(s.start) >= ms(goal.end) && s.kind !== "drive");
-    if (!after) break;
-    skipped.push(goal);
-    goal = after;
-    ({ meters, minutes: travelMin } = travel(goal.place));
-    if (atStop(goal, pos, here)) break;
+  // On the way to a fixed stop.
+  const away = `${formatDuration(first.travelMin)} away`;
+  if (first.stop.hard) {
+    const spare = first.spareMin ?? 0;
+    const tone: Tone = spare < 0 ? "warn" : spare < 15 ? "warn" : "good";
+    return {
+      ...base,
+      travelMin: first.travelMin,
+      nav: first.stop,
+      tone,
+      pill: spare < 0 ? "Go now" : spare < 15 ? "Leave now" : "On track",
+      headline: spare < 0 ? `Cutting it close: ${first.stop.title}` : `Head to ${first.stop.title}`,
+      detail: `${skipNote}${away} · ${spare >= 0 ? `${spare} min to spare before boarding ${fmtTime(ms(first.stop.arriveBy ?? first.stop.start))}` : `boarding ${fmtTime(ms(first.stop.arriveBy ?? first.stop.start))}, departs ${fmtTime(first.start)}`}`,
+    };
   }
 
-  const skipNote = skipped.length ? `Skip ${skipped.map((s) => s.title.toLowerCase()).join(", ")}. ` : "";
-  const withTravel = {
-    ...base,
-    target: goal,
-    nav: goal,
-    todo: goal.todo,
-    todoKey: goal.id,
-    backup: goal.backup,
-    hereStops: here && !atStop(goal, pos, here) ? STOPS.filter((s) => samePlace(s, here)) : [],
-    travelMin,
-    distanceM: meters,
-  };
-
-  if (atStop(goal, pos, here)) {
-    return { ...withTravel, travelMin: undefined, tone: "warn", pill: "Behind schedule", headline: goal.title, detail: `${skipNote}You're already here.` };
-  }
-
-  const arrival = t + travelMin * 60000;
-  const deadline = ms(goal.arriveBy ?? goal.start);
-  const slackMin = Math.round((deadline - arrival) / 60000);
-  const away = `${formatDuration(travelMin)} away · ${formatDistance(meters)}`;
-
-  if (goal.hard) {
-    const departs = ms(goal.start);
-    if (arrival > departs) {
-      return { ...withTravel, tone: "bad", pill: "You'll miss it", headline: `${goal.title} leaves at ${fmtTime(departs)}`, detail: `${skipNote}You're ${away}.` };
-    }
-    if (arrival > deadline) {
-      return { ...withTravel, tone: "warn", pill: "Go now", headline: `Cutting it close: ${goal.title}`, detail: `${skipNote}${away} · boarding ${fmtTime(deadline)}` };
-    }
-  } else if (slackMin < -10) {
-    return { ...withTravel, tone: "warn", pill: `${formatDuration(-slackMin)} behind`, headline: `Head to ${goal.title}`, detail: `${skipNote}${away} · ${formatDuration((ms(goal.end) - arrival) / 60000)} there when you arrive` };
-  }
-
-  const leaveBy = deadline - travelMin * 60000;
-  // On the road, being a few minutes off the plan is noise.
-  const soon = !driving && slackMin < 15;
+  // On the way to a flexible stop.
+  const anchorNote = anchor && anchor.stop.day === first.stop.day && anchor.spareMin !== undefined ? ` · ${anchor.stop.title.split(" ")[0]} ${anchor.spareMin >= 0 ? `${anchor.spareMin} min spare` : "at risk"}` : "";
+  const cur = STOPS.find((s) => t >= ms(s.start) && t < ms(s.end));
   return {
-    ...withTravel,
-    tone: skipped.length || soon ? "warn" : "good",
-    pill: skipped.length ? "Change of plan" : soon ? "Leave now" : "On track",
-    headline: driving && !skipped.length ? `On the road to ${goal.title}` : `Head to ${goal.title}`,
-    detail: `${skipNote}${away}${soon ? "" : ` · leave by ${fmtTime(leaveBy)}`}`,
+    ...base,
+    travelMin: first.travelMin,
+    nav: first.stop,
+    tone: skipped.length || (anchor && anchor.status === "tight") ? "warn" : "good",
+    pill: skipped.length ? "Plan adjusted" : first.shiftMin >= 10 ? `${formatDuration(first.shiftMin)} behind` : "On track",
+    headline: cur?.kind === "drive" && !skipped.length ? `On the road to ${first.stop.title}` : `Head to ${first.stop.title}`,
+    detail: `${skipNote}${away} · arrive ${fmtTime(first.start)}${anchorNote}`,
   };
 }
 

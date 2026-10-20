@@ -27,6 +27,8 @@ const PATHS = {
   spinner: "M12 3a9 9 0 1 0 9 9",
   layers: "M12 3 2 8l10 5 10-5-10-5ZM2 13l10 5 10-5",
   wave: "M2 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0",
+  lock: "M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z",
+  shuffle: "M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5",
 } as const;
 
 export type IconName = keyof typeof PATHS;

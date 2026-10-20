@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { DAYS, PLACES, STOPS, TRIP_END, type DayId, type LatLng, type Stop } from "@/data/trip";
 import { dayForTime, guide, stopState, stopsForDay, type Guidance } from "@/lib/trip/engine";
+import type { ItemStatus, PlanItem } from "@/lib/trip/replan";
 import { dateKey, fmtDay, fmtTime, mapsDirectionsUrl, sunTimes } from "@/lib/trip/geo";
 import { useChecklist, useGeolocation, useLiveRoute, useNow, usePrefersReducedMotion, useWeather, type GeoState } from "@/lib/trip/hooks";
 import { Button, Collapse, Icon, KIND_ICON, LinkButton, MapButton, SceneSwap, StatusPill } from "./primitives";
@@ -155,7 +156,7 @@ export default function TripApp() {
         <NowCard g={g} geo={geoView} onLocate={geo.start} routeLoading={live.loading} onShow={(id) => pick(id)} />
         <DayTabs day={day} onPick={(d) => { setPickedDay(d); setFollow(false); setOpenStop(null); }} />
         <SceneSwap sceneKey={day}>
-          <Timeline stops={dayStops} now={now} targetId={g.target?.id} openId={openStop} onToggle={(id) => setOpenStop((cur) => (cur === id ? null : id))} onShow={pick} />
+          <Timeline stops={dayStops} now={now} plan={g.plan.items} targetId={g.target?.id} openId={openStop} onToggle={(id) => setOpenStop((cur) => (cur === id ? null : id))} onShow={pick} />
         </SceneSwap>
         <Collapse open={sim.on}>
           <SimPanel sim={sim} onChange={setSim} />
@@ -221,6 +222,7 @@ function NowCard({ g, geo, onLocate, routeLoading, onShow }: { g: Guidance; geo:
   const sceneKey = `${g.tone}|${g.pill}|${g.headline}`;
   const todoPrefix = `${g.todoKey}:`;
   const doneCount = g.todo.filter((t) => done[todoPrefix + t]).length;
+  const anchorItem = g.plan.anchor && !g.plan.anchor.inProgress && g.plan.anchor.stop.id !== g.target?.id ? g.plan.anchor : g.plan.anchor && g.plan.anchor.status === "missed" ? g.plan.anchor : undefined;
 
   return (
     <div className="px-4 pt-3 pb-2 lg:px-6 lg:pt-6">
@@ -241,6 +243,32 @@ function NowCard({ g, geo, onLocate, routeLoading, onShow }: { g: Guidance; geo:
           {g.target?.booked ? <BookedBadge text={g.target.booked} className="mt-2.5" /> : null}
         </div>
       </SceneSwap>
+
+      <Collapse open={!!anchorItem}>
+        <div className="pt-3">
+          <AnchorChip item={anchorItem} />
+        </div>
+      </Collapse>
+
+      <Collapse open={g.changes.length > 0}>
+        <div className="pt-4">
+          <p className="text-[11px] font-medium tracking-[0.14em] text-(--t-faint) uppercase">{g.phase === "before" ? "If you leave on time" : "Plan adjusted"}</p>
+          <ul className="mt-2 space-y-1.5">
+            {g.changes.map((c) => (
+              <li key={c.stop.id}>
+                <button type="button" onClick={() => onShow(c.stop.id)} className="flex min-h-11 w-full items-center gap-3 rounded-xl border border-(--t-border) bg-(--t-surface-2) px-3 py-2 text-left">
+                  <Icon name={KIND_ICON[c.stop.kind]} className="text-(--t-faint)" />
+                  <span className="min-w-0 flex-1">
+                    <span className={`block truncate text-[13px] ${c.status === "dropped" ? "text-(--t-faint) line-through" : "text-(--t-ink)"}`}>{c.stop.title}</span>
+                    <span className={`block truncate text-[12px] ${c.status === "missed" ? "text-(--t-neg)" : c.status === "dropped" ? "text-(--t-faint)" : "text-(--t-warn)"}`}>{changeText(c)}</span>
+                  </span>
+                  <span className="text-[12px] tabular-nums text-(--t-muted)">{c.status === "dropped" ? "" : fmtTime(c.start)}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Collapse>
 
       <Collapse open={needsLocation}>
         <div className="pt-4">
@@ -332,6 +360,36 @@ function NowCard({ g, geo, onLocate, routeLoading, onShow }: { g: Guidance; geo:
   );
 }
 
+function changeText(c: PlanItem): string {
+  switch (c.status) {
+    case "dropped":
+      return `Skipped, ${c.note?.toLowerCase() ?? "no time"}`;
+    case "shortened":
+      return c.note ? `Shortened: ${c.note}` : "Shortened";
+    case "moved":
+      return c.shiftMin > 0 ? `${formatShift(c.shiftMin)} later than planned` : `${formatShift(-c.shiftMin)} earlier than planned`;
+    case "missed":
+      return `Can't make it, ${c.note ?? "late"}`;
+    default:
+      return "";
+  }
+}
+
+function AnchorChip({ item }: { item?: PlanItem }) {
+  if (!item) return <div className="h-11" />;
+  const spare = item.spareMin ?? 0;
+  const tone = item.status === "missed" ? "text-(--t-neg) border-(--t-neg)/40 bg-(--t-neg)/10" : item.status === "tight" ? "text-(--t-warn) border-(--t-warn)/40 bg-(--t-warn)/10" : "text-(--t-pos) border-(--t-pos)/30 bg-(--t-pos)/10";
+  return (
+    <div className={`flex min-h-11 items-center gap-2.5 rounded-xl border px-3 py-2 text-[13px] ${tone}`}>
+      <Icon name="lock" />
+      <span className="min-w-0 flex-1 truncate">
+        <span className="text-(--t-ink)">{item.stop.title}</span> · {fmtDay(item.start)} {fmtTime(item.start)}
+      </span>
+      <span className="shrink-0 font-medium tabular-nums">{item.status === "missed" ? item.note : spare >= 0 ? `${formatShift(spare)} spare` : `${formatShift(-spare)} short`}</span>
+    </div>
+  );
+}
+
 function BookedBadge({ text, className = "" }: { text: string; className?: string }) {
   return (
     <span className={`inline-flex h-7 items-center gap-1.5 rounded-full border border-(--t-pos)/35 bg-(--t-pos)/10 px-2.5 text-[12px] font-medium text-(--t-pos) ${className}`}>
@@ -417,39 +475,81 @@ function DayTabs({ day, onPick }: { day: DayId; onPick: (d: DayId) => void }) {
 
 const STATE_LABEL = { done: "Done", now: "Now", later: "" } as const;
 
-function Timeline({ stops, now, targetId, openId, onToggle, onShow }: { stops: Stop[]; now: number; targetId?: string; openId: string | null; onToggle: (id: string) => void; onShow: (id: string) => void }) {
+/** How a re-planned stop reads in the timeline. */
+const PLAN_BADGE: Record<ItemStatus, ((i: PlanItem) => { text: string; cls: string }) | null> = {
+  planned: null,
+  spare: (i) => ({ text: i.inProgress ? "Fixed" : `Fixed · ${i.spareMin ?? 0} min spare`, cls: "text-(--t-pos) border-(--t-pos)/30" }),
+  tight: (i) => ({ text: `Fixed · ${Math.max(0, i.spareMin ?? 0)} min spare`, cls: "text-(--t-warn) border-(--t-warn)/40" }),
+  missed: (i) => ({ text: `Missed · ${i.note ?? "late"}`, cls: "text-(--t-neg) border-(--t-neg)/40" }),
+  moved: (i) => ({ text: i.shiftMin > 0 ? `${formatShift(i.shiftMin)} later` : `${formatShift(-i.shiftMin)} earlier`, cls: "text-(--t-warn) border-(--t-warn)/35" }),
+  shortened: (i) => ({ text: i.note ? `Shortened · ${i.note}` : "Shortened", cls: "text-(--t-warn) border-(--t-warn)/35" }),
+  dropped: (i) => ({ text: `Skipped · ${i.note ?? "no time"}`, cls: "text-(--t-faint) border-(--t-border-strong)" }),
+};
+
+function formatShift(min: number) {
+  return min >= 60 ? `${Math.floor(min / 60)} hr ${min % 60 ? `${min % 60} min` : ""}`.trim() : `${min} min`;
+}
+
+function PlanBadge({ item }: { item: PlanItem }) {
+  const b = PLAN_BADGE[item.status]?.(item);
+  if (!b) return null;
+  return (
+    <span className={`mt-1 inline-flex h-6 max-w-full items-center gap-1 truncate rounded-full border px-2 text-[11px] font-medium ${b.cls}`}>
+      <Icon name={item.status === "spare" || item.status === "tight" ? "lock" : item.status === "missed" ? "alert" : "shuffle"} size={14} />
+      <span className="truncate">{b.text}</span>
+    </span>
+  );
+}
+
+function Timeline({ stops, now, plan, targetId, openId, onToggle, onShow }: { stops: Stop[]; now: number; plan: PlanItem[]; targetId?: string; openId: string | null; onToggle: (id: string) => void; onShow: (id: string) => void }) {
+  const byId = new Map(plan.map((i) => [i.stop.id, i]));
   return (
     <ol className="px-4 pt-3 pb-4 lg:px-6">
       {stops.map((s, i) => {
+        const item = byId.get(s.id);
         const state = stopState(s, now);
         const isTarget = s.id === targetId;
         const open = openId === s.id;
         const last = i === stops.length - 1;
+        const gone = item?.status === "dropped" || item?.status === "missed";
+        const retimed = item && !gone && Math.abs(item.shiftMin) >= 5 && !s.flex?.open;
         return (
-          <li key={s.id} id={`stop-${s.id}`} className="relative grid grid-cols-[56px_28px_minmax(0,1fr)] gap-x-2 scroll-mt-28">
-            <span className={`pt-3.5 text-right text-[12px] tabular-nums ${state === "done" ? "text-(--t-faint)" : "text-(--t-muted)"}`}>{fmtTime(new Date(s.start))}</span>
+          <li key={s.id} id={`stop-${s.id}`} className={`relative grid grid-cols-[56px_28px_minmax(0,1fr)] gap-x-2 scroll-mt-28 transition-opacity duration-(--m-surface) ${gone ? "opacity-55" : ""}`}>
+            <span className="pt-3 text-right text-[12px] leading-tight tabular-nums">
+              <SceneSwap sceneKey={retimed ? `r${item.start}` : "p"}>
+                {retimed ? (
+                  <span className="flex flex-col items-end">
+                    <span className="text-(--t-warn)">{fmtTime(item.start)}</span>
+                    <span className="text-[11px] text-(--t-faint) line-through">{fmtTime(new Date(s.start))}</span>
+                  </span>
+                ) : (
+                  <span className={state === "done" && !item ? "text-(--t-faint)" : "text-(--t-muted)"}>{fmtTime(new Date(s.start))}</span>
+                )}
+              </SceneSwap>
+            </span>
             <span className="relative flex justify-center">
-              <span className={`absolute top-0 bottom-0 w-px ${last ? "h-6" : ""} ${state === "done" ? "bg-(--t-accent)/40" : "bg-(--t-border)"}`} />
+              <span className={`absolute top-0 bottom-0 w-px ${last ? "h-6" : ""} ${state === "done" && !item ? "bg-(--t-accent)/40" : "bg-(--t-border)"}`} />
               <span
                 className={`relative mt-2.5 grid size-7 place-items-center rounded-full border transition-[background-color,border-color,color] duration-(--m-control) ${
-                  isTarget ? "border-(--t-accent) bg-(--t-accent) text-(--t-accent-ink)" : state === "done" ? "border-(--t-accent)/40 bg-(--t-surface-1) text-(--t-accent)" : "border-(--t-border-strong) bg-(--t-surface-1) text-(--t-faint)"
+                  isTarget ? "border-(--t-accent) bg-(--t-accent) text-(--t-accent-ink)" : state === "done" && !item ? "border-(--t-accent)/40 bg-(--t-surface-1) text-(--t-accent)" : "border-(--t-border-strong) bg-(--t-surface-1) text-(--t-faint)"
                 }`}
               >
-                <Icon name={state === "done" && !isTarget ? "check" : KIND_ICON[s.kind]} size={14} />
+                <Icon name={state === "done" && !isTarget && !item ? "check" : KIND_ICON[s.kind]} size={14} />
               </span>
             </span>
             <div className="min-w-0 pb-1">
               <button type="button" aria-expanded={open} aria-controls={`stop-body-${s.id}`} onClick={() => onToggle(s.id)} className="flex min-h-12 w-full items-center gap-2 py-2 text-left">
                 <span className="min-w-0 flex-1">
-                  <span className={`flex items-center gap-1.5 truncate text-[15px] ${state === "done" ? "text-(--t-faint)" : "text-(--t-ink)"}`}>
+                  <span className={`flex items-center gap-1.5 truncate text-[15px] ${gone ? "text-(--t-faint) line-through" : state === "done" && !item ? "text-(--t-faint)" : "text-(--t-ink)"}`}>
                     <span className="truncate">{s.title}</span>
                     {s.booked ? <Icon name="check" size={14} className="text-(--t-pos)" /> : null}
                   </span>
                   <span className="block truncate text-[12px] text-(--t-faint)">
-                    {s.place.name} · until {fmtTime(new Date(s.end))}
+                    {s.place.name} · until {fmtTime(item && !gone && !s.flex?.open ? item.end : new Date(s.end))}
                   </span>
+                  {item ? <PlanBadge item={item} /> : null}
                 </span>
-                <span className={`text-[11px] font-medium tracking-wide uppercase ${isTarget ? "text-(--t-accent)" : "text-(--t-faint)"}`}>{isTarget ? (state === "now" ? "Now" : "Next") : STATE_LABEL[state]}</span>
+                <span className={`text-[11px] font-medium tracking-wide uppercase ${isTarget ? "text-(--t-accent)" : "text-(--t-faint)"}`}>{isTarget ? (item?.inProgress || state === "now" ? "Now" : "Next") : item ? "" : STATE_LABEL[state]}</span>
                 <Icon name="chevron" className={`text-(--t-faint) transition-transform duration-(--m-control) ${open ? "rotate-90" : ""}`} />
               </button>
               <Collapse open={open} id={`stop-body-${s.id}`}>
